@@ -1,0 +1,957 @@
+<!-- ============ admin.html - Save as separate file ============ -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PickZone Admin Panel</title>
+<link rel="icon" href="https://www.image2url.com/r2/default/images/1788805311773-68d75ded-4271-402e-93dd-dd9b79cee693.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/fonts/poppins@latest/latin-400-normal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/fonts/poppins@latest/latin-600-normal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/fonts/poppins@latest/latin-700-normal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/fonts/poppins@latest/latin-800-normal.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+--primary:#6366f1;--primary-dark:#4f46e5;--primary-light:#818cf8;
+--secondary:#ec4899;--accent:#f59e0b;--success:#10b981;--danger:#ef4444;
+--bg:#f8fafc;--card:#ffffff;--text:#111827;--text-secondary:#64748b;
+--border:#e2e8f0;--shadow:0 10px 40px rgba(99,102,241,0.1);
+--gradient:linear-gradient(135deg,#6366f1 0%,#ec4899 100%);
+}
+[data-theme="dark"]{
+--bg:#0f172a;--card:#1e293b;--text:#F9FAFB;--text-secondary:#94a3b8;
+--border:#334155;--shadow:0 10px 40px rgba(0,0,0,0.4);
+}
+html{scroll-behavior:smooth}
+body{
+font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);
+min-height:100vh;transition:background 0.4s,color 0.4s;overflow-x:hidden;
+}
+.animated-bg{position:fixed;inset:0;z-index:-2;overflow:hidden}
+.animated-bg::before{
+content:'';position:absolute;width:200%;height:200%;top:-50%;left:-50%;
+background:
+radial-gradient(circle at 20% 50%,rgba(99,102,241,0.15) 0%,transparent 50%),
+radial-gradient(circle at 80% 80%,rgba(236,72,153,0.15) 0%,transparent 50%),
+radial-gradient(circle at 40% 20%,rgba(245,158,11,0.1) 0%,transparent 50%);
+animation:bgRotate 40s linear infinite;
+}
+[data-theme="dark"] .animated-bg::before{
+background:
+radial-gradient(circle at 20% 50%,rgba(99,102,241,0.25) 0%,transparent 50%),
+radial-gradient(circle at 80% 80%,rgba(236,72,153,0.2) 0%,transparent 50%),
+radial-gradient(circle at 40% 20%,rgba(16,185,129,0.15) 0%,transparent 50%);
+}
+@keyframes bgRotate{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.floating-shapes{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.shape{position:absolute;border-radius:50%;opacity:0.15;filter:blur(40px);animation:floatShape 25s infinite ease-in-out}
+.shape:nth-child(1){width:200px;height:200px;background:var(--primary);top:10%;left:5%}
+.shape:nth-child(2){width:250px;height:250px;background:var(--secondary);top:60%;right:5%;animation-delay:-8s}
+.shape:nth-child(3){width:180px;height:180px;background:var(--accent);bottom:15%;left:40%;animation-delay:-15s}
+@keyframes floatShape{
+0%,100%{transform:translate(0,0) scale(1)}
+33%{transform:translate(80px,-60px) scale(1.1)}
+66%{transform:translate(-60px,50px) scale(0.9)}
+}
+a{color:inherit;text-decoration:none}
+button{cursor:pointer;border:none;font-family:inherit;color:inherit;background:none}
+input,select,textarea{font-family:inherit;outline:none;color:var(--text)}
+
+/* LOGIN */
+.login-screen{
+min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;
+}
+.login-box{
+background:var(--card);border:1px solid var(--border);border-radius:20px;
+padding:40px;width:100%;max-width:440px;box-shadow:var(--shadow);
+animation:modalIn 0.5s ease;
+}
+@keyframes modalIn{from{opacity:0;transform:scale(0.9)}to{opacity:1;transform:scale(1)}}
+.login-box .logo{text-align:center;margin-bottom:24px}
+.login-box .logo img{width:80px;height:80px;border-radius:20px;margin-bottom:12px;box-shadow:0 8px 25px rgba(99,102,241,0.3)}
+.login-box .logo h1{
+font-size:28px;font-weight:800;
+background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.login-box .logo p{font-size:13px;color:var(--text-secondary);margin-top:6px}
+.login-box .form-group{margin-bottom:16px}
+.login-box label{display:block;font-size:12px;font-weight:600;margin-bottom:6px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:1px}
+.login-box input{
+width:100%;padding:12px 14px;background:var(--bg);border:1px solid var(--border);
+border-radius:10px;font-size:14px;transition:all 0.3s;
+}
+.login-box input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(99,102,241,0.1)}
+.login-box .submit-btn{
+width:100%;padding:14px;background:var(--gradient);color:#fff;
+font-weight:800;font-size:14px;border-radius:12px;margin-top:10px;
+transition:all 0.3s;letter-spacing:0.5px;
+}
+.login-box .submit-btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(99,102,241,0.5)}
+.login-box .hint{font-size:11px;color:var(--text-secondary);margin-top:12px;text-align:center}
+
+/* ADMIN PANEL */
+.admin-panel{display:none}
+.admin-panel.active{display:block}
+.sidebar{
+position:fixed;top:0;left:0;width:260px;height:100vh;
+background:var(--card);border-right:1px solid var(--border);
+padding:20px;overflow-y:auto;z-index:100;transition:all 0.3s;
+}
+.sidebar::-webkit-scrollbar{width:6px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--primary);border-radius:3px}
+.sidebar .logo{display:flex;align-items:center;gap:10px;margin-bottom:24px;padding-bottom:20px;border-bottom:2px solid var(--border)}
+.sidebar .logo img{width:42px;height:42px;border-radius:10px}
+.sidebar .logo span{font-size:20px;font-weight:800;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.sidebar .menu-item{
+display:flex;align-items:center;gap:12px;padding:12px 14px;
+border-radius:10px;cursor:pointer;transition:all 0.3s;margin-bottom:4px;
+font-size:14px;font-weight:500;
+}
+.sidebar .menu-item:hover{background:var(--bg);transform:translateX(5px)}
+.sidebar .menu-item.active{background:var(--gradient);color:#fff}
+.sidebar .menu-item i{width:20px;font-size:16px}
+.sidebar .back-link{
+margin-top:20px;padding-top:20px;border-top:1px solid var(--border);
+display:flex;align-items:center;gap:10px;padding:12px 14px;
+border-radius:10px;cursor:pointer;transition:all 0.3s;font-size:14px;font-weight:500;
+}
+.sidebar .back-link:hover{background:var(--bg)}
+
+.main-panel{margin-left:260px;padding:24px;min-height:100vh}
+.top-bar{
+display:flex;align-items:center;justify-content:space-between;
+margin-bottom:24px;padding:16px 20px;background:var(--card);
+border:1px solid var(--border);border-radius:12px;
+}
+.top-bar h1{font-size:22px;font-weight:800}
+.top-bar .actions{display:flex;gap:10px;align-items:center}
+.theme-toggle{
+width:40px;height:40px;border-radius:10px;background:var(--bg);
+border:1px solid var(--border);display:flex;align-items:center;justify-content:center;
+cursor:pointer;transition:all 0.3s;
+}
+.theme-toggle:hover{background:var(--primary);color:#fff}
+
+/* STATS */
+.stats-grid{
+display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:16px;margin-bottom:24px;
+}
+.stat-card{
+background:var(--card);border:1px solid var(--border);border-radius:16px;
+padding:20px;transition:all 0.3s;position:relative;overflow:hidden;
+}
+.stat-card:hover{transform:translateY(-4px);box-shadow:var(--shadow);border-color:var(--primary)}
+.stat-card::before{
+content:'';position:absolute;top:0;left:0;right:0;height:3px;
+background:var(--gradient);
+}
+.stat-card .icon{
+width:48px;height:48px;border-radius:12px;background:var(--gradient);
+display:flex;align-items:center;justify-content:center;color:#fff;
+font-size:20px;margin-bottom:12px;
+}
+.stat-card .label{font-size:12px;color:var(--text-secondary);font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.stat-card .value{font-size:28px;font-weight:800}
+
+/* CHARTS */
+.charts-grid{
+display:grid;grid-template-columns:repeat(auto-fit,minmax(380px,1fr));
+gap:16px;margin-bottom:24px;
+}
+.chart-card{
+background:var(--card);border:1px solid var(--border);border-radius:16px;
+padding:20px;
+}
+.chart-card h3{font-size:16px;font-weight:700;margin-bottom:16px}
+
+/* SECTIONS */
+.section{
+background:var(--card);border:1px solid var(--border);border-radius:16px;
+padding:20px;margin-bottom:24px;
+}
+.section-header{
+display:flex;justify-content:space-between;align-items:center;
+margin-bottom:16px;flex-wrap:wrap;gap:10px;
+}
+.section-header h2{font-size:18px;font-weight:800}
+.btn{
+padding:10px 18px;border-radius:10px;font-size:13px;font-weight:600;
+transition:all 0.3s;display:inline-flex;align-items:center;gap:8px;
+}
+.btn-primary{background:var(--gradient);color:#fff}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(99,102,241,0.4)}
+.btn-success{background:var(--success);color:#fff}
+.btn-success:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(16,185,129,0.4)}
+.btn-danger{background:var(--danger);color:#fff}
+.btn-danger:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(239,68,68,0.4)}
+.btn-secondary{background:var(--bg);border:1px solid var(--border);color:var(--text)}
+.btn-secondary:hover{background:var(--primary);color:#fff;border-color:var(--primary)}
+
+/* TABLE */
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th,td{padding:12px;text-align:left;border-bottom:1px solid var(--border);font-size:13px}
+th{font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:1px;font-size:11px}
+tr:hover{background:var(--bg)}
+td img{width:40px;height:40px;border-radius:8px;object-fit:cover}
+
+/* FORMS */
+.form-group{margin-bottom:14px}
+.form-group label{display:block;font-size:12px;font-weight:600;margin-bottom:6px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:1px}
+.form-group input,.form-group select,.form-group textarea{
+width:100%;padding:12px 14px;background:var(--bg);border:1px solid var(--border);
+border-radius:10px;font-size:14px;transition:all 0.3s;
+}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{
+border-color:var(--primary);box-shadow:0 0 0 3px rgba(99,102,241,0.1);
+}
+.form-group textarea{resize:vertical;min-height:80px}
+.form-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+
+/* MODAL */
+.modal-overlay{
+position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(10px);
+z-index:3000;display:none;align-items:center;justify-content:center;padding:20px;
+}
+.modal-overlay.active{display:flex}
+.modal{
+background:var(--card);border:1px solid var(--border);border-radius:20px;
+padding:28px;width:100%;max-width:600px;max-height:90vh;overflow-y:auto;
+animation:modalIn 0.4s ease;
+}
+.modal::-webkit-scrollbar{width:4px}
+.modal::-webkit-scrollbar-thumb{background:var(--primary);border-radius:2px}
+.modal h2{
+font-size:22px;margin-bottom:20px;font-weight:800;
+background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.modal .close-modal{float:right;font-size:22px;cursor:pointer;transition:all 0.3s;padding:4px}
+.modal .close-modal:hover{transform:rotate(90deg);color:var(--danger)}
+
+/* ALERT */
+.alert{
+padding:14px 18px;border-radius:10px;margin-bottom:16px;
+display:flex;align-items:center;gap:10px;font-size:14px;font-weight:500;
+}
+.alert-success{background:rgba(16,185,129,0.1);color:var(--success);border:1px solid var(--success)}
+.alert-danger{background:rgba(239,68,68,0.1);color:var(--danger);border:1px solid var(--danger)}
+
+/* MESSAGE CARD */
+.msg-card{
+background:var(--bg);border:1px solid var(--border);border-radius:12px;
+padding:14px;margin-bottom:10px;
+}
+.msg-card .msg-header{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.msg-card .msg-header img{width:36px;height:36px;border-radius:50%;object-fit:cover}
+.msg-card .msg-header .name{font-weight:700;font-size:14px}
+.msg-card .msg-header .time{font-size:11px;color:var(--text-secondary);margin-left:auto}
+.msg-card .msg-body{font-size:14px;line-height:1.6}
+.msg-card .msg-body img,.msg-card .msg-body video{max-width:200px;border-radius:8px;margin-top:8px}
+.msg-card .msg-actions{display:flex;gap:8px;margin-top:10px}
+
+/* PAGE SECTIONS */
+.page-section{display:none;animation:pageIn 0.5s ease}
+.page-section.active{display:block}
+@keyframes pageIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+@media(max-width:768px){
+.sidebar{left:-260px}
+.sidebar.active{left:0}
+.main-panel{margin-left:0}
+.mobile-menu-btn{display:flex !important}
+}
+.mobile-menu-btn{
+display:none;width:40px;height:40px;border-radius:10px;background:var(--bg);
+border:1px solid var(--border);align-items:center;justify-content:center;
+cursor:pointer;font-size:16px;
+}
+</style>
+</head>
+<body data-theme="light">
+<div class="animated-bg"></div>
+<div class="floating-shapes">
+<div class="shape"></div>
+<div class="shape"></div>
+<div class="shape"></div>
+</div>
+
+<!-- LOGIN -->
+<div class="login-screen" id="loginScreen">
+<div class="login-box">
+<div class="logo">
+<img src="https://www.image2url.com/r2/default/images/1788805311773-68d75ded-4271-402e-93dd-dd9b79cee693.png" alt="PickZone">
+<h1>PickZone Admin</h1>
+<p>Secure Administrative Dashboard</p>
+</div>
+<div id="loginAlert"></div>
+<div class="form-group">
+<label>Admin Email</label>
+<input type="email" id="adminEmail" placeholder="admin@example.com">
+</div>
+<div class="form-group">
+<label>Passcode</label>
+<input type="password" id="adminPass" placeholder="Enter passcode">
+</div>
+<button class="submit-btn" onclick="adminLogin()"><i class="fas fa-lock"></i> Access Admin Panel</button>
+<p class="hint">Authorized personnel only. All actions are logged.</p>
+<div style="text-align:center;margin-top:16px">
+<button class="btn btn-secondary" onclick="toggleTheme()"><i class="fas fa-moon" id="themeIcon"></i> Toggle Theme</button>
+</div>
+</div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div class="admin-panel" id="adminPanel">
+<aside class="sidebar" id="sidebar">
+<div class="logo">
+<img src="https://www.image2url.com/r2/default/images/1788805311773-68d75ded-4271-402e-93dd-dd9b79cee693.png" alt="PickZone">
+<span>PickZone</span>
+</div>
+<div class="menu-item active" onclick="showSection('dashboard',this)"><i class="fas fa-chart-line"></i><span>Dashboard</span></div>
+<div class="menu-item" onclick="showSection('items',this)"><i class="fas fa-box"></i><span>Manage Items</span></div>
+<div class="menu-item" onclick="showSection('users',this)"><i class="fas fa-users"></i><span>Customers</span></div>
+<div class="menu-item" onclick="showSection('orders',this)"><i class="fas fa-receipt"></i><span>Orders</span></div>
+<div class="menu-item" onclick="showSection('messages',this)"><i class="fas fa-comments"></i><span>Message Arena</span></div>
+<div class="menu-item" onclick="showSection('banners',this)"><i class="fas fa-bullhorn"></i><span>Banners & Offers</span></div>
+<div class="menu-item" onclick="showSection('visitors',this)"><i class="fas fa-eye"></i><span>Visitors</span></div>
+<a class="back-link" href="index.html"><i class="fas fa-arrow-left"></i><span>Back to Site</span></a>
+<div class="back-link" onclick="adminLogout()"><i class="fas fa-sign-out-alt"></i><span>Logout</span></div>
+</aside>
+
+<div class="main-panel">
+<div class="top-bar">
+<div style="display:flex;align-items:center;gap:12px">
+<button class="mobile-menu-btn" onclick="document.getElementById('sidebar').classList.toggle('active')"><i class="fas fa-bars"></i></button>
+<h1 id="pageTitle">Dashboard</h1>
+</div>
+<div class="actions">
+<button class="theme-toggle" onclick="toggleTheme()"><i class="fas fa-moon" id="themeIcon2"></i></button>
+</div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="page-section active" id="section-dashboard">
+<div class="stats-grid">
+<div class="stat-card">
+<div class="icon"><i class="fas fa-eye"></i></div>
+<div class="label">Total Visitors</div>
+<div class="value" id="statVisitors">0</div>
+</div>
+<div class="stat-card">
+<div class="icon"><i class="fas fa-users"></i></div>
+<div class="label">Registered Users</div>
+<div class="value" id="statUsers">0</div>
+</div>
+<div class="stat-card">
+<div class="icon"><i class="fas fa-box"></i></div>
+<div class="label">Total Products</div>
+<div class="value" id="statProducts">0</div>
+</div>
+<div class="stat-card">
+<div class="icon"><i class="fas fa-receipt"></i></div>
+<div class="label">Total Orders</div>
+<div class="value" id="statOrders">0</div>
+</div>
+<div class="stat-card">
+<div class="icon"><i class="fas fa-dollar-sign"></i></div>
+<div class="label">Estimated Revenue</div>
+<div class="value" id="statRevenue">LKR 0</div>
+</div>
+<div class="stat-card">
+<div class="icon"><i class="fas fa-comments"></i></div>
+<div class="label">Total Messages</div>
+<div class="value" id="statMessages">0</div>
+</div>
+</div>
+<div class="charts-grid">
+<div class="chart-card">
+<h3>Order Trends (Last 7 Days)</h3>
+<canvas id="ordersChart"></canvas>
+</div>
+<div class="chart-card">
+<h3>Popular Categories</h3>
+<canvas id="categoriesChart"></canvas>
+</div>
+</div>
+</div>
+
+<!-- ITEMS -->
+<div class="page-section" id="section-items">
+<div class="section">
+<div class="section-header">
+<h2>Manage Items</h2>
+<button class="btn btn-primary" onclick="openItemModal()"><i class="fas fa-plus"></i> Add New Item</button>
+</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Image</th><th>Code</th><th>Title</th><th>Category</th><th>Price</th><th>Actions</th></tr></thead>
+<tbody id="itemsTable"></tbody>
+</table>
+</div>
+</div>
+</div>
+
+<!-- USERS -->
+<div class="page-section" id="section-users">
+<div class="section">
+<div class="section-header">
+<h2>Registered Customers</h2>
+<button class="btn btn-success" onclick="broadcastEmail()"><i class="fas fa-envelope"></i> Broadcast Email</button>
+</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Profile</th><th>Email</th><th>WhatsApp</th><th>Orders</th><th>Joined</th></tr></thead>
+<tbody id="usersTable"></tbody>
+</table>
+</div>
+</div>
+</div>
+
+<!-- ORDERS -->
+<div class="page-section" id="section-orders">
+<div class="section">
+<div class="section-header">
+<h2>All Orders</h2>
+</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Date</th><th>Customer</th><th>Items</th><th>Total</th><th>Details</th></tr></thead>
+<tbody id="ordersTable"></tbody>
+</table>
+</div>
+</div>
+</div>
+
+<!-- MESSAGES -->
+<div class="page-section" id="section-messages">
+<div class="section">
+<div class="section-header">
+<h2>Message Arena</h2>
+</div>
+<div id="adminMessagesContainer"></div>
+</div>
+</div>
+
+<!-- BANNERS -->
+<div class="page-section" id="section-banners">
+<div class="section">
+<div class="section-header">
+<h2>Banners & Offers</h2>
+<button class="btn btn-primary" onclick="openBannerModal()"><i class="fas fa-plus"></i> Add Banner</button>
+</div>
+<div id="bannersList"></div>
+</div>
+</div>
+
+<!-- VISITORS -->
+<div class="page-section" id="section-visitors">
+<div class="section">
+<div class="section-header">
+<h2>Visitor Analytics</h2>
+</div>
+<div class="stats-grid">
+<div class="stat-card">
+<div class="icon"><i class="fas fa-eye"></i></div>
+<div class="label">Total Visitors</div>
+<div class="value" id="visitorTotal">0</div>
+</div>
+<div class="stat-card">
+<div class="icon"><i class="fas fa-calendar-day"></i></div>
+<div class="label">Today</div>
+<div class="value" id="visitorToday">0</div>
+</div>
+</div>
+<div class="chart-card" style="margin-top:20px">
+<h3>Visitor Trends (Last 7 Days)</h3>
+<canvas id="visitorsChart"></canvas>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- ITEM MODAL -->
+<div class="modal-overlay" id="itemModal">
+<div class="modal">
+<button class="close-modal" onclick="closeModal('itemModal')"><i class="fas fa-times"></i></button>
+<h2 id="itemModalTitle">Add New Item</h2>
+<input type="hidden" id="editItemIdx" value="-1">
+<div class="form-row">
+<div class="form-group"><label>Item Code</label><input type="text" id="itemCode" placeholder="P00001"></div>
+<div class="form-group"><label>Price (LKR)</label><input type="number" id="itemPrice" placeholder="1500"></div>
+</div>
+<div class="form-group"><label>Title</label><input type="text" id="itemTitle" placeholder="Product name"></div>
+<div class="form-group"><label>Category</label>
+<select id="itemCategory">
+<option>Clothes</option><option>Shoes</option><option>Phones</option><option>Electronics</option>
+<option>Home items</option><option>Kitchen items</option><option>Beauty products</option>
+<option>Books</option><option>Stationery</option><option>Gifts</option><option>Pet supplies</option>
+<option>Toys</option><option>Plants</option><option>Gardening supplies</option><option>Car accessories</option>
+</select>
+</div>
+<div class="form-group"><label>Image URLs (one per line)</label>
+<textarea id="itemImages" placeholder="https://example.com/image1.jpg&#10;https://example.com/image2.jpg"></textarea>
+</div>
+<button class="btn btn-primary" onclick="saveItem()" style="width:100%;justify-content:center;padding:14px"><i class="fas fa-save"></i> Save Item</button>
+</div>
+</div>
+
+<!-- BANNER MODAL -->
+<div class="modal-overlay" id="bannerModal">
+<div class="modal">
+<button class="close-modal" onclick="closeModal('bannerModal')"><i class="fas fa-times"></i></button>
+<h2 id="bannerModalTitle">Add Banner</h2>
+<input type="hidden" id="editBannerIdx" value="-1">
+<div class="form-group"><label>Title</label><input type="text" id="bannerTitle" placeholder="Offer title"></div>
+<div class="form-group"><label>Description</label><textarea id="bannerDesc" placeholder="Offer description"></textarea></div>
+<div class="form-group"><label>Image URL</label><input type="text" id="bannerImage" placeholder="https://..."></div>
+<div class="form-group"><label>Button Text (optional)</label><input type="text" id="bannerBtn" placeholder="Shop Now"></div>
+<button class="btn btn-primary" onclick="saveBanner()" style="width:100%;justify-content:center;padding:14px"><i class="fas fa-save"></i> Save Banner</button>
+</div>
+</div>
+
+<script>
+const MASTER_EMAIL='grbmsirithilaka@gmail.com';
+const MASTER_PASS='2009GrBmS@';
+
+function adminLogin(){
+let email=document.getElementById('adminEmail').value.trim();
+let pass=document.getElementById('adminPass').value;
+if(email===MASTER_EMAIL&&pass===MASTER_PASS){
+sessionStorage.setItem('pickzone_admin','true');
+showAdminPanel();
+}else{
+document.getElementById('loginAlert').innerHTML='<div class="alert alert-danger"><i class="fas fa-exclamation-circle"></i> Invalid credentials. Access denied.</div>';
+}
+}
+
+function adminLogout(){
+sessionStorage.removeItem('pickzone_admin');
+document.getElementById('loginScreen').style.display='flex';
+document.getElementById('adminPanel').classList.remove('active');
+document.getElementById('adminEmail').value='';
+document.getElementById('adminPass').value='';
+document.getElementById('loginAlert').innerHTML='';
+}
+
+function showAdminPanel(){
+document.getElementById('loginScreen').style.display='none';
+document.getElementById('adminPanel').classList.add('active');
+loadDashboard();
+}
+
+function checkSession(){
+if(sessionStorage.getItem('pickzone_admin')==='true'){
+showAdminPanel();
+}
+}
+
+function toggleTheme(){
+let theme=document.body.getAttribute('data-theme');
+let newTheme=theme==='light'?'dark':'light';
+document.body.setAttribute('data-theme',newTheme);
+let icon1=document.getElementById('themeIcon');
+let icon2=document.getElementById('themeIcon2');
+if(icon1)icon1.className=newTheme==='dark'?'fas fa-sun':'fas fa-moon';
+if(icon2)icon2.className=newTheme==='dark'?'fas fa-sun':'fas fa-moon';
+localStorage.setItem('pickzone_admin_theme',newTheme);
+if(window.ordersChart)updateChartsTheme();
+}
+
+function loadTheme(){
+let theme=localStorage.getItem('pickzone_admin_theme')||'light';
+document.body.setAttribute('data-theme',theme);
+let icon1=document.getElementById('themeIcon');
+let icon2=document.getElementById('themeIcon2');
+if(icon1)icon1.className=theme==='dark'?'fas fa-sun':'fas fa-moon';
+if(icon2)icon2.className=theme==='dark'?'fas fa-sun':'fas fa-moon';
+}
+
+function showSection(section,el){
+document.querySelectorAll('.page-section').forEach(s=>s.classList.remove('active'));
+document.getElementById('section-'+section).classList.add('active');
+document.querySelectorAll('.menu-item').forEach(m=>m.classList.remove('active'));
+if(el)el.classList.add('active');
+let titles={dashboard:'Dashboard',items:'Manage Items',users:'Customers',orders:'Orders',messages:'Message Arena',banners:'Banners & Offers',visitors:'Visitor Analytics'};
+document.getElementById('pageTitle').textContent=titles[section];
+if(section==='dashboard')loadDashboard();
+if(section==='items')renderItemsTable();
+if(section==='users')renderUsersTable();
+if(section==='orders')renderOrdersTable();
+if(section==='messages')renderAdminMessages();
+if(section==='banners')renderBannersList();
+if(section==='visitors')renderVisitors();
+}
+
+function loadDashboard(){
+let visitors=JSON.parse(localStorage.getItem('pickzone_visitors')||'[]');
+let users=JSON.parse(localStorage.getItem('pickzone_users')||'[]');
+let products=JSON.parse(localStorage.getItem('pickzone_items')||'[]');
+let orders=JSON.parse(localStorage.getItem('pickzone_orders')||'[]');
+let messages=JSON.parse(localStorage.getItem('pickzone_messages')||'[]');
+let revenue=orders.reduce((a,o)=>a+(o.total||0),0);
+
+document.getElementById('statVisitors').textContent=visitors.length;
+document.getElementById('statUsers').textContent=users.length;
+document.getElementById('statProducts').textContent=products.length;
+document.getElementById('statOrders').textContent=orders.length;
+document.getElementById('statRevenue').textContent='LKR '+revenue.toLocaleString();
+document.getElementById('statMessages').textContent=messages.length;
+
+renderCharts(orders,products);
+}
+
+let ordersChart,categoriesChart,visitorsChart;
+
+function renderCharts(orders,products){
+let isDark=document.body.getAttribute('data-theme')==='dark';
+let textColor=isDark?'#F9FAFB':'#111827';
+let gridColor=isDark?'#334155':'#e2e8f0';
+
+let last7=[];
+for(let i=6;i>=0;i--){
+let d=new Date();d.setDate(d.getDate()-i);
+let dayStr=d.toISOString().split('T')[0];
+let count=orders.filter(o=>o.date&&o.date.startsWith(dayStr)).length;
+last7.push({label:d.toLocaleDateString('en',{weekday:'short'}),count});
+}
+
+let ctx1=document.getElementById('ordersChart').getContext('2d');
+if(ordersChart)ordersChart.destroy();
+ordersChart=new Chart(ctx1,{
+type:'line',
+data:{
+labels:last7.map(d=>d.label),
+datasets:[{
+label:'Orders',
+data:last7.map(d=>d.count),
+borderColor:'#6366f1',
+backgroundColor:'rgba(99,102,241,0.1)',
+fill:true,tension:0.4,borderWidth:3,
+pointBackgroundColor:'#6366f1',pointRadius:5
+}]
+},
+options:{
+responsive:true,
+plugins:{legend:{labels:{color:textColor}}},
+scales:{
+x:{ticks:{color:textColor},grid:{color:gridColor}},
+y:{ticks:{color:textColor},grid:{color:gridColor},beginAtZero:true}
+}
+}
+});
+
+let cats={};
+products.forEach(p=>{cats[p.category]=(cats[p.category]||0)+1});
+let ctx2=document.getElementById('categoriesChart').getContext('2d');
+if(categoriesChart)categoriesChart.destroy();
+categoriesChart=new Chart(ctx2,{
+type:'doughnut',
+data:{
+labels:Object.keys(cats),
+datasets:[{
+data:Object.values(cats),
+backgroundColor:['#6366f1','#ec4899','#f59e0b','#10b981','#3b82f6','#8b5cf6','#ef4444','#14b8a6','#f97316','#84cc16','#06b6d4','#d946ef','#f43f5e','#a855f7','#eab308']
+}]
+},
+options:{
+responsive:true,
+plugins:{legend:{position:'bottom',labels:{color:textColor,padding:10,font:{size:11}}}}
+}
+});
+}
+
+function updateChartsTheme(){
+let orders=JSON.parse(localStorage.getItem('pickzone_orders')||'[]');
+let products=JSON.parse(localStorage.getItem('pickzone_items')||'[]');
+renderCharts(orders,products);
+renderVisitorsChart();
+}
+
+// ITEMS
+function renderItemsTable(){
+let products=JSON.parse(localStorage.getItem('pickzone_items')||'[]');
+let tbody=document.getElementById('itemsTable');
+tbody.innerHTML=products.map((p,i)=>`
+<tr>
+<td><img src="${(p.images&&p.images[0])||''}" alt=""></td>
+<td><strong>${p.code}</strong></td>
+<td>${p.title}</td>
+<td>${p.category}</td>
+<td>LKR ${p.price.toLocaleString()}</td>
+<td>
+<button class="btn btn-secondary" onclick="editItem(${i})" style="padding:6px 10px;font-size:11px"><i class="fas fa-edit"></i></button>
+<button class="btn btn-danger" onclick="deleteItem(${i})" style="padding:6px 10px;font-size:11px"><i class="fas fa-trash"></i></button>
+</td>
+</tr>`).join('');
+}
+
+function openItemModal(idx=-1){
+document.getElementById('editItemIdx').value=idx;
+if(idx>=0){
+let products=JSON.parse(localStorage.getItem('pickzone_items')||'[]');
+let p=products[idx];
+document.getElementById('itemModalTitle').textContent='Edit Item';
+document.getElementById('itemCode').value=p.code;
+document.getElementById('itemTitle').value=p.title;
+document.getElementById('itemCategory').value=p.category;
+document.getElementById('itemPrice').value=p.price;
+document.getElementById('itemImages').value=(p.images||[]).join('\n');
+}else{
+document.getElementById('itemModalTitle').textContent='Add New Item';
+document.getElementById('itemCode').value='';
+document.getElementById('itemTitle').value='';
+document.getElementById('itemCategory').value='Clothes';
+document.getElementById('itemPrice').value='';
+document.getElementById('itemImages').value='';
+}
+document.getElementById('itemModal').classList.add('active');
+}
+
+function saveItem(){
+let idx=parseInt(document.getElementById('editItemIdx').value);
+let code=document.getElementById('itemCode').value.trim();
+let title=document.getElementById('itemTitle').value.trim();
+let category=document.getElementById('itemCategory').value;
+let price=parseFloat(document.getElementById('itemPrice').value);
+let images=document.getElementById('itemImages').value.split('\n').map(s=>s.trim()).filter(s=>s);
+
+if(!code||!title||!price){alert('Please fill all required fields');return}
+
+let products=JSON.parse(localStorage.getItem('pickzone_items')||'[]');
+let item={code,title,category,price,images};
+if(idx>=0){products[idx]=item}
+else{products.push(item)}
+localStorage.setItem('pickzone_items',JSON.stringify(products));
+closeModal('itemModal');
+renderItemsTable();
+}
+
+function editItem(idx){openItemModal(idx)}
+function deleteItem(idx){
+if(!confirm('Delete this item?'))return;
+let products=JSON.parse(localStorage.getItem('pickzone_items')||'[]');
+products.splice(idx,1);
+localStorage.setItem('pickzone_items',JSON.stringify(products));
+renderItemsTable();
+}
+
+// USERS
+function renderUsersTable(){
+let users=JSON.parse(localStorage.getItem('pickzone_users')||'[]');
+let orders=JSON.parse(localStorage.getItem('pickzone_orders')||'[]');
+let tbody=document.getElementById('usersTable');
+tbody.innerHTML=users.map(u=>{
+let userOrders=orders.filter(o=>o.email===u.email).length;
+let pic=u.profilePic||'https://ui-avatars.com/api/?name='+encodeURIComponent(u.email)+'&background=6366f1&color=fff&size=64';
+return`<tr>
+<td><img src="${pic}" alt=""></td>
+<td>${u.email}</td>
+<td>${u.whatsapp}</td>
+<td>${userOrders}</td>
+<td>${new Date(u.createdAt).toLocaleDateString()}</td>
+</tr>`;
+}).join('');
+}
+
+function broadcastEmail(){
+let users=JSON.parse(localStorage.getItem('pickzone_users')||'[]');
+if(!users.length){alert('No registered users yet');return}
+let emails=users.map(u=>u.email).join(',');
+let subject=encodeURIComponent('PickZone Announcement');
+let body=encodeURIComponent('Dear Customer,\n\n[Write your message here]\n\nBest regards,\nPickZone Team');
+window.location.href=`mailto:?bcc=${emails}&subject=${subject}&body=${body}`;
+}
+
+// ORDERS
+function renderOrdersTable(){
+let orders=JSON.parse(localStorage.getItem('pickzone_orders')||'[]').reverse();
+let tbody=document.getElementById('ordersTable');
+tbody.innerHTML=orders.map(o=>`
+<tr>
+<td>${new Date(o.date).toLocaleString()}</td>
+<td>${o.customer?.name||'N/A'}<br><small>${o.email}</small></td>
+<td>${o.items.map(i=>i.title).join(', ').substring(0,50)}...</td>
+<td><strong>LKR ${o.total.toLocaleString()}</strong></td>
+<td><button class="btn btn-secondary" onclick="viewOrderDetails('${o.id}')" style="padding:6px 10px;font-size:11px"><i class="fas fa-eye"></i></button></td>
+</tr>`).join('');
+}
+
+function viewOrderDetails(id){
+let orders=JSON.parse(localStorage.getItem('pickzone_orders')||'[]');
+let o=orders.find(x=>x.id===id);
+if(!o)return;
+let details=`Order ID: ${o.id}\nDate: ${new Date(o.date).toLocaleString()}\nCustomer: ${o.customer?.name}\nEmail: ${o.email}\nPhone 1: ${o.customer?.phone1}\nPhone 2: ${o.customer?.phone2||'N/A'}\nAddress: ${o.customer?.address}\nDistrict: ${o.customer?.district}\nProvince: ${o.customer?.province}\n\nItems:\n${o.items.map(i=>`- ${i.title} (${i.code}) x${i.qty} = LKR ${(i.price*i.qty).toLocaleString()}`).join('\n')}\n\nSubtotal: LKR ${o.subtotal.toLocaleString()}\nDelivery: LKR ${o.delivery}\nTotal: LKR ${o.total.toLocaleString()}`;
+alert(details);
+}
+
+// MESSAGES
+function renderAdminMessages(){
+let messages=JSON.parse(localStorage.getItem('pickzone_messages')||'[]');
+let container=document.getElementById('adminMessagesContainer');
+if(!messages.length){container.innerHTML='<p style="text-align:center;color:var(--text-secondary);padding:40px">No messages yet</p>';return}
+container.innerHTML=messages.map((m,i)=>{
+let pic=m.profilePic||'https://ui-avatars.com/api/?name='+encodeURIComponent(m.name||'U')+'&background=6366f1&color=fff&size=64';
+let attachment='';
+if(m.attachment){
+if(m.attachmentType&&m.attachmentType.startsWith('video')){
+attachment=`<video controls src="${m.attachment}"></video>`;
+}else{
+attachment=`<img src="${m.attachment}" alt="">`;
+}
+}
+return`<div class="msg-card">
+<div class="msg-header">
+<img src="${pic}" alt="">
+<span class="name">${m.name||'User'}</span>
+<span style="font-size:11px;color:var(--text-secondary);margin-left:8px">${m.email}</span>
+<span class="time">${new Date(m.time).toLocaleString()}</span>
+</div>
+<div class="msg-body">${m.text||''}${attachment}</div>
+<div class="msg-actions">
+<button class="btn btn-secondary" onclick="editAdminMessage(${i})" style="padding:6px 10px;font-size:11px"><i class="fas fa-edit"></i> Edit</button>
+<button class="btn btn-danger" onclick="deleteAdminMessage(${i})" style="padding:6px 10px;font-size:11px"><i class="fas fa-trash"></i> Delete</button>
+</div>
+</div>`;
+}).join('');
+}
+
+function editAdminMessage(idx){
+let messages=JSON.parse(localStorage.getItem('pickzone_messages')||'[]');
+let newText=prompt('Edit message:',messages[idx].text);
+if(newText!==null){messages[idx].text=newText;localStorage.setItem('pickzone_messages',JSON.stringify(messages));renderAdminMessages()}
+}
+
+function deleteAdminMessage(idx){
+if(!confirm('Delete this message?'))return;
+let messages=JSON.parse(localStorage.getItem('pickzone_messages')||'[]');
+messages.splice(idx,1);
+localStorage.setItem('pickzone_messages',JSON.stringify(messages));
+renderAdminMessages();
+}
+
+// BANNERS
+function openBannerModal(idx=-1){
+document.getElementById('editBannerIdx').value=idx;
+if(idx>=0){
+let banners=JSON.parse(localStorage.getItem('pickzone_banners')||'[]');
+let b=banners[idx];
+document.getElementById('bannerModalTitle').textContent='Edit Banner';
+document.getElementById('bannerTitle').value=b.title||'';
+document.getElementById('bannerDesc').value=b.description||'';
+document.getElementById('bannerImage').value=b.image||'';
+document.getElementById('bannerBtn').value=b.buttonText||'';
+}else{
+document.getElementById('bannerModalTitle').textContent='Add Banner';
+document.getElementById('bannerTitle').value='';
+document.getElementById('bannerDesc').value='';
+document.getElementById('bannerImage').value='';
+document.getElementById('bannerBtn').value='';
+}
+document.getElementById('bannerModal').classList.add('active');
+}
+
+function saveBanner(){
+let idx=parseInt(document.getElementById('editBannerIdx').value);
+let banner={
+title:document.getElementById('bannerTitle').value.trim(),
+description:document.getElementById('bannerDesc').value.trim(),
+image:document.getElementById('bannerImage').value.trim(),
+buttonText:document.getElementById('bannerBtn').value.trim()
+};
+let banners=JSON.parse(localStorage.getItem('pickzone_banners')||'[]');
+if(idx>=0){banners[idx]=banner}
+else{banners.push(banner)}
+localStorage.setItem('pickzone_banners',JSON.stringify(banners));
+closeModal('bannerModal');
+renderBannersList();
+}
+
+function renderBannersList(){
+let banners=JSON.parse(localStorage.getItem('pickzone_banners')||'[]');
+let container=document.getElementById('bannersList');
+if(!banners.length){container.innerHTML='<p style="text-align:center;color:var(--text-secondary);padding:40px">No banners yet. Add your first banner!</p>';return}
+container.innerHTML=banners.map((b,i)=>`
+<div class="msg-card" style="display:flex;gap:14px;align-items:center">
+${b.image?`<img src="${b.image}" style="width:80px;height:80px;border-radius:10px;object-fit:cover">`:''}
+<div style="flex:1">
+<h4 style="margin-bottom:4px">${b.title||'Untitled'}</h4>
+<p style="font-size:13px;color:var(--text-secondary)">${b.description||''}</p>
+${b.buttonText?`<small style="color:var(--primary)">Button: ${b.buttonText}</small>`:''}
+</div>
+<div style="display:flex;gap:6px">
+<button class="btn btn-secondary" onclick="openBannerModal(${i})" style="padding:6px 10px;font-size:11px"><i class="fas fa-edit"></i></button>
+<button class="btn btn-danger" onclick="deleteBanner(${i})" style="padding:6px 10px;font-size:11px"><i class="fas fa-trash"></i></button>
+</div>
+</div>`).join('');
+}
+
+function deleteBanner(idx){
+if(!confirm('Delete this banner?'))return;
+let banners=JSON.parse(localStorage.getItem('pickzone_banners')||'[]');
+banners.splice(idx,1);
+localStorage.setItem('pickzone_banners',JSON.stringify(banners));
+renderBannersList();
+}
+
+// VISITORS
+function renderVisitors(){
+let visitors=JSON.parse(localStorage.getItem('pickzone_visitors')||'[]');
+document.getElementById('visitorTotal').textContent=visitors.length;
+let today=new Date().toISOString().split('T')[0];
+let todayCount=visitors.filter(v=>v.time&&v.time.startsWith(today)).length;
+document.getElementById('visitorToday').textContent=todayCount;
+renderVisitorsChart();
+}
+
+function renderVisitorsChart(){
+let visitors=JSON.parse(localStorage.getItem('pickzone_visitors')||'[]');
+let isDark=document.body.getAttribute('data-theme')==='dark';
+let textColor=isDark?'#F9FAFB':'#111827';
+let gridColor=isDark?'#334155':'#e2e8f0';
+
+let last7=[];
+for(let i=6;i>=0;i--){
+let d=new Date();d.setDate(d.getDate()-i);
+let dayStr=d.toISOString().split('T')[0];
+let count=visitors.filter(v=>v.time&&v.time.startsWith(dayStr)).length;
+last7.push({label:d.toLocaleDateString('en',{weekday:'short'}),count});
+}
+
+let ctx=document.getElementById('visitorsChart').getContext('2d');
+if(visitorsChart)visitorsChart.destroy();
+visitorsChart=new Chart(ctx,{
+type:'bar',
+data:{
+labels:last7.map(d=>d.label),
+datasets:[{
+label:'Visitors',
+data:last7.map(d=>d.count),
+backgroundColor:'rgba(99,102,241,0.7)',
+borderColor:'#6366f1',
+borderWidth:2,borderRadius:8
+}]
+},
+options:{
+responsive:true,
+plugins:{legend:{labels:{color:textColor}}},
+scales:{
+x:{ticks:{color:textColor},grid:{color:gridColor}},
+y:{ticks:{color:textColor},grid:{color:gridColor},beginAtZero:true}
+}
+}
+});
+}
+
+function closeModal(id){document.getElementById(id).classList.remove('active')}
+
+// INIT
+loadTheme();
+checkSession();
+</script>
+</body>
+</html>
