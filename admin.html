@@ -1,4 +1,4 @@
-<!-- ============ admin.html - With Offers Manager ============ -->
+<!-- ============ admin.html ============ -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -32,7 +32,6 @@ a{color:inherit;text-decoration:none}
 button{cursor:pointer;border:none;font-family:inherit;color:inherit;background:none}
 input,select,textarea{font-family:inherit;outline:none;color:var(--text)}
 
-/* LOGIN */
 .login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
 .login-box{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:40px;width:100%;max-width:440px;box-shadow:var(--shadow);animation:modalIn 0.5s ease}
 @keyframes modalIn{from{opacity:0;transform:scale(0.9)}to{opacity:1;transform:scale(1)}}
@@ -48,7 +47,6 @@ input,select,textarea{font-family:inherit;outline:none;color:var(--text)}
 .login-box .submit-btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(99,102,241,0.5)}
 .login-box .hint{font-size:11px;color:var(--text-secondary);margin-top:12px;text-align:center}
 
-/* ADMIN PANEL */
 .admin-panel{display:none}
 .admin-panel.active{display:block}
 .sidebar{position:fixed;top:0;left:0;width:260px;height:100vh;background:var(--card);border-right:1px solid var(--border);padding:20px;overflow-y:auto;z-index:100;transition:all 0.3s}
@@ -98,7 +96,6 @@ input,select,textarea{font-family:inherit;outline:none;color:var(--text)}
 .btn-warning{background:var(--accent);color:#fff}
 .btn-warning:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(245,158,11,0.4)}
 
-/* ===== OFFERS MANAGER STYLES ===== */
 .offers-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
 .offer-admin-card{background:var(--bg);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:all 0.3s;position:relative}
 .offer-admin-card:hover{transform:translateY(-4px);box-shadow:var(--shadow);border-color:var(--primary)}
@@ -115,7 +112,6 @@ input,select,textarea{font-family:inherit;outline:none;color:var(--text)}
 .offer-admin-card .offer-actions{display:flex;gap:6px}
 .offer-admin-card .offer-actions button{flex:1;padding:7px;border-radius:8px;font-size:11px;font-weight:600;transition:all 0.3s;display:flex;align-items:center;justify-content:center;gap:4px}
 
-/* Offer Upload Area */
 .offer-upload-area{border:2px dashed var(--border);border-radius:14px;padding:30px 20px;text-align:center;cursor:pointer;transition:all 0.3s;background:var(--bg);position:relative;overflow:hidden}
 .offer-upload-area:hover{border-color:var(--primary);background:rgba(99,102,241,0.03);transform:translateY(-2px)}
 .offer-upload-area.dragover{border-color:var(--primary);background:rgba(99,102,241,0.08);transform:scale(1.02)}
@@ -129,7 +125,6 @@ input,select,textarea{font-family:inherit;outline:none;color:var(--text)}
 .offer-upload-area .remove-img-btn{position:absolute;top:10px;right:10px;width:32px;height:32px;border-radius:50%;background:var(--danger);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all 0.3s;z-index:2}
 .offer-upload-area .remove-img-btn:hover{transform:scale(1.15) rotate(90deg)}
 
-/* Modal */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(10px);z-index:3000;display:none;align-items:center;justify-content:center;padding:20px}
 .modal-overlay.active{display:flex}
 .modal{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:28px;width:100%;max-width:600px;max-height:90vh;overflow-y:auto;animation:modalIn 0.4s ease}
@@ -189,7 +184,6 @@ input,select,textarea{font-family:inherit;outline:none;color:var(--text)}
 <div class="animated-bg"></div>
 <div class="floating-shapes"><div class="shape"></div><div class="shape"></div><div class="shape"></div></div>
 
-<!-- LOGIN -->
 <div class="login-screen" id="loginScreen">
 <div class="login-box">
 <div class="logo">
@@ -206,7 +200,6 @@ input,select,textarea{font-family:inherit;outline:none;color:var(--text)}
 </div>
 </div>
 
-<!-- ADMIN PANEL -->
 <div class="admin-panel" id="adminPanel">
 <aside class="sidebar" id="sidebar">
 <div class="logo">
@@ -233,7 +226,6 @@ input,select,textarea{font-family:inherit;outline:none;color:var(--text)}
 <div class="actions"><button class="theme-toggle" onclick="toggleTheme()"><i class="fas fa-moon" id="themeIcon2"></i></button></div>
 </div>
 
-<!-- DASHBOARD -->
 <div class="page-section active" id="section-dashboard">
 <div class="stats-grid">
 <div class="stat-card"><div class="icon"><i class="fas fa-eye"></i></div><div class="label">Total Visitors</div><div class="value" id="statVisitors">0</div></div>
@@ -249,7 +241,6 @@ input,select,textarea{font-family:inherit;outline:none;color:var(--text)}
 </div>
 </div>
 
-<!-- ITEMS -->
 <div class="page-section" id="section-items">
 <div class="section">
 <div class="section-header"><h2>Manage Items</h2><button class="btn btn-primary" onclick="openItemModal()"><i class="fas fa-plus"></i> Add New Item</button></div>
@@ -257,7 +248,6 @@ input,select,textarea{font-family:inherit;outline:none;color:var(--text)}
 </div>
 </div>
 
-<!-- ===== OFFERS MANAGER ===== -->
 <div class="page-section" id="section-offers">
 <div class="section">
 <div class="section-header">
@@ -269,7 +259,6 @@ input,select,textarea{font-family:inherit;outline:none;color:var(--text)}
 </div>
 </div>
 
-<!-- USERS -->
 <div class="page-section" id="section-users">
 <div class="section">
 <div class="section-header"><h2>Registered Customers</h2><button class="btn btn-success" onclick="broadcastEmail()"><i class="fas fa-envelope"></i> Broadcast Email</button></div>
@@ -277,7 +266,6 @@ input,select,textarea{font-family:inherit;outline:none;color:var(--text)}
 </div>
 </div>
 
-<!-- ORDERS -->
 <div class="page-section" id="section-orders">
 <div class="section">
 <div class="section-header"><h2>All Orders</h2></div>
@@ -285,7 +273,6 @@ input,select,textarea{font-family:inherit;outline:none;color:var(--text)}
 </div>
 </div>
 
-<!-- MESSAGES -->
 <div class="page-section" id="section-messages">
 <div class="section">
 <div class="section-header"><h2>Message Arena</h2></div>
@@ -293,7 +280,6 @@ input,select,textarea{font-family:inherit;outline:none;color:var(--text)}
 </div>
 </div>
 
-<!-- VISITORS -->
 <div class="page-section" id="section-visitors">
 <div class="section">
 <div class="section-header"><h2>Visitor Analytics</h2></div>
@@ -307,14 +293,12 @@ input,select,textarea{font-family:inherit;outline:none;color:var(--text)}
 </div>
 </div>
 
-<!-- ===== OFFER MODAL ===== -->
 <div class="modal-overlay" id="offerModal">
 <div class="modal">
 <button class="close-modal" onclick="closeModal('offerModal')"><i class="fas fa-times"></i></button>
 <h2 id="offerModalTitle"><i class="fas fa-gift"></i> Create New Offer</h2>
 <input type="hidden" id="editOfferIdx" value="-1">
 
-<!-- Photo Upload -->
 <div class="form-group">
 <label><i class="fas fa-image"></i> Offer Photo *</label>
 <div class="offer-upload-area" id="offerUploadArea">
@@ -371,7 +355,6 @@ input,select,textarea{font-family:inherit;outline:none;color:var(--text)}
 </div>
 </div>
 
-<!-- ITEM MODAL -->
 <div class="modal-overlay" id="itemModal">
 <div class="modal">
 <button class="close-modal" onclick="closeModal('itemModal')"><i class="fas fa-times"></i></button>
@@ -405,11 +388,9 @@ let uploadedItemPhotos=[];
 let offerPhotoData=null;
 let offerIsActive=true;
 
-// ===== THEME =====
 function toggleTheme(){let t=document.body.getAttribute('data-theme'),n=t==='light'?'dark':'light';document.body.setAttribute('data-theme',n);['themeIcon','themeIcon2'].forEach(id=>{const el=document.getElementById(id);if(el)el.className=n==='dark'?'fas fa-sun':'fas fa-moon'});localStorage.setItem('pickzone_admin_theme',n)}
 function loadTheme(){let t=localStorage.getItem('pickzone_admin_theme')||'light';document.body.setAttribute('data-theme',t);['themeIcon','themeIcon2'].forEach(id=>{const el=document.getElementById(id);if(el)el.className=t==='dark'?'fas fa-sun':'fas fa-moon'})}
 
-// ===== AUTH =====
 function adminLogin(){
 const email=document.getElementById('adminEmail').value.trim(),pass=document.getElementById('adminPass').value;
 if(email===MASTER_EMAIL&&pass===MASTER_PASS){sessionStorage.setItem('pickzone_admin','true');showAdminPanel()}
@@ -435,7 +416,6 @@ if(section==='messages')renderAdminMessages();
 if(section==='visitors')renderVisitors();
 }
 
-// ===== DASHBOARD =====
 function loadDashboard(){
 const visitors=JSON.parse(localStorage.getItem('pickzone_visitors')||'[]');
 const users=JSON.parse(localStorage.getItem('pickzone_users')||'[]');
@@ -474,7 +454,6 @@ if(categoriesChart)categoriesChart.destroy();
 categoriesChart=new Chart(ctx2,{type:'doughnut',data:{labels:Object.keys(cats),datasets:[{data:Object.values(cats),backgroundColor:['#6366f1','#ec4899','#f59e0b','#10b981','#3b82f6','#8b5cf6','#ef4444','#14b8a6','#f97316','#84cc16','#06b6d4','#d946ef','#f43f5e','#a855f7','#eab308']}]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{color:textColor,padding:10,font:{size:11}}}}}});
 }
 
-// ===== IMAGE COMPRESSION =====
 function compressImage(dataUrl,maxWidth,quality,callback){
 const img=new Image();
 img.onload=function(){
@@ -489,7 +468,6 @@ callback(canvas.toDataURL('image/jpeg',quality));
 img.src=dataUrl;
 }
 
-// ===== OFFERS MANAGER =====
 function handleOfferPhotoUpload(event){
 const file=event.target.files[0];
 if(!file)return;
@@ -532,7 +510,6 @@ else{toggle.classList.remove('active');label.textContent='Inactive - Hidden from
 
 function openOfferModal(idx=-1){
 document.getElementById('editOfferIdx').value=idx;
-// Reset form
 offerPhotoData=null;
 offerIsActive=true;
 document.getElementById('offerPhotoPreview').style.display='none';
@@ -661,7 +638,6 @@ localStorage.setItem('pickzone_offers',JSON.stringify(offers));
 renderOffersList();
 }
 
-// ===== ITEMS =====
 function renderItemsList(){
 const products=JSON.parse(localStorage.getItem('pickzone_items')||'[]');
 const container=document.getElementById('itemsListContainer');
@@ -782,7 +758,6 @@ localStorage.setItem('pickzone_items',JSON.stringify(products));
 renderItemsList();
 }
 
-// ===== USERS =====
 function renderUsersList(){
 const users=JSON.parse(localStorage.getItem('pickzone_users')||'[]');
 const orders=JSON.parse(localStorage.getItem('pickzone_orders')||'[]');
@@ -802,7 +777,6 @@ const emails=users.map(u=>u.email).join(',');
 window.location.href=`mailto:?bcc=${emails}&subject=${encodeURIComponent('PickZone Announcement')}&body=${encodeURIComponent('Dear Customer,\n\n[Your message here]\n\nBest regards,\nPickZone Team')}`;
 }
 
-// ===== ORDERS =====
 function renderOrdersList(){
 const orders=JSON.parse(localStorage.getItem('pickzone_orders')||'[]').reverse();
 const container=document.getElementById('ordersListContainer');
@@ -817,7 +791,6 @@ if(!o)return;
 alert(`Order: ${o.id}\nDate: ${new Date(o.date).toLocaleString()}\nCustomer: ${o.customer?.name}\nEmail: ${o.email}\nPhone: ${o.customer?.phone1}\nCity: ${o.customer?.city}\nDistrict: ${o.customer?.district}\n\nItems:\n${o.items.map(i=>`- ${i.title} (${i.code}) x${i.qty} = LKR ${(i.price*i.qty).toLocaleString()}`).join('\n')}\n\nSubtotal: LKR ${o.subtotal.toLocaleString()}\nDelivery: LKR ${o.delivery}\nTotal: LKR ${o.total.toLocaleString()}`);
 }
 
-// ===== MESSAGES =====
 function renderAdminMessages(){
 const messages=JSON.parse(localStorage.getItem('pickzone_messages')||'[]');
 const container=document.getElementById('adminMessagesContainer');
@@ -844,7 +817,6 @@ localStorage.setItem('pickzone_messages',JSON.stringify(messages));
 renderAdminMessages();
 }
 
-// ===== VISITORS =====
 function renderVisitors(){
 const visitors=JSON.parse(localStorage.getItem('pickzone_visitors')||'[]');
 document.getElementById('visitorTotal').textContent=visitors.length;
@@ -867,7 +839,6 @@ visitorsChart=new Chart(ctx,{type:'bar',data:{labels:last7.map(d=>d.label),datas
 
 function closeModal(id){document.getElementById(id).classList.remove('active')}
 
-// ===== DRAG & DROP FOR OFFER UPLOAD =====
 const offerUploadArea=document.getElementById('offerUploadArea');
 if(offerUploadArea){
 ['dragenter','dragover'].forEach(evt=>{offerUploadArea.addEventListener(evt,e=>{e.preventDefault();offerUploadArea.classList.add('dragover')})});
@@ -884,16 +855,39 @@ handleOfferPhotoUpload({target:input});
 });
 }
 
-// INIT
 loadTheme();
 checkSession();
 </script>
 </body>
 </html>
-<!-- ============ INDEX.HTML - Offers Display Section (Add/Replace) ============ -->
-<!-- Add this to the offers page section and add the renderSiteOffers function to the script -->
+<!-- ============ index.html - Add this to your existing index.html ============ -->
+<!-- Add this CSS to your <style> section -->
+<style>
+.admin-offer-card{
+background:var(--card);border:1px solid var(--border);border-radius:16px;
+overflow:hidden;transition:all 0.5s cubic-bezier(0.4,0,0.2,1);position:relative;
+animation:cardIn 0.5s ease backwards;
+}
+.admin-offer-card:hover{transform:translateY(-10px);box-shadow:0 25px 50px rgba(99,102,241,0.3)}
+.admin-offer-card .offer-img{width:100%;aspect-ratio:16/10;object-fit:cover;display:block;transition:transform 0.6s}
+.admin-offer-card:hover .offer-img{transform:scale(1.08)}
+.admin-offer-card .offer-content{padding:16px}
+.admin-offer-card .offer-content h3{font-size:16px;font-weight:700;margin-bottom:8px;color:var(--text)}
+.admin-offer-card .offer-content p{font-size:13px;color:var(--text-secondary);line-height:1.5;margin-bottom:12px}
+.admin-offer-card .offer-content .offer-btn{
+display:inline-flex;align-items:center;gap:6px;padding:8px 18px;
+background:var(--gradient);color:#fff;border-radius:20px;
+font-size:12px;font-weight:600;cursor:pointer;transition:all 0.3s;
+}
+.admin-offer-card .offer-content .offer-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(99,102,241,0.4)}
+.admin-offer-card .offer-tag{
+position:absolute;top:12px;left:12px;background:var(--gradient2);color:#fff;
+padding:4px 12px;border-radius:20px;font-size:10px;font-weight:700;
+animation:badgePulse 2s infinite;
+}
+</style>
 
-<!-- Replace the offers page with this: -->
+<!-- Replace your offers page section with this -->
 <div class="page" id="page-offers">
 <h2 class="section-title reveal">Special Offers</h2>
 
@@ -930,33 +924,7 @@ checkSession();
 <div class="items-grid" id="adminOffersGrid"></div>
 </div>
 
-<!-- Add this CSS to the style section for admin offers cards: -->
-<style>
-.admin-offer-card{
-background:var(--card);border:1px solid var(--border);border-radius:16px;
-overflow:hidden;transition:all 0.5s cubic-bezier(0.4,0,0.2,1);position:relative;
-animation:cardIn 0.5s ease backwards;
-}
-.admin-offer-card:hover{transform:translateY(-10px);box-shadow:0 25px 50px rgba(99,102,241,0.3)}
-.admin-offer-card .offer-img{width:100%;aspect-ratio:16/10;object-fit:cover;display:block;transition:transform 0.6s}
-.admin-offer-card:hover .offer-img{transform:scale(1.08)}
-.admin-offer-card .offer-content{padding:16px}
-.admin-offer-card .offer-content h3{font-size:16px;font-weight:700;margin-bottom:8px;color:var(--text)}
-.admin-offer-card .offer-content p{font-size:13px;color:var(--text-secondary);line-height:1.5;margin-bottom:12px}
-.admin-offer-card .offer-content .offer-btn{
-display:inline-flex;align-items:center;gap:6px;padding:8px 18px;
-background:var(--gradient);color:#fff;border-radius:20px;
-font-size:12px;font-weight:600;cursor:pointer;transition:all 0.3s;
-}
-.admin-offer-card .offer-content .offer-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(99,102,241,0.4)}
-.admin-offer-card .offer-tag{
-position:absolute;top:12px;left:12px;background:var(--gradient2);color:#fff;
-padding:4px 12px;border-radius:20px;font-size:10px;font-weight:700;
-animation:badgePulse 2s infinite;
-}
-</style>
-
-<!-- Add this JavaScript function to the script section: -->
+<!-- Add this JavaScript function to your <script> section -->
 <script>
 function renderSiteOffers(){
 const offers=JSON.parse(localStorage.getItem('pickzone_offers')||'[]');
@@ -996,6 +964,6 @@ ${btnHtml}
 }).join('');
 }
 
-// Call this in init() and after renderOffers()
-// Add: renderSiteOffers(); after renderOffers();
+// Call this in your init() function after renderOffers()
+// Add this line: renderSiteOffers();
 </script>
