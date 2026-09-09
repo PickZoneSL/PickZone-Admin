@@ -1,19 +1,4 @@
-
-                        <!DOCTYPE html>
-                        <html lang="en">
-                        <head>
-                            <meta charset="UTF-8">
-                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-              <style>
-                body {
-                  background-color: white; /* Ensure the iframe has a white background */
-                }
-
-                
-              </style>
-                        </head>
-                        <body>
-                            <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -102,8 +87,6 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 .sidebar .menu-item:nth-child(4){animation-delay:0.2s}
 .sidebar .menu-item:nth-child(5){animation-delay:0.25s}
 .sidebar .menu-item:nth-child(6){animation-delay:0.3s}
-.sidebar .menu-item:nth-child(7){animation-delay:0.35s}
-.sidebar .menu-item:nth-child(8){animation-delay:0.4s}
 @keyframes menuSlideIn{to{opacity:1;transform:translateX(0)}}
 .sidebar .menu-item::before{content:'';position:absolute;inset:0;background:var(--gradient);opacity:0;transition:opacity 0.3s}
 .sidebar .menu-item:hover::before{opacity:0.08}
@@ -130,7 +113,6 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 .stat-card:nth-child(3){animation-delay:0.3s}
 .stat-card:nth-child(4){animation-delay:0.4s}
 .stat-card:nth-child(5){animation-delay:0.5s}
-.stat-card:nth-child(6){animation-delay:0.6s}
 @keyframes statIn{to{opacity:1;transform:translateY(0)}}
 .stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gradient);background-size:200% 200%;animation:gradientShift 3s ease infinite}
 .stat-card:hover{transform:translateY(-8px) scale(1.02);box-shadow:0 20px 40px rgba(99,102,241,0.15);border-color:var(--primary)}
@@ -150,24 +132,15 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 .section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px}
 .section-header h2{font-size:18px;font-weight:800}
 
-.sync-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;background:rgba(16,185,129,0.1);color:var(--success);border:1px solid rgba(16,185,129,0.3);border-radius:20px;font-size:11px;font-weight:700;animation:syncPulse 2s infinite}
-@keyframes syncPulse{0%,100%{box-shadow:0 0 0 0 rgba(16,185,129,0.3)}50%{box-shadow:0 0 0 8px rgba(16,185,129,0)}}
-.sync-badge i{animation:syncSpin 3s linear infinite}
-@keyframes syncSpin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-
 .btn{padding:10px 18px;border-radius:10px;font-size:13px;font-weight:600;transition:all 0.4s cubic-bezier(0.68,-0.55,0.27,1.55);display:inline-flex;align-items:center;gap:8px;position:relative;overflow:hidden;cursor:pointer;border:none}
 .btn::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent);transition:left 0.5s}
 .btn:hover::before{left:100%}
 .btn-primary{background:var(--gradient);color:#fff;background-size:200% 200%;animation:gradientShift 3s ease infinite}
 .btn-primary:hover{transform:translateY(-3px) scale(1.03);box-shadow:0 10px 25px rgba(99,102,241,0.4)}
-.btn-success{background:var(--success);color:#fff}
-.btn-success:hover{transform:translateY(-3px);box-shadow:0 10px 25px rgba(16,185,129,0.4)}
 .btn-danger{background:var(--danger);color:#fff}
 .btn-danger:hover{transform:translateY(-3px);box-shadow:0 10px 25px rgba(239,68,68,0.4)}
 .btn-secondary{background:var(--bg);border:1px solid var(--border);color:var(--text)}
 .btn-secondary:hover{background:var(--primary);color:#fff;border-color:var(--primary);transform:translateY(-3px)}
-.btn-warning{background:var(--accent);color:#fff}
-.btn-warning:hover{transform:translateY(-3px);box-shadow:0 10px 25px rgba(245,158,11,0.4)}
 .btn:active{transform:translateY(-1px) scale(0.98)}
 
 .offer-upload-area{border:2px dashed var(--border);border-radius:14px;padding:30px 20px;text-align:center;cursor:pointer;transition:all 0.4s;background:var(--bg);position:relative;overflow:hidden}
@@ -189,8 +162,6 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 .offer-card-admin:nth-child(2){animation-delay:0.1s}
 .offer-card-admin:nth-child(3){animation-delay:0.15s}
 .offer-card-admin:nth-child(4){animation-delay:0.2s}
-.offer-card-admin:nth-child(5){animation-delay:0.25s}
-.offer-card-admin:nth-child(6){animation-delay:0.3s}
 @keyframes offerCardIn{from{opacity:0;transform:translateY(20px) scale(0.95)}to{opacity:1;transform:translateY(0) scale(1)}}
 .offer-card-admin:hover{transform:translateY(-6px);box-shadow:0 20px 40px rgba(99,102,241,0.15);border-color:var(--primary)}
 .offer-card-admin .offer-img-wrap{position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;background:var(--border)}
@@ -235,7 +206,6 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 
 .alert{padding:14px 18px;border-radius:10px;margin-bottom:16px;display:flex;align-items:center;gap:10px;font-size:14px;font-weight:500;animation:alertShake 0.4s ease}
 @keyframes alertShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
-.alert-success{background:rgba(16,185,129,0.1);color:var(--success);border:1px solid var(--success)}
 .alert-danger{background:rgba(239,68,68,0.1);color:var(--danger);border:1px solid var(--danger)}
 
 .msg-card{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;transition:all 0.3s;animation:msgIn 0.4s ease backwards}
@@ -313,7 +283,6 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 <div class="menu-item active" onclick="showSection('dashboard',this)"><i class="fas fa-chart-line"></i><span>Dashboard</span></div>
 <div class="menu-item" onclick="showSection('items',this)"><i class="fas fa-box"></i><span>Manage Items</span></div>
 <div class="menu-item" onclick="showSection('offers',this)"><i class="fas fa-gift"></i><span>Offers Manager</span></div>
-<div class="menu-item" onclick="showSection('users',this)"><i class="fas fa-users"></i><span>Customers</span></div>
 <div class="menu-item" onclick="showSection('orders',this)"><i class="fas fa-receipt"></i><span>Orders</span></div>
 <div class="menu-item" onclick="showSection('messages',this)"><i class="fas fa-comments"></i><span>Message Arena</span></div>
 <div class="menu-item" onclick="showSection('visitors',this)"><i class="fas fa-eye"></i><span>Visitors</span></div>
@@ -330,10 +299,10 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 <div class="actions"><button class="theme-toggle" onclick="toggleTheme()"><i class="fas fa-moon" id="themeIcon2"></i></button></div>
 </div>
 
+<!-- DASHBOARD -->
 <div class="page-section active" id="section-dashboard">
 <div class="stats-grid">
 <div class="stat-card"><div class="icon"><i class="fas fa-eye"></i></div><div class="label">Total Visitors</div><div class="value" id="statVisitors">0</div></div>
-<div class="stat-card"><div class="icon"><i class="fas fa-users"></i></div><div class="label">Registered Users</div><div class="value" id="statUsers">0</div></div>
 <div class="stat-card"><div class="icon"><i class="fas fa-box"></i></div><div class="label">Total Products</div><div class="value" id="statProducts">0</div></div>
 <div class="stat-card"><div class="icon"><i class="fas fa-gift"></i></div><div class="label">Active Offers</div><div class="value" id="statOffers">0</div></div>
 <div class="stat-card"><div class="icon"><i class="fas fa-receipt"></i></div><div class="label">Total Orders</div><div class="value" id="statOrders">0</div></div>
@@ -345,6 +314,7 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 </div>
 </div>
 
+<!-- ITEMS -->
 <div class="page-section" id="section-items">
 <div class="section">
 <div class="section-header"><h2>Manage Items</h2><button class="btn btn-primary" onclick="openItemModal()"><i class="fas fa-plus"></i> Add New Item</button></div>
@@ -352,27 +322,19 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 </div>
 </div>
 
+<!-- OFFERS MANAGER -->
 <div class="page-section" id="section-offers">
 <div class="section">
 <div class="section-header">
 <h2><i class="fas fa-gift" style="color:var(--secondary)"></i> Offers Manager</h2>
-<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-<span class="sync-badge"><i class="fas fa-sync-alt"></i> Auto-syncs to customer site</span>
 <button class="btn btn-primary" onclick="openOfferModal()"><i class="fas fa-plus"></i> Create New Offer</button>
 </div>
-</div>
-<p style="font-size:13px;color:var(--text-secondary);margin-bottom:20px">Create promotional offers that <strong>automatically appear</strong> on the customer site's Offers page. Upload photos, add title & description. Changes sync instantly!</p>
+<p style="font-size:13px;color:var(--text-secondary);margin-bottom:20px">Create promotional offers that <strong>automatically appear</strong> on the customer site's Offers page. Changes sync instantly via localStorage!</p>
 <div id="offersListContainer"></div>
 </div>
 </div>
 
-<div class="page-section" id="section-users">
-<div class="section">
-<div class="section-header"><h2>Registered Customers</h2><button class="btn btn-success" onclick="broadcastEmail()"><i class="fas fa-envelope"></i> Broadcast Email</button></div>
-<div id="usersListContainer"></div>
-</div>
-</div>
-
+<!-- ORDERS -->
 <div class="page-section" id="section-orders">
 <div class="section">
 <div class="section-header"><h2>All Orders</h2></div>
@@ -380,6 +342,7 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 </div>
 </div>
 
+<!-- MESSAGES -->
 <div class="page-section" id="section-messages">
 <div class="section">
 <div class="section-header"><h2>Message Arena</h2></div>
@@ -387,6 +350,7 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 </div>
 </div>
 
+<!-- VISITORS -->
 <div class="page-section" id="section-visitors">
 <div class="section">
 <div class="section-header"><h2>Visitor Analytics</h2></div>
@@ -397,33 +361,31 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 <div class="chart-card" style="margin-top:20px"><h3>Visitor Trends (Last 7 Days)</h3><canvas id="visitorsChart"></canvas></div>
 </div>
 </div>
+
 </div>
 </div>
 
+<!-- OFFER MODAL -->
 <div class="modal-overlay" id="offerModal">
 <div class="modal">
 <button class="close-modal" onclick="closeModal('offerModal')"><i class="fas fa-times"></i></button>
 <h2 id="offerModalTitle"><i class="fas fa-gift"></i> Create New Offer</h2>
 <input type="hidden" id="editOfferIdx" value="-1">
-
 <div class="form-group">
 <label><i class="fas fa-camera"></i> Offer Photo *</label>
 <div class="offer-upload-area" id="offerUploadArea">
 <input type="file" id="offerPhotoInput" accept="image/*" onchange="handleOfferPhoto(event)">
-<div id="offerUploadPlaceholder"><i class="upload-icon fas fa-cloud-upload-alt"></i><h4>Click or drag photo here</h4><p>JPG, PNG, WEBP • Max 2MB • Recommended: 800x450</p></div>
+<div id="offerUploadPlaceholder"><i class="upload-icon fas fa-cloud-upload-alt"></i><h4>Click or drag photo here</h4><p>JPG, PNG, WEBP • Max 2MB</p></div>
 <img id="offerPhotoPreview" class="preview-img" style="display:none" alt="Preview">
 <button type="button" class="remove-img-btn" id="offerRemoveBtn" style="display:none" onclick="removeOfferPhoto(event)"><i class="fas fa-times"></i></button>
 </div>
 </div>
-
-<div class="form-group"><label><i class="fas fa-heading"></i> Offer Title *</label><input type="text" id="offerTitle" placeholder="e.g. Mega Sale - 50% Off All Electronics!" maxlength="100"></div>
-<div class="form-group"><label><i class="fas fa-align-left"></i> Description *</label><textarea id="offerDesc" placeholder="Describe this offer in detail..." maxlength="300"></textarea></div>
-
+<div class="form-group"><label><i class="fas fa-heading"></i> Offer Title *</label><input type="text" id="offerTitle" placeholder="e.g. Mega Sale - 50% Off!" maxlength="100"></div>
+<div class="form-group"><label><i class="fas fa-align-left"></i> Description *</label><textarea id="offerDesc" placeholder="Describe this offer..." maxlength="300"></textarea></div>
 <div class="form-row">
 <div class="form-group"><label><i class="fas fa-tag"></i> Button Text</label><input type="text" id="offerBtnText" placeholder="e.g. Shop Now" maxlength="30"></div>
 <div class="form-group"><label><i class="fas fa-link"></i> Button Links To</label><select id="offerBtnAction"><option value="items">Items Page</option><option value="offers">Offers Page</option><option value="signup">Sign Up</option><option value="whatsapp">WhatsApp</option><option value="none">No Button</option></select></div>
 </div>
-
 <div class="form-group">
 <label><i class="fas fa-toggle-on"></i> Status</label>
 <div class="toggle-switch" onclick="toggleOfferActive()">
@@ -431,7 +393,6 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 <span id="offerActiveLabel">Active - Visible on customer site</span>
 </div>
 </div>
-
 <div style="display:flex;gap:10px;margin-top:20px">
 <button class="btn btn-primary" onclick="saveOffer()" style="flex:1;justify-content:center;padding:14px"><i class="fas fa-save"></i> Save Offer</button>
 <button class="btn btn-secondary" onclick="closeModal('offerModal')" style="padding:14px">Cancel</button>
@@ -439,6 +400,7 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 </div>
 </div>
 
+<!-- ITEM MODAL -->
 <div class="modal-overlay" id="itemModal">
 <div class="modal">
 <button class="close-modal" onclick="closeModal('itemModal')"><i class="fas fa-times"></i></button>
@@ -525,12 +487,11 @@ document.querySelectorAll('.page-section').forEach(s=>s.classList.remove('active
 document.getElementById('section-'+section).classList.add('active');
 document.querySelectorAll('.menu-item').forEach(m=>m.classList.remove('active'));
 if(el)el.classList.add('active');
-const titles={dashboard:'Dashboard',items:'Manage Items',offers:'Offers Manager',users:'Customers',orders:'Orders',messages:'Message Arena',visitors:'Visitor Analytics'};
+const titles={dashboard:'Dashboard',items:'Manage Items',offers:'Offers Manager',orders:'Orders',messages:'Message Arena',visitors:'Visitor Analytics'};
 document.getElementById('pageTitle').textContent=titles[section];
 if(section==='dashboard')loadDashboard();
 if(section==='items')renderItemsList();
 if(section==='offers')renderOffersList();
-if(section==='users')renderUsersList();
 if(section==='orders')renderOrdersList();
 if(section==='messages')renderAdminMessages();
 if(section==='visitors')renderVisitors();
@@ -539,7 +500,6 @@ if(section==='visitors')renderVisitors();
 // ===== DASHBOARD =====
 function loadDashboard(){
 const visitors=JSON.parse(localStorage.getItem('pickzone_visitors')||'[]');
-const users=JSON.parse(localStorage.getItem('pickzone_users')||'[]');
 const products=JSON.parse(localStorage.getItem('pickzone_items')||'[]');
 const orders=JSON.parse(localStorage.getItem('pickzone_orders')||'[]');
 const offers=JSON.parse(localStorage.getItem('pickzone_offers')||'[]');
@@ -547,7 +507,6 @@ const revenue=orders.reduce((a,o)=>a+(o.total||0),0);
 const activeOffers=offers.filter(o=>o.active!==false).length;
 
 animateValue(document.getElementById('statVisitors'),0,visitors.length,1200);
-animateValue(document.getElementById('statUsers'),0,users.length,1200);
 animateValue(document.getElementById('statProducts'),0,products.length,1200);
 animateValue(document.getElementById('statOffers'),0,activeOffers,1200);
 animateValue(document.getElementById('statOrders'),0,orders.length,1200);
@@ -674,61 +633,38 @@ if(!offerPhotoData){showToast('Please upload an offer photo','error');return}
 if(!title){showToast('Please enter a title','error');return}
 if(!description){showToast('Please enter a description','error');return}
 
-const offer={
-image:offerPhotoData,
-title,
-description,
-buttonText,
-buttonAction,
-active:offerIsActive,
-createdAt:new Date().toISOString(),
-updatedAt:new Date().toISOString()
-};
+const offer={image:offerPhotoData,title,description,buttonText,buttonAction,active:offerIsActive,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()};
 
 let offers=JSON.parse(localStorage.getItem('pickzone_offers')||'[]');
 if(idx>=0){offer.createdAt=offers[idx].createdAt;offers[idx]=offer}
 else{offers.push(offer)}
 
-// ===== CRITICAL: SAVE TO LOCALSTORAGE - THIS AUTO-SYNCS TO CUSTOMER SITE =====
-// The customer site (index.html) reads from the same 'pickzone_offers' key
-// and listens for 'storage' events to update in real-time
 localStorage.setItem('pickzone_offers',JSON.stringify(offers));
-
 closeModal('offerModal');
 renderOffersList();
-
-if(idx>=0){
-showToast('Offer updated! Changes sync to customer site automatically.','success');
-}else{
-showToast('Offer created! It will appear on the customer site now!','success');
-}
+showToast(idx>=0?'Offer updated! Syncs to customer site automatically.':'Offer created! Appears on customer site now!');
 }
 
 function renderOffersList(){
 const offers=JSON.parse(localStorage.getItem('pickzone_offers')||'[]');
 const container=document.getElementById('offersListContainer');
-
 if(!offers.length){
-container.innerHTML='<div class="empty-state"><i class="fas fa-gift"></i><p>No offers created yet. Click "Create New Offer" to add your first promotional offer!</p><button class="btn btn-primary" onclick="openOfferModal()"><i class="fas fa-plus"></i> Create First Offer</button></div>';
+container.innerHTML='<div class="empty-state"><i class="fas fa-gift"></i><p>No offers yet. Create your first offer!</p><button class="btn btn-primary" onclick="openOfferModal()"><i class="fas fa-plus"></i> Create First Offer</button></div>';
 return;
 }
-
 const actionLabels={items:'Items Page',offers:'Offers Page',signup:'Sign Up',whatsapp:'WhatsApp',none:'No Button'};
 container.innerHTML='<div class="offers-grid">'+offers.map((offer,idx)=>{
 const isActive=offer.active!==false;
 const date=offer.updatedAt?new Date(offer.updatedAt).toLocaleDateString():'';
 return`<div class="offer-card-admin">
-<div class="offer-img-wrap">
-<img src="${offer.image}" alt="${offer.title}">
-<span class="offer-status ${isActive?'active':'inactive'}">${isActive?'Active':'Inactive'}</span>
-</div>
+<div class="offer-img-wrap"><img src="${offer.image}" alt="${offer.title}"><span class="offer-status ${isActive?'active':'inactive'}">${isActive?'Active':'Inactive'}</span></div>
 <div class="offer-body">
 <h4>${offer.title}</h4>
 <p>${offer.description}</p>
 <div class="offer-meta"><span><i class="fas fa-calendar"></i> ${date}</span><span><i class="fas fa-link"></i> ${actionLabels[offer.buttonAction]||'Items'}</span></div>
 <div class="offer-actions">
 <button class="btn btn-secondary" onclick="openOfferModal(${idx})" style="padding:7px"><i class="fas fa-edit"></i> Edit</button>
-<button class="btn ${isActive?'btn-warning':'btn-success'}" onclick="toggleOfferVisibility(${idx})" style="padding:7px"><i class="fas fa-${isActive?'eye-slash':'eye'}"></i> ${isActive?'Hide':'Show'}</button>
+<button class="btn ${isActive?'btn-warning':'btn-success'}" onclick="toggleOfferVisibility(${idx})" style="padding:7px;background:${isActive?'var(--accent)':'var(--success)'}"><i class="fas fa-${isActive?'eye-slash':'eye'}"></i> ${isActive?'Hide':'Show'}</button>
 <button class="btn btn-danger" onclick="deleteOffer(${idx})" style="padding:7px"><i class="fas fa-trash"></i></button>
 </div>
 </div>
@@ -741,22 +677,16 @@ let offers=JSON.parse(localStorage.getItem('pickzone_offers')||'[]');
 if(offers[idx]){
 offers[idx].active=offers[idx].active===false?true:false;
 offers[idx].updatedAt=new Date().toISOString();
-// ===== SYNC TO CUSTOMER SITE =====
 localStorage.setItem('pickzone_offers',JSON.stringify(offers));
 renderOffersList();
-if(offers[idx].active){
-showToast('Offer is now VISIBLE on customer site!','success');
-}else{
-showToast('Offer is now HIDDEN from customer site.','info');
-}
+showToast(offers[idx].active?'Offer is now VISIBLE on customer site!':'Offer is now HIDDEN from customer site.',offers[idx].active?'success':'info');
 }
 }
 
 function deleteOffer(idx){
-if(!confirm('Delete this offer? This cannot be undone.'))return;
+if(!confirm('Delete this offer?'))return;
 let offers=JSON.parse(localStorage.getItem('pickzone_offers')||'[]');
 offers.splice(idx,1);
-// ===== SYNC TO CUSTOMER SITE =====
 localStorage.setItem('pickzone_offers',JSON.stringify(offers));
 renderOffersList();
 showToast('Offer deleted. Removed from customer site.','error');
@@ -847,27 +777,6 @@ showToast(idx>=0?'Item updated!':'Item added successfully!');
 function editItem(idx){openItemModal(idx)}
 function deleteItem(idx){if(!confirm('Delete this item?'))return;let products=JSON.parse(localStorage.getItem('pickzone_items')||'[]');products.splice(idx,1);localStorage.setItem('pickzone_items',JSON.stringify(products));renderItemsList();showToast('Item deleted','error')}
 
-// ===== USERS =====
-function renderUsersList(){
-const users=JSON.parse(localStorage.getItem('pickzone_users')||'[]');
-const orders=JSON.parse(localStorage.getItem('pickzone_orders')||'[]');
-const container=document.getElementById('usersListContainer');
-if(!users.length){container.innerHTML='<div class="empty-state"><i class="fas fa-users"></i><p>No registered customers yet</p></div>';return}
-container.innerHTML='<div style="overflow-x:auto"><table class="admin-table"><thead><tr><th>Profile</th><th>Email</th><th>WhatsApp</th><th>Orders</th><th>Joined</th></tr></thead><tbody>'+users.map(u=>{
-const userOrders=orders.filter(o=>o.email===u.email).length;
-const pic=u.profilePic||'https://ui-avatars.com/api/?name='+encodeURIComponent(u.email)+'&background=6366f1&color=fff&size=64';
-return`<tr><td><img src="${pic}" style="width:40px;height:40px;border-radius:50%;object-fit:cover" alt=""></td><td>${u.email}</td><td>${u.whatsapp}</td><td>${userOrders}</td><td>${new Date(u.createdAt).toLocaleDateString()}</td></tr>`;
-}).join('')+'</tbody></table></div>';
-}
-
-function broadcastEmail(){
-const users=JSON.parse(localStorage.getItem('pickzone_users')||'[]');
-if(!users.length){showToast('No registered users','error');return}
-const emails=users.map(u=>u.email).join(',');
-window.location.href=`mailto:?bcc=${emails}&subject=${encodeURIComponent('PickZone Announcement')}&body=${encodeURIComponent('Dear Customer,\n\n[Your message here]\n\nBest regards,\nPickZone Team')}`;
-showToast('Opening email client...');
-}
-
 // ===== ORDERS =====
 function renderOrdersList(){
 const orders=JSON.parse(localStorage.getItem('pickzone_orders')||'[]').reverse();
@@ -919,7 +828,7 @@ visitorsChart=new Chart(ctx,{type:'bar',data:{labels:last7.map(d=>d.label),datas
 
 function closeModal(id){document.getElementById(id).classList.remove('active')}
 
-// ===== DRAG & DROP FOR OFFER UPLOAD =====
+// ===== DRAG & DROP =====
 const offerUploadArea=document.getElementById('offerUploadArea');
 if(offerUploadArea){
 ['dragenter','dragover'].forEach(evt=>{offerUploadArea.addEventListener(evt,e=>{e.preventDefault();offerUploadArea.classList.add('dragover')})});
@@ -936,22 +845,3 @@ checkSession();
 </script>
 </body>
 </html>
-
-
-              <script>
-                              localStorage.setItem('pickzone_offers', JSON.stringify(offers));
-
-const allOffers = JSON.parse(localStorage.getItem('pickzone_offers') || '[]');
-const activeOffers = allOffers.filter(o => o.active !== false);
-
-window.addEventListener('storage', function(e) {
-    if (e.key === 'pickzone_offers') {
-        renderOffers(); // Auto-refreshes when admin changes offers
-    }
-});
-
-
-              </script>
-                        </body>
-                        </html>
-                    
