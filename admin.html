@@ -13,7 +13,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--primary:#6366f1;--primary-dark:#4f46e5;--primary-light:#818cf8;--secondary:#ec4899;--accent:#f59e0b;--success:#10b981;--danger:#ef4444;--bg:#f8fafc;--card:#ffffff;--text:#111827;--text-secondary:#64748b;--border:#e2e8f0;--shadow:0 10px 40px rgba(99,102,241,0.1);--gradient:linear-gradient(135deg,#6366f1 0%,#ec4899 100%)}
+:root{--primary:#6366f1;--primary-dark:#4f46e5;--primary-light:#818cf8;--secondary:#ec4899;--accent:#f59e0b;--success:#10b981;--danger:#ef4444;--gold:#f59e0b;--gold-light:#fbbf24;--gold-dark:#d97706;--bg:#f8fafc;--card:#ffffff;--text:#111827;--text-secondary:#64748b;--border:#e2e8f0;--shadow:0 10px 40px rgba(99,102,241,0.1);--gradient:linear-gradient(135deg,#6366f1 0%,#ec4899 100%);--gold-gradient:linear-gradient(135deg,#f59e0b 0%,#fbbf24 50%,#d97706 100%)}
 [data-theme="dark"]{--bg:#0f172a;--card:#1e293b;--text:#F9FAFB;--text-secondary:#94a3b8;--border:#334155;--shadow:0 10px 40px rgba(0,0,0,0.4)}
 html{scroll-behavior:smooth}
 body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;transition:background 0.5s,color 0.5s;overflow-x:hidden}
@@ -133,6 +133,109 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 .section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px}
 .section-header h2{font-size:18px;font-weight:800}
 
+/* ===== BEST BUYER SHOWCASE ===== */
+.best-buyer-showcase{
+background:linear-gradient(135deg,#fffbeb 0%,#fef3c7 30%,#fde68a 100%);
+border:2px solid var(--gold);
+border-radius:20px;
+padding:24px;
+margin-bottom:24px;
+position:relative;
+overflow:hidden;
+animation:showcaseIn 0.8s cubic-bezier(0.68,-0.55,0.27,1.55);
+}
+[data-theme="dark"] .best-buyer-showcase{
+background:linear-gradient(135deg,rgba(245,158,11,0.08) 0%,rgba(251,191,36,0.05) 50%,rgba(217,119,6,0.08) 100%);
+border-color:rgba(245,158,11,0.4);
+}
+@keyframes showcaseIn{from{opacity:0;transform:scale(0.9) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.best-buyer-showcase::before{
+content:'';position:absolute;top:-50%;right:-20%;width:300px;height:300px;
+background:radial-gradient(circle,rgba(245,158,11,0.15) 0%,transparent 70%);
+animation:bestBuyerGlow 4s ease-in-out infinite;
+}
+@keyframes bestBuyerGlow{0%,100%{transform:scale(1);opacity:0.5}50%{transform:scale(1.2);opacity:0.8}}
+.best-buyer-showcase::after{
+content:'';position:absolute;inset:0;
+background:linear-gradient(45deg,transparent 40%,rgba(255,255,255,0.3) 50%,transparent 60%);
+animation:bestBuyerShine 4s infinite;
+}
+@keyframes bestBuyerShine{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+
+.best-buyer-header{
+display:flex;align-items:center;gap:12px;margin-bottom:16px;position:relative;z-index:1;
+}
+.best-buyer-header .crown-icon{
+font-size:32px;
+color:var(--gold);
+animation:crownBounce 2s ease-in-out infinite;
+filter:drop-shadow(0 4px 8px rgba(245,158,11,0.4));
+}
+@keyframes crownBounce{0%,100%{transform:translateY(0) rotate(0deg)}25%{transform:translateY(-4px) rotate(-5deg)}75%{transform:translateY(-2px) rotate(5deg)}}
+.best-buyer-header .best-buyer-title{
+font-size:20px;font-weight:800;
+background:var(--gold-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.best-buyer-header .best-buyer-subtitle{
+font-size:12px;color:var(--text-secondary);font-weight:600;
+}
+
+.best-buyer-content{
+display:flex;align-items:center;gap:20px;position:relative;z-index:1;
+flex-wrap:wrap;
+}
+.best-buyer-avatar{
+width:80px;height:80px;border-radius:50%;object-fit:cover;
+border:4px solid var(--gold);
+box-shadow:0 8px 25px rgba(245,158,11,0.3);
+transition:all 0.3s;
+}
+.best-buyer-avatar:hover{transform:scale(1.1) rotate(5deg)}
+
+.best-buyer-stats{
+display:flex;gap:16px;flex-wrap:wrap;flex:1;
+}
+.best-buyer-stat{
+background:rgba(255,255,255,0.6);
+border:1px solid rgba(245,158,11,0.3);
+border-radius:12px;padding:12px 16px;
+text-align:center;min-width:120px;
+transition:all 0.3s;
+}
+[data-theme="dark"] .best-buyer-stat{background:rgba(245,158,11,0.08)}
+.best-buyer-stat:hover{transform:translateY(-3px);box-shadow:0 6px 20px rgba(245,158,11,0.2)}
+.best-buyer-stat .stat-value{font-size:22px;font-weight:800;color:var(--gold-dark)}
+[data-theme="dark"] .best-buyer-stat .stat-value{color:var(--gold-light)}
+.best-buyer-stat .stat-label{font-size:11px;color:var(--text-secondary);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-top:2px}
+
+.best-buyer-email{
+font-size:13px;font-weight:600;color:var(--text);
+background:rgba(255,255,255,0.7);padding:6px 14px;border-radius:8px;
+display:inline-block;margin-top:8px;
+}
+[data-theme="dark"] .best-buyer-email{background:rgba(245,158,11,0.1)}
+
+/* Crown badge in table */
+.crown-badge{
+display:inline-flex;align-items:center;gap:4px;
+background:var(--gold-gradient);color:#fff;
+padding:3px 10px;border-radius:12px;font-size:10px;font-weight:700;
+animation:crownBadgePulse 2s infinite;
+box-shadow:0 2px 8px rgba(245,158,11,0.3);
+}
+@keyframes crownBadgePulse{0%,100%{box-shadow:0 2px 8px rgba(245,158,11,0.3)}50%{box-shadow:0 2px 16px rgba(245,158,11,0.6)}}
+.crown-badge i{font-size:10px;animation:crownSpin 3s ease-in-out infinite}
+@keyframes crownSpin{0%,100%{transform:rotate(0deg)}25%{transform:rotate(-10deg)}75%{transform:rotate(10deg)}}
+
+/* Highlight row for best buyer */
+.best-buyer-row{
+background:linear-gradient(90deg,rgba(245,158,11,0.06) 0%,rgba(251,191,36,0.03) 100%) !important;
+border-left:3px solid var(--gold) !important;
+}
+[data-theme="dark"] .best-buyer-row{
+background:linear-gradient(90deg,rgba(245,158,11,0.08) 0%,rgba(251,191,36,0.04) 100%) !important;
+}
+
 .btn{padding:10px 18px;border-radius:10px;font-size:13px;font-weight:600;transition:all 0.4s cubic-bezier(0.68,-0.55,0.27,1.55);display:inline-flex;align-items:center;gap:8px;position:relative;overflow:hidden;cursor:pointer;border:none}
 .btn::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent);transition:left 0.5s}
 .btn:hover::before{left:100%}
@@ -202,7 +305,6 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 .admin-table tbody tr:hover{background:rgba(99,102,241,0.04);transform:translateX(4px)}
 .admin-table tbody td{padding:12px;border-bottom:1px solid var(--border);font-size:13px}
 
-/* ===== CUSTOMER DELETE CONFIRM MODAL ===== */
 .confirm-modal-body{text-align:center;padding:10px 0}
 .confirm-modal-body .warn-icon{width:70px;height:70px;border-radius:50%;background:rgba(239,68,68,0.1);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;animation:warnPulse 1.5s infinite}
 @keyframes warnPulse{0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,0.3)}50%{box-shadow:0 0 0 12px rgba(239,68,68,0)}}
@@ -214,13 +316,11 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 .confirm-modal-body .warn-text i{color:var(--accent)}
 .confirm-actions{display:flex;gap:10px;justify-content:center;margin-top:20px}
 
-/* Search in users section */
 .search-box{position:relative;max-width:300px}
 .search-box input{width:100%;padding:9px 14px 9px 36px;background:var(--bg);border:1px solid var(--border);border-radius:10px;font-size:13px;transition:all 0.3s;color:var(--text)}
 .search-box input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(99,102,241,0.1)}
 .search-box i{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-secondary);font-size:13px}
 
-/* Bulk actions bar */
 .bulk-bar{display:none;align-items:center;gap:10px;padding:10px 16px;background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.2);border-radius:10px;margin-bottom:12px;animation:sectionIn 0.3s ease}
 .bulk-bar.show{display:flex}
 .bulk-bar span{font-size:13px;font-weight:600;color:var(--danger)}
@@ -231,6 +331,9 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 .main-panel{margin-left:0}
 .mobile-menu-btn{display:flex !important}
 .stats-grid{grid-template-columns:1fr 1fr}
+.best-buyer-content{flex-direction:column;align-items:flex-start}
+.best-buyer-stats{width:100%}
+.best-buyer-stat{flex:1;min-width:100px}
 }
 .mobile-menu-btn{display:none;width:40px;height:40px;border-radius:10px;background:var(--bg);border:1px solid var(--border);align-items:center;justify-content:center;cursor:pointer;font-size:16px;transition:all 0.3s}
 .mobile-menu-btn:hover{background:var(--primary);color:#fff}
@@ -243,7 +346,6 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 <div class="cursor-glow" id="cursorGlow"></div>
 <div class="toast-container" id="toastContainer"></div>
 
-<!-- LOGIN -->
 <div class="login-screen" id="loginScreen">
 <div class="login-box">
 <div class="logo">
@@ -260,7 +362,6 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 </div>
 </div>
 
-<!-- ADMIN PANEL -->
 <div class="admin-panel" id="adminPanel">
 <aside class="sidebar" id="sidebar">
 <div class="logo">
@@ -309,8 +410,11 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 </div>
 </div>
 
-<!-- USERS (CUSTOMERS) - WITH DELETE -->
+<!-- USERS (CUSTOMERS) WITH BEST BUYER -->
 <div class="page-section" id="section-users">
+<!-- Best Buyer Showcase -->
+<div id="bestBuyerShowcase"></div>
+
 <div class="section">
 <div class="section-header">
 <h2>Registered Customers</h2>
@@ -375,7 +479,7 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 <label>Product Photos *</label>
 <div style="border:2px dashed var(--border);border-radius:14px;padding:20px;text-align:center;cursor:pointer;transition:all 0.3s;background:var(--bg);position:relative" id="itemUploadArea">
 <input type="file" id="itemPhotoInput" accept="image/*" multiple onchange="handleItemPhotos(event)" style="position:absolute;inset:0;opacity:0;cursor:pointer;z-index:2">
-<div id="itemUploadPlaceholder"><i style="font-size:36px;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;display:block;margin-bottom:8px;animation:emptyFloat 2s infinite" class="fas fa-cloud-upload-alt"></i><h4 style="font-size:14px;font-weight:700">Click to upload photos</h4><p style="font-size:12px;color:var(--text-secondary)">Multiple files allowed</p></div>
+<div id="itemUploadPlaceholder"><i style="font-size:36px;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;display:block;margin-bottom:8px" class="fas fa-cloud-upload-alt"></i><h4 style="font-size:14px;font-weight:700">Click to upload photos</h4><p style="font-size:12px;color:var(--text-secondary)">Multiple files allowed</p></div>
 </div>
 <div id="itemPhotosPreview" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:8px;margin-top:10px"></div>
 </div>
@@ -392,14 +496,7 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 <h3>Remove Customer</h3>
 <p>Are you sure you want to remove this customer?</p>
 <div class="user-email" id="deleteCustomerEmail"></div>
-<div class="warn-text">
-<i class="fas fa-exclamation-triangle"></i>
-<strong>This will:</strong><br>
-• Remove the customer account from the site<br>
-• Force logout the customer if they are online<br>
-• Customer's orders will remain in records<br>
-• This action cannot be undone
-</div>
+<div class="warn-text"><i class="fas fa-exclamation-triangle"></i> <strong>This will:</strong><br>• Remove the customer account from the site<br>• Force logout the customer if they are online<br>• Customer's orders will remain in records<br>• This action cannot be undone</div>
 <div class="confirm-actions">
 <button class="btn btn-secondary" onclick="closeModal('deleteCustomerModal')">Cancel</button>
 <button class="btn btn-danger" id="confirmDeleteBtn" onclick="confirmDeleteCustomer()"><i class="fas fa-trash"></i> Remove Customer</button>
@@ -416,13 +513,7 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 <div class="warn-icon"><i class="fas fa-users-slash"></i></div>
 <h3>Bulk Remove Customers</h3>
 <p>You are about to remove <strong id="bulkDeleteCount">0</strong> customers.</p>
-<div class="warn-text">
-<i class="fas fa-exclamation-triangle"></i>
-<strong>This will:</strong><br>
-• Remove all selected customer accounts<br>
-• Force logout all selected customers<br>
-• This action cannot be undone
-</div>
+<div class="warn-text"><i class="fas fa-exclamation-triangle"></i> <strong>This will:</strong><br>• Remove all selected customer accounts<br>• Force logout all selected customers<br>• This action cannot be undone</div>
 <div class="confirm-actions">
 <button class="btn btn-secondary" onclick="closeModal('bulkDeleteModal')">Cancel</button>
 <button class="btn btn-danger" onclick="confirmBulkDelete()"><i class="fas fa-trash"></i> Remove All</button>
@@ -546,7 +637,80 @@ img.src=dataUrl;
 }
 
 // ===================================================================
-// ===== CUSTOMERS MANAGEMENT - WITH DELETE ==========================
+// ===== BEST BUYER CALCULATION ======================================
+// ===================================================================
+
+function getBestBuyer(){
+const users=JSON.parse(localStorage.getItem('pickzone_users')||'[]');
+const orders=JSON.parse(localStorage.getItem('pickzone_orders')||'[]');
+
+if(!users.length)return null;
+
+// Count orders and total spent per customer
+const customerStats=users.map(u=>{
+const userOrders=orders.filter(o=>o.email.toLowerCase().trim()===u.email.toLowerCase().trim());
+const totalOrders=userOrders.length;
+const totalSpent=userOrders.reduce((sum,o)=>sum+(o.total||0),0);
+return{...u,totalOrders,totalSpent};
+});
+
+// Sort by total orders (descending), then by total spent (descending) as tiebreaker
+customerStats.sort((a,b)=>{
+if(b.totalOrders!==a.totalOrders)return b.totalOrders-a.totalOrders;
+return b.totalSpent-a.totalSpent;
+});
+
+// Return the top customer (only if they have at least 1 order)
+if(customerStats.length>0 && customerStats[0].totalOrders>0){
+return customerStats[0];
+}
+return null;
+}
+
+function renderBestBuyerShowcase(){
+const container=document.getElementById('bestBuyerShowcase');
+const bestBuyer=getBestBuyer();
+
+if(!bestBuyer){
+container.innerHTML='';
+return;
+}
+
+const pic=bestBuyer.profilePic||'https://ui-avatars.com/api/?name='+encodeURIComponent(bestBuyer.email)+'&background=f59e0b&color=fff&size=120';
+
+container.innerHTML=`
+<div class="best-buyer-showcase">
+<div class="best-buyer-header">
+<i class="fas fa-crown crown-icon"></i>
+<div>
+<div class="best-buyer-title">Best Buyer</div>
+<div class="best-buyer-subtitle">Top customer with most orders</div>
+</div>
+</div>
+<div class="best-buyer-content">
+<img src="${pic}" alt="Best Buyer" class="best-buyer-avatar">
+<div class="best-buyer-stats">
+<div class="best-buyer-stat">
+<div class="stat-value">${bestBuyer.totalOrders}</div>
+<div class="stat-label"><i class="fas fa-shopping-bag"></i> Orders</div>
+</div>
+<div class="best-buyer-stat">
+<div class="stat-value">LKR ${bestBuyer.totalSpent.toLocaleString()}</div>
+<div class="stat-label"><i class="fas fa-coins"></i> Total Spent</div>
+</div>
+<div class="best-buyer-stat">
+<div class="stat-value">${new Date(bestBuyer.createdAt).toLocaleDateString('en',{month:'short',year:'numeric'})}</div>
+<div class="stat-label"><i class="fas fa-calendar"></i> Member Since</div>
+</div>
+</div>
+</div>
+<div class="best-buyer-email"><i class="fas fa-envelope" style="color:var(--gold);margin-right:6px"></i>${bestBuyer.email}</div>
+</div>
+`;
+}
+
+// ===================================================================
+// ===== CUSTOMERS MANAGEMENT ========================================
 // ===================================================================
 
 function renderUsersList(){
@@ -555,13 +719,29 @@ const orders=JSON.parse(localStorage.getItem('pickzone_orders')||'[]');
 const container=document.getElementById('usersListContainer');
 const searchVal=(document.getElementById('customerSearch')?.value||'').toLowerCase().trim();
 
-let filteredUsers=users;
+// Calculate order counts for sorting
+const usersWithStats=users.map(u=>{
+const userOrders=orders.filter(o=>o.email.toLowerCase().trim()===u.email.toLowerCase().trim());
+return{...u,orderCount:userOrders.length,totalSpent:userOrders.reduce((s,o)=>s+(o.total||0),0)};
+});
+
+// Sort: best buyer first, then by order count descending
+usersWithStats.sort((a,b)=>{
+if(b.orderCount!==a.orderCount)return b.orderCount-a.orderCount;
+return b.totalSpent-a.totalSpent;
+});
+
+let filteredUsers=usersWithStats;
 if(searchVal){
-filteredUsers=users.filter(u=>
+filteredUsers=usersWithStats.filter(u=>
 u.email.toLowerCase().includes(searchVal)||
 (u.whatsapp&&u.whatsapp.includes(searchVal))
 );
 }
+
+// Find best buyer email for highlighting
+const bestBuyer=getBestBuyer();
+const bestBuyerEmail=bestBuyer?bestBuyer.email.toLowerCase().trim():'';
 
 if(!filteredUsers.length){
 container.innerHTML=searchVal
@@ -571,16 +751,20 @@ updateBulkBar();
 return;
 }
 
-container.innerHTML='<div style="overflow-x:auto"><table class="admin-table"><thead><tr><th style="width:30px"><input type="checkbox" id="selectAllCustomers" onchange="toggleSelectAll(this)" style="cursor:pointer"></th><th>Profile</th><th>Email</th><th>WhatsApp</th><th>Orders</th><th>Joined</th><th>Actions</th></tr></thead><tbody>'+filteredUsers.map(u=>{
-const userOrders=orders.filter(o=>o.email===u.email).length;
+container.innerHTML='<div style="overflow-x:auto"><table class="admin-table"><thead><tr><th style="width:30px"><input type="checkbox" id="selectAllCustomers" onchange="toggleSelectAll(this)" style="cursor:pointer"></th><th>Profile</th><th>Email</th><th>WhatsApp</th><th>Orders</th><th>Total Spent</th><th>Joined</th><th>Actions</th></tr></thead><tbody>'+filteredUsers.map(u=>{
 const pic=u.profilePic||'https://ui-avatars.com/api/?name='+encodeURIComponent(u.email)+'&background=6366f1&color=fff&size=64';
 const isSelected=selectedCustomerEmails.includes(u.email);
-return`<tr>
+const isBestBuyer=u.email.toLowerCase().trim()===bestBuyerEmail;
+const rowClass=isBestBuyer?'best-buyer-row':'';
+const crownBadge=isBestBuyer?'<span class="crown-badge"><i class="fas fa-crown"></i> BEST</span>':'';
+
+return`<tr class="${rowClass}">
 <td><input type="checkbox" class="customer-check" data-email="${u.email}" ${isSelected?'checked':''} onchange="toggleCustomerSelect(this)" style="cursor:pointer"></td>
-<td><img src="${pic}" style="width:40px;height:40px;border-radius:50%;object-fit:cover" alt=""></td>
-<td>${u.email}</td>
+<td><img src="${pic}" style="width:40px;height:40px;border-radius:50%;object-fit:cover;${isBestBuyer?'border:2px solid var(--gold);box-shadow:0 2px 8px rgba(245,158,11,0.3)':''}" alt=""></td>
+<td>${u.email} ${crownBadge}</td>
 <td>${u.whatsapp||'-'}</td>
-<td>${userOrders}</td>
+<td><strong>${u.orderCount}</strong></td>
+<td>LKR ${u.totalSpent.toLocaleString()}</td>
 <td>${new Date(u.createdAt).toLocaleDateString()}</td>
 <td>
 <button class="btn btn-danger" onclick="requestDeleteCustomer('${u.email}')" style="padding:6px 10px;font-size:11px"><i class="fas fa-user-slash"></i> Remove</button>
@@ -591,43 +775,29 @@ return`<tr>
 updateBulkBar();
 }
 
-// ===== SELECT ALL / INDIVIDUAL CHECKBOXES =====
 function toggleSelectAll(checkbox){
 const users=JSON.parse(localStorage.getItem('pickzone_users')||'[]');
-if(checkbox.checked){
-selectedCustomerEmails=users.map(u=>u.email);
-}else{
-selectedCustomerEmails=[];
-}
+if(checkbox.checked){selectedCustomerEmails=users.map(u=>u.email)}
+else{selectedCustomerEmails=[]}
 document.querySelectorAll('.customer-check').forEach(cb=>{cb.checked=checkbox.checked});
 updateBulkBar();
 }
 
 function toggleCustomerSelect(checkbox){
 const email=checkbox.dataset.email;
-if(checkbox.checked){
-if(!selectedCustomerEmails.includes(email))selectedCustomerEmails.push(email);
-}else{
-selectedCustomerEmails=selectedCustomerEmails.filter(e=>e!==email);
-}
-// Update select-all checkbox
+if(checkbox.checked){if(!selectedCustomerEmails.includes(email))selectedCustomerEmails.push(email)}
+else{selectedCustomerEmails=selectedCustomerEmails.filter(e=>e!==email)}
 const allChecks=document.querySelectorAll('.customer-check');
 const selectAll=document.getElementById('selectAllCustomers');
-if(selectAll){
-selectAll.checked=selectedCustomerEmails.length===allChecks.length;
-}
+if(selectAll){selectAll.checked=selectedCustomerEmails.length===allChecks.length}
 updateBulkBar();
 }
 
 function updateBulkBar(){
 const bar=document.getElementById('bulkBar');
 const countEl=document.getElementById('bulkCount');
-if(selectedCustomerEmails.length>0){
-bar.classList.add('show');
-countEl.textContent=`${selectedCustomerEmails.length} selected`;
-}else{
-bar.classList.remove('show');
-}
+if(selectedCustomerEmails.length>0){bar.classList.add('show');countEl.textContent=`${selectedCustomerEmails.length} selected`}
+else{bar.classList.remove('show')}
 }
 
 function clearSelection(){
@@ -638,7 +808,6 @@ if(selectAll)selectAll.checked=false;
 updateBulkBar();
 }
 
-// ===== DELETE SINGLE CUSTOMER =====
 function requestDeleteCustomer(email){
 pendingDeleteEmail=email;
 document.getElementById('deleteCustomerEmail').textContent=email;
@@ -647,37 +816,20 @@ document.getElementById('deleteCustomerModal').classList.add('active');
 
 function confirmDeleteCustomer(){
 if(!pendingDeleteEmail)return;
-
 let users=JSON.parse(localStorage.getItem('pickzone_users')||'[]');
 const emailToDelete=pendingDeleteEmail;
-
-// Remove the customer
 users=users.filter(u=>u.email!==emailToDelete);
 localStorage.setItem('pickzone_users',JSON.stringify(users));
-
-// If the currently logged-in customer on index site is the one being deleted,
-// clear their session too (they'll be forced to re-authenticate)
 const currentSession=localStorage.getItem('pickzone_current_user');
-if(currentSession){
-try{
-const sessionUser=JSON.parse(currentSession);
-if(sessionUser.email===emailToDelete){
-localStorage.removeItem('pickzone_current_user');
-}
-}catch(e){}
-}
-
-// Remove from selected list if was selected
+if(currentSession){try{const su=JSON.parse(currentSession);if(su.email===emailToDelete)localStorage.removeItem('pickzone_current_user')}catch(e){}}
 selectedCustomerEmails=selectedCustomerEmails.filter(e=>e!==emailToDelete);
-
 closeModal('deleteCustomerModal');
 pendingDeleteEmail=null;
 renderUsersList();
-loadDashboard();
-showToast(`Customer "${emailToDelete}" has been removed from the site.`,'success');
+renderBestBuyerShowcase();
+showToast(`Customer "${emailToDelete}" has been removed.`,'success');
 }
 
-// ===== BULK DELETE CUSTOMERS =====
 function bulkDeleteCustomers(){
 if(selectedCustomerEmails.length===0)return;
 document.getElementById('bulkDeleteCount').textContent=selectedCustomerEmails.length;
@@ -688,30 +840,17 @@ function confirmBulkDelete(){
 let users=JSON.parse(localStorage.getItem('pickzone_users')||'[]');
 const emailsToDelete=[...selectedCustomerEmails];
 const count=emailsToDelete.length;
-
-// Remove all selected customers
 users=users.filter(u=>!emailsToDelete.includes(u.email));
 localStorage.setItem('pickzone_users',JSON.stringify(users));
-
-// Clear current session if the logged-in user was among those deleted
 const currentSession=localStorage.getItem('pickzone_current_user');
-if(currentSession){
-try{
-const sessionUser=JSON.parse(currentSession);
-if(emailsToDelete.includes(sessionUser.email)){
-localStorage.removeItem('pickzone_current_user');
-}
-}catch(e){}
-}
-
+if(currentSession){try{const su=JSON.parse(currentSession);if(emailsToDelete.includes(su.email))localStorage.removeItem('pickzone_current_user')}catch(e){}}
 selectedCustomerEmails=[];
 closeModal('bulkDeleteModal');
 renderUsersList();
-loadDashboard();
-showToast(`${count} customer(s) removed from the site.`,'success');
+renderBestBuyerShowcase();
+showToast(`${count} customer(s) removed.`,'success');
 }
 
-// ===== BROADCAST EMAIL =====
 function broadcastEmail(){
 const users=JSON.parse(localStorage.getItem('pickzone_users')||'[]');
 if(!users.length){showToast('No registered users','error');return}
