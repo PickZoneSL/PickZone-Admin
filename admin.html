@@ -87,6 +87,7 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 .sidebar .menu-item:nth-child(4){animation-delay:0.2s}
 .sidebar .menu-item:nth-child(5){animation-delay:0.25s}
 .sidebar .menu-item:nth-child(6){animation-delay:0.3s}
+.sidebar .menu-item:nth-child(7){animation-delay:0.35s}
 @keyframes menuSlideIn{to{opacity:1;transform:translateX(0)}}
 .sidebar .menu-item::before{content:'';position:absolute;inset:0;background:var(--gradient);opacity:0;transition:opacity 0.3s}
 .sidebar .menu-item:hover::before{opacity:0.08}
@@ -137,54 +138,15 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 .btn:hover::before{left:100%}
 .btn-primary{background:var(--gradient);color:#fff;background-size:200% 200%;animation:gradientShift 3s ease infinite}
 .btn-primary:hover{transform:translateY(-3px) scale(1.03);box-shadow:0 10px 25px rgba(99,102,241,0.4)}
+.btn-success{background:var(--success);color:#fff}
+.btn-success:hover{transform:translateY(-3px);box-shadow:0 10px 25px rgba(16,185,129,0.4)}
 .btn-danger{background:var(--danger);color:#fff}
 .btn-danger:hover{transform:translateY(-3px);box-shadow:0 10px 25px rgba(239,68,68,0.4)}
 .btn-secondary{background:var(--bg);border:1px solid var(--border);color:var(--text)}
 .btn-secondary:hover{background:var(--primary);color:#fff;border-color:var(--primary);transform:translateY(-3px)}
+.btn-warning{background:var(--accent);color:#fff}
+.btn-warning:hover{transform:translateY(-3px);box-shadow:0 10px 25px rgba(245,158,11,0.4)}
 .btn:active{transform:translateY(-1px) scale(0.98)}
-
-.offer-upload-area{border:2px dashed var(--border);border-radius:14px;padding:30px 20px;text-align:center;cursor:pointer;transition:all 0.4s;background:var(--bg);position:relative;overflow:hidden}
-.offer-upload-area:hover{border-color:var(--primary);transform:translateY(-3px);box-shadow:0 10px 30px rgba(99,102,241,0.1)}
-.offer-upload-area.dragover{border-color:var(--primary);background:rgba(99,102,241,0.05);transform:scale(1.02);box-shadow:0 0 0 4px rgba(99,102,241,0.15)}
-.offer-upload-area.has-image{padding:0;border-style:solid;border-color:var(--primary)}
-.offer-upload-area .upload-icon{font-size:44px;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:10px;display:block;animation:uploadBounce 2s infinite}
-@keyframes uploadBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-.offer-upload-area h4{font-size:14px;font-weight:700;margin-bottom:4px;position:relative;z-index:1}
-.offer-upload-area p{font-size:12px;color:var(--text-secondary);position:relative;z-index:1}
-.offer-upload-area input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;z-index:2}
-.offer-upload-area .preview-img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;border-radius:12px}
-.offer-upload-area .remove-img-btn{position:absolute;top:10px;right:10px;width:34px;height:34px;border-radius:50%;background:var(--danger);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all 0.4s cubic-bezier(0.68,-0.55,0.27,1.55);z-index:3;cursor:pointer;border:none;box-shadow:0 4px 12px rgba(239,68,68,0.4)}
-.offer-upload-area .remove-img-btn:hover{transform:scale(1.2) rotate(180deg)}
-
-.offers-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
-.offer-card-admin{background:var(--bg);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:all 0.4s;position:relative;animation:offerCardIn 0.5s ease backwards}
-.offer-card-admin:nth-child(1){animation-delay:0.05s}
-.offer-card-admin:nth-child(2){animation-delay:0.1s}
-.offer-card-admin:nth-child(3){animation-delay:0.15s}
-.offer-card-admin:nth-child(4){animation-delay:0.2s}
-@keyframes offerCardIn{from{opacity:0;transform:translateY(20px) scale(0.95)}to{opacity:1;transform:translateY(0) scale(1)}}
-.offer-card-admin:hover{transform:translateY(-6px);box-shadow:0 20px 40px rgba(99,102,241,0.15);border-color:var(--primary)}
-.offer-card-admin .offer-img-wrap{position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;background:var(--border)}
-.offer-card-admin .offer-img-wrap img{width:100%;height:100%;object-fit:cover;transition:transform 0.6s}
-.offer-card-admin:hover .offer-img-wrap img{transform:scale(1.1) rotate(1deg)}
-.offer-card-admin .offer-status{position:absolute;top:10px;right:10px;padding:4px 12px;border-radius:20px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px}
-.offer-card-admin .offer-status.active{background:rgba(16,185,129,0.9);color:#fff;animation:statusPulseGreen 2s infinite}
-.offer-card-admin .offer-status.inactive{background:rgba(239,68,68,0.9);color:#fff}
-@keyframes statusPulseGreen{0%,100%{box-shadow:0 0 0 0 rgba(16,185,129,0.4)}50%{box-shadow:0 0 0 6px rgba(16,185,129,0)}}
-.offer-card-admin .offer-body{padding:14px}
-.offer-card-admin .offer-body h4{font-size:15px;font-weight:700;margin-bottom:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.offer-card-admin .offer-body p{font-size:12px;color:var(--text-secondary);line-height:1.5;margin-bottom:10px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.offer-card-admin .offer-meta{display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--text-secondary);margin-bottom:12px;padding-top:8px;border-top:1px solid var(--border)}
-.offer-card-admin .offer-actions{display:flex;gap:6px}
-.offer-card-admin .offer-actions button{flex:1;padding:8px;border-radius:8px;font-size:11px;font-weight:600;transition:all 0.3s;display:flex;align-items:center;justify-content:center;gap:4px;cursor:pointer;border:none}
-.offer-card-admin .offer-actions button:hover{transform:translateY(-2px)}
-
-.toggle-switch{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--bg);border:1px solid var(--border);border-radius:10px;cursor:pointer;transition:all 0.3s}
-.toggle-switch:hover{border-color:var(--primary)}
-.toggle-track{width:44px;height:24px;background:var(--border);border-radius:12px;position:relative;transition:all 0.4s cubic-bezier(0.68,-0.55,0.27,1.55);flex-shrink:0}
-.toggle-track.active{background:var(--success)}
-.toggle-track::after{content:'';position:absolute;width:20px;height:20px;background:#fff;border-radius:50%;top:2px;left:2px;transition:all 0.4s cubic-bezier(0.68,-0.55,0.27,1.55);box-shadow:0 2px 4px rgba(0,0,0,0.2)}
-.toggle-track.active::after{left:22px}
 
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(10px);z-index:3000;display:none;align-items:center;justify-content:center;padding:20px}
 .modal-overlay.active{display:flex;animation:overlayIn 0.3s ease}
@@ -206,6 +168,7 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 
 .alert{padding:14px 18px;border-radius:10px;margin-bottom:16px;display:flex;align-items:center;gap:10px;font-size:14px;font-weight:500;animation:alertShake 0.4s ease}
 @keyframes alertShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.alert-success{background:rgba(16,185,129,0.1);color:var(--success);border:1px solid var(--success)}
 .alert-danger{background:rgba(239,68,68,0.1);color:var(--danger);border:1px solid var(--danger)}
 
 .msg-card{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;transition:all 0.3s;animation:msgIn 0.4s ease backwards}
@@ -239,12 +202,34 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 .admin-table tbody tr:hover{background:rgba(99,102,241,0.04);transform:translateX(4px)}
 .admin-table tbody td{padding:12px;border-bottom:1px solid var(--border);font-size:13px}
 
+/* ===== CUSTOMER DELETE CONFIRM MODAL ===== */
+.confirm-modal-body{text-align:center;padding:10px 0}
+.confirm-modal-body .warn-icon{width:70px;height:70px;border-radius:50%;background:rgba(239,68,68,0.1);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;animation:warnPulse 1.5s infinite}
+@keyframes warnPulse{0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,0.3)}50%{box-shadow:0 0 0 12px rgba(239,68,68,0)}}
+.confirm-modal-body .warn-icon i{font-size:32px;color:var(--danger)}
+.confirm-modal-body h3{font-size:18px;margin-bottom:8px}
+.confirm-modal-body p{font-size:13px;color:var(--text-secondary);margin-bottom:6px;line-height:1.5}
+.confirm-modal-body .user-email{font-weight:700;color:var(--danger);font-size:14px;background:rgba(239,68,68,0.08);padding:6px 14px;border-radius:8px;display:inline-block;margin:8px 0}
+.confirm-modal-body .warn-text{font-size:12px;color:var(--text-secondary);margin-top:10px;padding:10px;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);border-radius:8px}
+.confirm-modal-body .warn-text i{color:var(--accent)}
+.confirm-actions{display:flex;gap:10px;justify-content:center;margin-top:20px}
+
+/* Search in users section */
+.search-box{position:relative;max-width:300px}
+.search-box input{width:100%;padding:9px 14px 9px 36px;background:var(--bg);border:1px solid var(--border);border-radius:10px;font-size:13px;transition:all 0.3s;color:var(--text)}
+.search-box input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(99,102,241,0.1)}
+.search-box i{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-secondary);font-size:13px}
+
+/* Bulk actions bar */
+.bulk-bar{display:none;align-items:center;gap:10px;padding:10px 16px;background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.2);border-radius:10px;margin-bottom:12px;animation:sectionIn 0.3s ease}
+.bulk-bar.show{display:flex}
+.bulk-bar span{font-size:13px;font-weight:600;color:var(--danger)}
+
 @media(max-width:768px){
 .sidebar{left:-260px}
 .sidebar.active{left:0}
 .main-panel{margin-left:0}
 .mobile-menu-btn{display:flex !important}
-.offers-grid{grid-template-columns:1fr}
 .stats-grid{grid-template-columns:1fr 1fr}
 }
 .mobile-menu-btn{display:none;width:40px;height:40px;border-radius:10px;background:var(--bg);border:1px solid var(--border);align-items:center;justify-content:center;cursor:pointer;font-size:16px;transition:all 0.3s}
@@ -258,6 +243,7 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 <div class="cursor-glow" id="cursorGlow"></div>
 <div class="toast-container" id="toastContainer"></div>
 
+<!-- LOGIN -->
 <div class="login-screen" id="loginScreen">
 <div class="login-box">
 <div class="logo">
@@ -274,6 +260,7 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 </div>
 </div>
 
+<!-- ADMIN PANEL -->
 <div class="admin-panel" id="adminPanel">
 <aside class="sidebar" id="sidebar">
 <div class="logo">
@@ -282,7 +269,7 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 </div>
 <div class="menu-item active" onclick="showSection('dashboard',this)"><i class="fas fa-chart-line"></i><span>Dashboard</span></div>
 <div class="menu-item" onclick="showSection('items',this)"><i class="fas fa-box"></i><span>Manage Items</span></div>
-<div class="menu-item" onclick="showSection('offers',this)"><i class="fas fa-gift"></i><span>Offers Manager</span></div>
+<div class="menu-item" onclick="showSection('users',this)"><i class="fas fa-users"></i><span>Customers</span></div>
 <div class="menu-item" onclick="showSection('orders',this)"><i class="fas fa-receipt"></i><span>Orders</span></div>
 <div class="menu-item" onclick="showSection('messages',this)"><i class="fas fa-comments"></i><span>Message Arena</span></div>
 <div class="menu-item" onclick="showSection('visitors',this)"><i class="fas fa-eye"></i><span>Visitors</span></div>
@@ -303,8 +290,8 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 <div class="page-section active" id="section-dashboard">
 <div class="stats-grid">
 <div class="stat-card"><div class="icon"><i class="fas fa-eye"></i></div><div class="label">Total Visitors</div><div class="value" id="statVisitors">0</div></div>
+<div class="stat-card"><div class="icon"><i class="fas fa-users"></i></div><div class="label">Registered Users</div><div class="value" id="statUsers">0</div></div>
 <div class="stat-card"><div class="icon"><i class="fas fa-box"></i></div><div class="label">Total Products</div><div class="value" id="statProducts">0</div></div>
-<div class="stat-card"><div class="icon"><i class="fas fa-gift"></i></div><div class="label">Active Offers</div><div class="value" id="statOffers">0</div></div>
 <div class="stat-card"><div class="icon"><i class="fas fa-receipt"></i></div><div class="label">Total Orders</div><div class="value" id="statOrders">0</div></div>
 <div class="stat-card"><div class="icon"><i class="fas fa-dollar-sign"></i></div><div class="label">Revenue</div><div class="value" id="statRevenue">LKR 0</div></div>
 </div>
@@ -322,15 +309,22 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 </div>
 </div>
 
-<!-- OFFERS MANAGER -->
-<div class="page-section" id="section-offers">
+<!-- USERS (CUSTOMERS) - WITH DELETE -->
+<div class="page-section" id="section-users">
 <div class="section">
 <div class="section-header">
-<h2><i class="fas fa-gift" style="color:var(--secondary)"></i> Offers Manager</h2>
-<button class="btn btn-primary" onclick="openOfferModal()"><i class="fas fa-plus"></i> Create New Offer</button>
+<h2>Registered Customers</h2>
+<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+<div class="search-box"><i class="fas fa-search"></i><input type="text" id="customerSearch" placeholder="Search customers..." oninput="renderUsersList()"></div>
+<button class="btn btn-success" onclick="broadcastEmail()"><i class="fas fa-envelope"></i> Broadcast Email</button>
 </div>
-<p style="font-size:13px;color:var(--text-secondary);margin-bottom:20px">Create promotional offers that <strong>automatically appear</strong> on the customer site's Offers page. Changes sync instantly via localStorage!</p>
-<div id="offersListContainer"></div>
+</div>
+<div class="bulk-bar" id="bulkBar">
+<span id="bulkCount">0 selected</span>
+<button class="btn btn-danger" onclick="bulkDeleteCustomers()" style="padding:7px 14px;font-size:12px"><i class="fas fa-trash"></i> Delete Selected</button>
+<button class="btn btn-secondary" onclick="clearSelection()" style="padding:7px 14px;font-size:12px">Clear</button>
+</div>
+<div id="usersListContainer"></div>
 </div>
 </div>
 
@@ -365,41 +359,6 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 </div>
 </div>
 
-<!-- OFFER MODAL -->
-<div class="modal-overlay" id="offerModal">
-<div class="modal">
-<button class="close-modal" onclick="closeModal('offerModal')"><i class="fas fa-times"></i></button>
-<h2 id="offerModalTitle"><i class="fas fa-gift"></i> Create New Offer</h2>
-<input type="hidden" id="editOfferIdx" value="-1">
-<div class="form-group">
-<label><i class="fas fa-camera"></i> Offer Photo *</label>
-<div class="offer-upload-area" id="offerUploadArea">
-<input type="file" id="offerPhotoInput" accept="image/*" onchange="handleOfferPhoto(event)">
-<div id="offerUploadPlaceholder"><i class="upload-icon fas fa-cloud-upload-alt"></i><h4>Click or drag photo here</h4><p>JPG, PNG, WEBP • Max 2MB</p></div>
-<img id="offerPhotoPreview" class="preview-img" style="display:none" alt="Preview">
-<button type="button" class="remove-img-btn" id="offerRemoveBtn" style="display:none" onclick="removeOfferPhoto(event)"><i class="fas fa-times"></i></button>
-</div>
-</div>
-<div class="form-group"><label><i class="fas fa-heading"></i> Offer Title *</label><input type="text" id="offerTitle" placeholder="e.g. Mega Sale - 50% Off!" maxlength="100"></div>
-<div class="form-group"><label><i class="fas fa-align-left"></i> Description *</label><textarea id="offerDesc" placeholder="Describe this offer..." maxlength="300"></textarea></div>
-<div class="form-row">
-<div class="form-group"><label><i class="fas fa-tag"></i> Button Text</label><input type="text" id="offerBtnText" placeholder="e.g. Shop Now" maxlength="30"></div>
-<div class="form-group"><label><i class="fas fa-link"></i> Button Links To</label><select id="offerBtnAction"><option value="items">Items Page</option><option value="offers">Offers Page</option><option value="signup">Sign Up</option><option value="whatsapp">WhatsApp</option><option value="none">No Button</option></select></div>
-</div>
-<div class="form-group">
-<label><i class="fas fa-toggle-on"></i> Status</label>
-<div class="toggle-switch" onclick="toggleOfferActive()">
-<div class="toggle-track active" id="offerActiveTrack"></div>
-<span id="offerActiveLabel">Active - Visible on customer site</span>
-</div>
-</div>
-<div style="display:flex;gap:10px;margin-top:20px">
-<button class="btn btn-primary" onclick="saveOffer()" style="flex:1;justify-content:center;padding:14px"><i class="fas fa-save"></i> Save Offer</button>
-<button class="btn btn-secondary" onclick="closeModal('offerModal')" style="padding:14px">Cancel</button>
-</div>
-</div>
-</div>
-
 <!-- ITEM MODAL -->
 <div class="modal-overlay" id="itemModal">
 <div class="modal">
@@ -414,13 +373,61 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 <div class="form-group"><label>Categories *</label><div id="itemCatsGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:6px;max-height:200px;overflow-y:auto;padding:10px;background:var(--bg);border:1px solid var(--border);border-radius:10px"></div></div>
 <div class="form-group">
 <label>Product Photos *</label>
-<div class="offer-upload-area" id="itemUploadArea" style="padding:20px">
-<input type="file" id="itemPhotoInput" accept="image/*" multiple onchange="handleItemPhotos(event)">
-<div id="itemUploadPlaceholder"><i class="upload-icon fas fa-cloud-upload-alt"></i><h4>Click to upload photos</h4><p>Multiple files allowed</p></div>
+<div style="border:2px dashed var(--border);border-radius:14px;padding:20px;text-align:center;cursor:pointer;transition:all 0.3s;background:var(--bg);position:relative" id="itemUploadArea">
+<input type="file" id="itemPhotoInput" accept="image/*" multiple onchange="handleItemPhotos(event)" style="position:absolute;inset:0;opacity:0;cursor:pointer;z-index:2">
+<div id="itemUploadPlaceholder"><i style="font-size:36px;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;display:block;margin-bottom:8px;animation:emptyFloat 2s infinite" class="fas fa-cloud-upload-alt"></i><h4 style="font-size:14px;font-weight:700">Click to upload photos</h4><p style="font-size:12px;color:var(--text-secondary)">Multiple files allowed</p></div>
 </div>
 <div id="itemPhotosPreview" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:8px;margin-top:10px"></div>
 </div>
 <button class="btn btn-primary" onclick="saveItem()" style="width:100%;justify-content:center;padding:14px"><i class="fas fa-save"></i> Save Item</button>
+</div>
+</div>
+
+<!-- DELETE CUSTOMER CONFIRM MODAL -->
+<div class="modal-overlay" id="deleteCustomerModal">
+<div class="modal" style="max-width:480px">
+<button class="close-modal" onclick="closeModal('deleteCustomerModal')"><i class="fas fa-times"></i></button>
+<div class="confirm-modal-body">
+<div class="warn-icon"><i class="fas fa-user-slash"></i></div>
+<h3>Remove Customer</h3>
+<p>Are you sure you want to remove this customer?</p>
+<div class="user-email" id="deleteCustomerEmail"></div>
+<div class="warn-text">
+<i class="fas fa-exclamation-triangle"></i>
+<strong>This will:</strong><br>
+• Remove the customer account from the site<br>
+• Force logout the customer if they are online<br>
+• Customer's orders will remain in records<br>
+• This action cannot be undone
+</div>
+<div class="confirm-actions">
+<button class="btn btn-secondary" onclick="closeModal('deleteCustomerModal')">Cancel</button>
+<button class="btn btn-danger" id="confirmDeleteBtn" onclick="confirmDeleteCustomer()"><i class="fas fa-trash"></i> Remove Customer</button>
+</div>
+</div>
+</div>
+</div>
+
+<!-- BULK DELETE CONFIRM MODAL -->
+<div class="modal-overlay" id="bulkDeleteModal">
+<div class="modal" style="max-width:480px">
+<button class="close-modal" onclick="closeModal('bulkDeleteModal')"><i class="fas fa-times"></i></button>
+<div class="confirm-modal-body">
+<div class="warn-icon"><i class="fas fa-users-slash"></i></div>
+<h3>Bulk Remove Customers</h3>
+<p>You are about to remove <strong id="bulkDeleteCount">0</strong> customers.</p>
+<div class="warn-text">
+<i class="fas fa-exclamation-triangle"></i>
+<strong>This will:</strong><br>
+• Remove all selected customer accounts<br>
+• Force logout all selected customers<br>
+• This action cannot be undone
+</div>
+<div class="confirm-actions">
+<button class="btn btn-secondary" onclick="closeModal('bulkDeleteModal')">Cancel</button>
+<button class="btn btn-danger" onclick="confirmBulkDelete()"><i class="fas fa-trash"></i> Remove All</button>
+</div>
+</div>
 </div>
 </div>
 
@@ -431,8 +438,8 @@ const ALL_CATEGORIES=['Clothes','Shoes','Phones','Electronics','Home items','Kit
 
 let selectedItemCategories=[];
 let uploadedItemPhotos=[];
-let offerPhotoData=null;
-let offerIsActive=true;
+let selectedCustomerEmails=[];
+let pendingDeleteEmail=null;
 
 // ===== PARTICLES =====
 (function(){const c=document.getElementById('particles');const colors=['#6366f1','#ec4899','#f59e0b','#10b981','#818cf8'];for(let i=0;i<25;i++){const p=document.createElement('div');p.className='particle';p.style.left=Math.random()*100+'%';p.style.background=colors[Math.floor(Math.random()*colors.length)];p.style.animationDuration=(Math.random()*15+10)+'s';p.style.animationDelay=Math.random()*15+'s';const s=(Math.random()*5+2)+'px';p.style.width=s;p.style.height=s;c.appendChild(p)}})();
@@ -487,11 +494,11 @@ document.querySelectorAll('.page-section').forEach(s=>s.classList.remove('active
 document.getElementById('section-'+section).classList.add('active');
 document.querySelectorAll('.menu-item').forEach(m=>m.classList.remove('active'));
 if(el)el.classList.add('active');
-const titles={dashboard:'Dashboard',items:'Manage Items',offers:'Offers Manager',orders:'Orders',messages:'Message Arena',visitors:'Visitor Analytics'};
+const titles={dashboard:'Dashboard',items:'Manage Items',users:'Customers',orders:'Orders',messages:'Message Arena',visitors:'Visitor Analytics'};
 document.getElementById('pageTitle').textContent=titles[section];
 if(section==='dashboard')loadDashboard();
 if(section==='items')renderItemsList();
-if(section==='offers')renderOffersList();
+if(section==='users')renderUsersList();
 if(section==='orders')renderOrdersList();
 if(section==='messages')renderAdminMessages();
 if(section==='visitors')renderVisitors();
@@ -500,15 +507,14 @@ if(section==='visitors')renderVisitors();
 // ===== DASHBOARD =====
 function loadDashboard(){
 const visitors=JSON.parse(localStorage.getItem('pickzone_visitors')||'[]');
+const users=JSON.parse(localStorage.getItem('pickzone_users')||'[]');
 const products=JSON.parse(localStorage.getItem('pickzone_items')||'[]');
 const orders=JSON.parse(localStorage.getItem('pickzone_orders')||'[]');
-const offers=JSON.parse(localStorage.getItem('pickzone_offers')||'[]');
 const revenue=orders.reduce((a,o)=>a+(o.total||0),0);
-const activeOffers=offers.filter(o=>o.active!==false).length;
 
 animateValue(document.getElementById('statVisitors'),0,visitors.length,1200);
+animateValue(document.getElementById('statUsers'),0,users.length,1200);
 animateValue(document.getElementById('statProducts'),0,products.length,1200);
-animateValue(document.getElementById('statOffers'),0,activeOffers,1200);
 animateValue(document.getElementById('statOrders'),0,orders.length,1200);
 const revEl=document.getElementById('statRevenue');
 let st=null;function rs(ts){if(!st)st=ts;const p=Math.min((ts-st)/1500,1);revEl.textContent='LKR '+Math.floor(p*revenue).toLocaleString();if(p<1)requestAnimationFrame(rs)}
@@ -540,156 +546,178 @@ img.src=dataUrl;
 }
 
 // ===================================================================
-// ===== OFFERS MANAGER - AUTO-SYNC TO CUSTOMER SITE =================
+// ===== CUSTOMERS MANAGEMENT - WITH DELETE ==========================
 // ===================================================================
 
-function handleOfferPhoto(event){
-const file=event.target.files[0];
-if(!file)return;
-if(!file.type.startsWith('image/')){showToast('Please upload an image file','error');return}
-if(file.size>2*1024*1024){showToast('Image must be less than 2MB','error');return}
-const reader=new FileReader();
-reader.onload=function(e){
-compressImage(e.target.result,800,0.8,function(compressed){
-offerPhotoData=compressed;
-document.getElementById('offerPhotoPreview').src=compressed;
-document.getElementById('offerPhotoPreview').style.display='block';
-document.getElementById('offerUploadPlaceholder').style.display='none';
-document.getElementById('offerRemoveBtn').style.display='flex';
-document.getElementById('offerUploadArea').classList.add('has-image');
-showToast('Photo uploaded successfully');
-});
-};
-reader.readAsDataURL(file);
-event.target.value='';
+function renderUsersList(){
+const users=JSON.parse(localStorage.getItem('pickzone_users')||'[]');
+const orders=JSON.parse(localStorage.getItem('pickzone_orders')||'[]');
+const container=document.getElementById('usersListContainer');
+const searchVal=(document.getElementById('customerSearch')?.value||'').toLowerCase().trim();
+
+let filteredUsers=users;
+if(searchVal){
+filteredUsers=users.filter(u=>
+u.email.toLowerCase().includes(searchVal)||
+(u.whatsapp&&u.whatsapp.includes(searchVal))
+);
 }
 
-function removeOfferPhoto(event){
-event.stopPropagation();event.preventDefault();
-offerPhotoData=null;
-document.getElementById('offerPhotoPreview').style.display='none';
-document.getElementById('offerUploadPlaceholder').style.display='block';
-document.getElementById('offerRemoveBtn').style.display='none';
-document.getElementById('offerUploadArea').classList.remove('has-image');
-document.getElementById('offerPhotoInput').value='';
-}
-
-function toggleOfferActive(){
-offerIsActive=!offerIsActive;
-const track=document.getElementById('offerActiveTrack');
-const label=document.getElementById('offerActiveLabel');
-if(offerIsActive){track.classList.add('active');label.textContent='Active - Visible on customer site'}
-else{track.classList.remove('active');label.textContent='Inactive - Hidden from customer site'}
-}
-
-function openOfferModal(idx=-1){
-document.getElementById('editOfferIdx').value=idx;
-offerPhotoData=null;offerIsActive=true;
-document.getElementById('offerPhotoPreview').style.display='none';
-document.getElementById('offerUploadPlaceholder').style.display='block';
-document.getElementById('offerRemoveBtn').style.display='none';
-document.getElementById('offerUploadArea').classList.remove('has-image');
-document.getElementById('offerPhotoInput').value='';
-document.getElementById('offerTitle').value='';
-document.getElementById('offerDesc').value='';
-document.getElementById('offerBtnText').value='';
-document.getElementById('offerBtnAction').value='items';
-document.getElementById('offerActiveTrack').classList.add('active');
-document.getElementById('offerActiveLabel').textContent='Active - Visible on customer site';
-
-if(idx>=0){
-const offers=JSON.parse(localStorage.getItem('pickzone_offers')||'[]');
-const offer=offers[idx];
-document.getElementById('offerModalTitle').innerHTML='<i class="fas fa-edit"></i> Edit Offer';
-document.getElementById('offerTitle').value=offer.title||'';
-document.getElementById('offerDesc').value=offer.description||'';
-document.getElementById('offerBtnText').value=offer.buttonText||'';
-document.getElementById('offerBtnAction').value=offer.buttonAction||'items';
-offerIsActive=offer.active!==false;
-if(offerIsActive){document.getElementById('offerActiveTrack').classList.add('active');document.getElementById('offerActiveLabel').textContent='Active - Visible on customer site'}
-else{document.getElementById('offerActiveTrack').classList.remove('active');document.getElementById('offerActiveLabel').textContent='Inactive - Hidden from customer site'}
-if(offer.image){
-offerPhotoData=offer.image;
-document.getElementById('offerPhotoPreview').src=offer.image;
-document.getElementById('offerPhotoPreview').style.display='block';
-document.getElementById('offerUploadPlaceholder').style.display='none';
-document.getElementById('offerRemoveBtn').style.display='flex';
-document.getElementById('offerUploadArea').classList.add('has-image');
-}
-}else{
-document.getElementById('offerModalTitle').innerHTML='<i class="fas fa-gift"></i> Create New Offer';
-}
-document.getElementById('offerModal').classList.add('active');
-}
-
-function saveOffer(){
-const idx=parseInt(document.getElementById('editOfferIdx').value);
-const title=document.getElementById('offerTitle').value.trim();
-const description=document.getElementById('offerDesc').value.trim();
-const buttonText=document.getElementById('offerBtnText').value.trim();
-const buttonAction=document.getElementById('offerBtnAction').value;
-
-if(!offerPhotoData){showToast('Please upload an offer photo','error');return}
-if(!title){showToast('Please enter a title','error');return}
-if(!description){showToast('Please enter a description','error');return}
-
-const offer={image:offerPhotoData,title,description,buttonText,buttonAction,active:offerIsActive,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()};
-
-let offers=JSON.parse(localStorage.getItem('pickzone_offers')||'[]');
-if(idx>=0){offer.createdAt=offers[idx].createdAt;offers[idx]=offer}
-else{offers.push(offer)}
-
-localStorage.setItem('pickzone_offers',JSON.stringify(offers));
-closeModal('offerModal');
-renderOffersList();
-showToast(idx>=0?'Offer updated! Syncs to customer site automatically.':'Offer created! Appears on customer site now!');
-}
-
-function renderOffersList(){
-const offers=JSON.parse(localStorage.getItem('pickzone_offers')||'[]');
-const container=document.getElementById('offersListContainer');
-if(!offers.length){
-container.innerHTML='<div class="empty-state"><i class="fas fa-gift"></i><p>No offers yet. Create your first offer!</p><button class="btn btn-primary" onclick="openOfferModal()"><i class="fas fa-plus"></i> Create First Offer</button></div>';
+if(!filteredUsers.length){
+container.innerHTML=searchVal
+? '<div class="empty-state"><i class="fas fa-search"></i><p>No customers match your search</p></div>'
+: '<div class="empty-state"><i class="fas fa-users"></i><p>No registered customers yet</p></div>';
+updateBulkBar();
 return;
 }
-const actionLabels={items:'Items Page',offers:'Offers Page',signup:'Sign Up',whatsapp:'WhatsApp',none:'No Button'};
-container.innerHTML='<div class="offers-grid">'+offers.map((offer,idx)=>{
-const isActive=offer.active!==false;
-const date=offer.updatedAt?new Date(offer.updatedAt).toLocaleDateString():'';
-return`<div class="offer-card-admin">
-<div class="offer-img-wrap"><img src="${offer.image}" alt="${offer.title}"><span class="offer-status ${isActive?'active':'inactive'}">${isActive?'Active':'Inactive'}</span></div>
-<div class="offer-body">
-<h4>${offer.title}</h4>
-<p>${offer.description}</p>
-<div class="offer-meta"><span><i class="fas fa-calendar"></i> ${date}</span><span><i class="fas fa-link"></i> ${actionLabels[offer.buttonAction]||'Items'}</span></div>
-<div class="offer-actions">
-<button class="btn btn-secondary" onclick="openOfferModal(${idx})" style="padding:7px"><i class="fas fa-edit"></i> Edit</button>
-<button class="btn ${isActive?'btn-warning':'btn-success'}" onclick="toggleOfferVisibility(${idx})" style="padding:7px;background:${isActive?'var(--accent)':'var(--success)'}"><i class="fas fa-${isActive?'eye-slash':'eye'}"></i> ${isActive?'Hide':'Show'}</button>
-<button class="btn btn-danger" onclick="deleteOffer(${idx})" style="padding:7px"><i class="fas fa-trash"></i></button>
-</div>
-</div>
-</div>`;
-}).join('')+'</div>';
+
+container.innerHTML='<div style="overflow-x:auto"><table class="admin-table"><thead><tr><th style="width:30px"><input type="checkbox" id="selectAllCustomers" onchange="toggleSelectAll(this)" style="cursor:pointer"></th><th>Profile</th><th>Email</th><th>WhatsApp</th><th>Orders</th><th>Joined</th><th>Actions</th></tr></thead><tbody>'+filteredUsers.map(u=>{
+const userOrders=orders.filter(o=>o.email===u.email).length;
+const pic=u.profilePic||'https://ui-avatars.com/api/?name='+encodeURIComponent(u.email)+'&background=6366f1&color=fff&size=64';
+const isSelected=selectedCustomerEmails.includes(u.email);
+return`<tr>
+<td><input type="checkbox" class="customer-check" data-email="${u.email}" ${isSelected?'checked':''} onchange="toggleCustomerSelect(this)" style="cursor:pointer"></td>
+<td><img src="${pic}" style="width:40px;height:40px;border-radius:50%;object-fit:cover" alt=""></td>
+<td>${u.email}</td>
+<td>${u.whatsapp||'-'}</td>
+<td>${userOrders}</td>
+<td>${new Date(u.createdAt).toLocaleDateString()}</td>
+<td>
+<button class="btn btn-danger" onclick="requestDeleteCustomer('${u.email}')" style="padding:6px 10px;font-size:11px"><i class="fas fa-user-slash"></i> Remove</button>
+</td>
+</tr>`;
+}).join('')+'</tbody></table></div>';
+
+updateBulkBar();
 }
 
-function toggleOfferVisibility(idx){
-let offers=JSON.parse(localStorage.getItem('pickzone_offers')||'[]');
-if(offers[idx]){
-offers[idx].active=offers[idx].active===false?true:false;
-offers[idx].updatedAt=new Date().toISOString();
-localStorage.setItem('pickzone_offers',JSON.stringify(offers));
-renderOffersList();
-showToast(offers[idx].active?'Offer is now VISIBLE on customer site!':'Offer is now HIDDEN from customer site.',offers[idx].active?'success':'info');
+// ===== SELECT ALL / INDIVIDUAL CHECKBOXES =====
+function toggleSelectAll(checkbox){
+const users=JSON.parse(localStorage.getItem('pickzone_users')||'[]');
+if(checkbox.checked){
+selectedCustomerEmails=users.map(u=>u.email);
+}else{
+selectedCustomerEmails=[];
+}
+document.querySelectorAll('.customer-check').forEach(cb=>{cb.checked=checkbox.checked});
+updateBulkBar();
+}
+
+function toggleCustomerSelect(checkbox){
+const email=checkbox.dataset.email;
+if(checkbox.checked){
+if(!selectedCustomerEmails.includes(email))selectedCustomerEmails.push(email);
+}else{
+selectedCustomerEmails=selectedCustomerEmails.filter(e=>e!==email);
+}
+// Update select-all checkbox
+const allChecks=document.querySelectorAll('.customer-check');
+const selectAll=document.getElementById('selectAllCustomers');
+if(selectAll){
+selectAll.checked=selectedCustomerEmails.length===allChecks.length;
+}
+updateBulkBar();
+}
+
+function updateBulkBar(){
+const bar=document.getElementById('bulkBar');
+const countEl=document.getElementById('bulkCount');
+if(selectedCustomerEmails.length>0){
+bar.classList.add('show');
+countEl.textContent=`${selectedCustomerEmails.length} selected`;
+}else{
+bar.classList.remove('show');
 }
 }
 
-function deleteOffer(idx){
-if(!confirm('Delete this offer?'))return;
-let offers=JSON.parse(localStorage.getItem('pickzone_offers')||'[]');
-offers.splice(idx,1);
-localStorage.setItem('pickzone_offers',JSON.stringify(offers));
-renderOffersList();
-showToast('Offer deleted. Removed from customer site.','error');
+function clearSelection(){
+selectedCustomerEmails=[];
+document.querySelectorAll('.customer-check').forEach(cb=>{cb.checked=false});
+const selectAll=document.getElementById('selectAllCustomers');
+if(selectAll)selectAll.checked=false;
+updateBulkBar();
+}
+
+// ===== DELETE SINGLE CUSTOMER =====
+function requestDeleteCustomer(email){
+pendingDeleteEmail=email;
+document.getElementById('deleteCustomerEmail').textContent=email;
+document.getElementById('deleteCustomerModal').classList.add('active');
+}
+
+function confirmDeleteCustomer(){
+if(!pendingDeleteEmail)return;
+
+let users=JSON.parse(localStorage.getItem('pickzone_users')||'[]');
+const emailToDelete=pendingDeleteEmail;
+
+// Remove the customer
+users=users.filter(u=>u.email!==emailToDelete);
+localStorage.setItem('pickzone_users',JSON.stringify(users));
+
+// If the currently logged-in customer on index site is the one being deleted,
+// clear their session too (they'll be forced to re-authenticate)
+const currentSession=localStorage.getItem('pickzone_current_user');
+if(currentSession){
+try{
+const sessionUser=JSON.parse(currentSession);
+if(sessionUser.email===emailToDelete){
+localStorage.removeItem('pickzone_current_user');
+}
+}catch(e){}
+}
+
+// Remove from selected list if was selected
+selectedCustomerEmails=selectedCustomerEmails.filter(e=>e!==emailToDelete);
+
+closeModal('deleteCustomerModal');
+pendingDeleteEmail=null;
+renderUsersList();
+loadDashboard();
+showToast(`Customer "${emailToDelete}" has been removed from the site.`,'success');
+}
+
+// ===== BULK DELETE CUSTOMERS =====
+function bulkDeleteCustomers(){
+if(selectedCustomerEmails.length===0)return;
+document.getElementById('bulkDeleteCount').textContent=selectedCustomerEmails.length;
+document.getElementById('bulkDeleteModal').classList.add('active');
+}
+
+function confirmBulkDelete(){
+let users=JSON.parse(localStorage.getItem('pickzone_users')||'[]');
+const emailsToDelete=[...selectedCustomerEmails];
+const count=emailsToDelete.length;
+
+// Remove all selected customers
+users=users.filter(u=>!emailsToDelete.includes(u.email));
+localStorage.setItem('pickzone_users',JSON.stringify(users));
+
+// Clear current session if the logged-in user was among those deleted
+const currentSession=localStorage.getItem('pickzone_current_user');
+if(currentSession){
+try{
+const sessionUser=JSON.parse(currentSession);
+if(emailsToDelete.includes(sessionUser.email)){
+localStorage.removeItem('pickzone_current_user');
+}
+}catch(e){}
+}
+
+selectedCustomerEmails=[];
+closeModal('bulkDeleteModal');
+renderUsersList();
+loadDashboard();
+showToast(`${count} customer(s) removed from the site.`,'success');
+}
+
+// ===== BROADCAST EMAIL =====
+function broadcastEmail(){
+const users=JSON.parse(localStorage.getItem('pickzone_users')||'[]');
+if(!users.length){showToast('No registered users','error');return}
+const emails=users.map(u=>u.email).join(',');
+window.location.href=`mailto:?bcc=${emails}&subject=${encodeURIComponent('PickZone Announcement')}&body=${encodeURIComponent('Dear Customer,\n\n[Your message here]\n\nBest regards,\nPickZone Team')}`;
+showToast('Opening email client...');
 }
 
 // ===================================================================
@@ -727,7 +755,7 @@ function renderItemCategoriesGrid(){
 const grid=document.getElementById('itemCatsGrid');
 grid.innerHTML=ALL_CATEGORIES.map(cat=>{
 const isSelected=selectedItemCategories.includes(cat);
-return`<div class="cat-check" onclick="toggleItemCategory('${cat}')" style="display:flex;align-items:center;gap:6px;padding:7px 10px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;transition:all 0.3s;border:1px solid ${isSelected?'transparent':'var(--border)'};background:${isSelected?'var(--gradient)':'var(--card)'};color:${isSelected?'#fff':'var(--text)'}"><i class="fas fa-${isSelected?'check-circle':'circle'}" style="font-size:11px"></i>${cat}</div>`;
+return`<div onclick="toggleItemCategory('${cat}')" style="display:flex;align-items:center;gap:6px;padding:7px 10px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;transition:all 0.3s;border:1px solid ${isSelected?'transparent':'var(--border)'};background:${isSelected?'var(--gradient)':'var(--card)'};color:${isSelected?'#fff':'var(--text)'}"><i class="fas fa-${isSelected?'check-circle':'circle'}" style="font-size:11px"></i>${cat}</div>`;
 }).join('');
 }
 
@@ -827,17 +855,6 @@ visitorsChart=new Chart(ctx,{type:'bar',data:{labels:last7.map(d=>d.label),datas
 }
 
 function closeModal(id){document.getElementById(id).classList.remove('active')}
-
-// ===== DRAG & DROP =====
-const offerUploadArea=document.getElementById('offerUploadArea');
-if(offerUploadArea){
-['dragenter','dragover'].forEach(evt=>{offerUploadArea.addEventListener(evt,e=>{e.preventDefault();offerUploadArea.classList.add('dragover')})});
-['dragleave','drop'].forEach(evt=>{offerUploadArea.addEventListener(evt,e=>{e.preventDefault();offerUploadArea.classList.remove('dragover')})});
-offerUploadArea.addEventListener('drop',e=>{
-const files=e.dataTransfer.files;
-if(files.length){const input=document.getElementById('offerPhotoInput');const dt=new DataTransfer();Array.from(files).forEach(f=>dt.items.add(f));input.files=dt.files;handleOfferPhoto({target:input})}
-});
-}
 
 // INIT
 loadTheme();
