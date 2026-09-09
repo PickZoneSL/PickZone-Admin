@@ -1,1082 +1,169 @@
-<!-- ============ admin.html ============ -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PickZone Admin Panel</title>
-<link rel="icon" href="https://www.image2url.com/r2/default/images/1788805311773-68d75ded-4271-402e-93dd-dd9b79cee693.png">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/fonts/poppins@latest/latin-400-normal.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/fonts/poppins@latest/latin-600-normal.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/fonts/poppins@latest/latin-700-normal.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/fonts/poppins@latest/latin-800-normal.css">
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-:root{--primary:#6366f1;--primary-dark:#4f46e5;--primary-light:#818cf8;--secondary:#ec4899;--accent:#f59e0b;--success:#10b981;--danger:#ef4444;--info:#3b82f6;--gold:#f59e0b;--gold-gradient:linear-gradient(135deg,#f59e0b 0%,#fbbf24 50%,#d97706 100%);--bg:#f8fafc;--card:#ffffff;--text:#111827;--text-secondary:#64748b;--border:#e2e8f0;--shadow:0 10px 40px rgba(99,102,241,0.1);--gradient:linear-gradient(135deg,#6366f1 0%,#ec4899 100%)}
-[data-theme="dark"]{--bg:#0f172a;--card:#1e293b;--text:#F9FAFB;--text-secondary:#94a3b8;--border:#334155;--shadow:0 10px 40px rgba(0,0,0,0.4)}
-html{scroll-behavior:smooth}
-body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;transition:background 0.5s,color 0.5s;overflow-x:hidden}
-.animated-bg{position:fixed;inset:0;z-index:-2;overflow:hidden}
-.animated-bg::before{content:'';position:absolute;width:200%;height:200%;top:-50%;left:-50%;background:radial-gradient(circle at 20% 50%,rgba(99,102,241,0.12) 0%,transparent 50%),radial-gradient(circle at 80% 80%,rgba(236,72,153,0.12) 0%,transparent 50%),radial-gradient(circle at 40% 20%,rgba(245,158,11,0.08) 0%,transparent 50%);animation:bgRotate 50s linear infinite}
-[data-theme="dark"] .animated-bg::before{background:radial-gradient(circle at 20% 50%,rgba(99,102,241,0.2) 0%,transparent 50%),radial-gradient(circle at 80% 80%,rgba(236,72,153,0.15) 0%,transparent 50%),radial-gradient(circle at 40% 20%,rgba(16,185,129,0.1) 0%,transparent 50%)}
-@keyframes bgRotate{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-.floating-shapes{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
-.shape{position:absolute;border-radius:50%;opacity:0.12;filter:blur(50px);animation:shapeFloat 30s infinite ease-in-out}
-.shape:nth-child(1){width:250px;height:250px;background:var(--primary);top:5%;left:3%}
-.shape:nth-child(2){width:300px;height:300px;background:var(--secondary);top:55%;right:3%;animation-delay:-10s}
-.shape:nth-child(3){width:200px;height:200px;background:var(--accent);bottom:10%;left:35%;animation-delay:-20s}
-@keyframes shapeFloat{0%,100%{transform:translate(0,0) scale(1)}25%{transform:translate(60px,-40px) scale(1.1)}50%{transform:translate(-40px,60px) scale(0.9)}75%{transform:translate(50px,30px) scale(1.15)}}
-.particles{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
-.particle{position:absolute;border-radius:50%;opacity:0;animation:particleRise linear infinite}
-@keyframes particleRise{0%{opacity:0;transform:translateY(100vh) scale(0)}10%{opacity:0.6}90%{opacity:0.6}100%{opacity:0;transform:translateY(-100px) scale(1)}}
-.cursor-glow{position:fixed;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(99,102,241,0.06) 0%,transparent 70%);pointer-events:none;z-index:0;transition:transform 0.3s ease-out;transform:translate(-50%,-50%)}
-.ripple-effect{position:absolute;border-radius:50%;background:rgba(255,255,255,0.4);transform:scale(0);animation:rippleAnim 0.6s linear;pointer-events:none}
-@keyframes rippleAnim{to{transform:scale(4);opacity:0}}
-.toast-container{position:fixed;top:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none}
-.toast{padding:14px 22px;border-radius:14px;font-size:13px;font-weight:600;background:var(--card);border:1px solid var(--border);box-shadow:0 10px 30px rgba(0,0,0,0.15);display:flex;align-items:center;gap:10px;animation:toastSlideIn 0.5s cubic-bezier(0.68,-0.55,0.27,1.55);pointer-events:auto;max-width:380px}
-.toast.success{border-left:4px solid var(--success)}.toast.success i{color:var(--success)}
-.toast.error{border-left:4px solid var(--danger)}.toast.error i{color:var(--danger)}
-.toast.info{border-left:4px solid var(--primary)}.toast.info i{color:var(--primary)}
-.toast.removing{animation:toastSlideOut 0.3s ease forwards}
-@keyframes toastSlideIn{from{opacity:0;transform:translateX(120px) scale(0.8)}to{opacity:1;transform:translateX(0) scale(1)}}
-@keyframes toastSlideOut{to{opacity:0;transform:translateX(120px) scale(0.8)}}
 
-.login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
-.login-box{background:var(--card);border:1px solid var(--border);border-radius:24px;padding:40px;width:100%;max-width:440px;box-shadow:var(--shadow);animation:loginBounceIn 0.8s cubic-bezier(0.68,-0.55,0.27,1.55)}
-@keyframes loginBounceIn{from{opacity:0;transform:scale(0.3) rotate(-10deg)}to{opacity:1;transform:scale(1) rotate(0)}}
-.login-box .logo{text-align:center;margin-bottom:24px}
-.login-box .logo img{width:80px;height:80px;border-radius:20px;margin-bottom:12px;box-shadow:0 8px 25px rgba(99,102,241,0.3);animation:logoFloat 3s ease-in-out infinite}
-@keyframes logoFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-.login-box .logo h1{font-size:28px;font-weight:800;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-size:200% 200%;animation:gradientShift 3s ease infinite}
-@keyframes gradientShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
-.login-box .logo p{font-size:13px;color:var(--text-secondary);margin-top:6px}
-.login-box .form-group{margin-bottom:16px}
-.login-box label{display:block;font-size:12px;font-weight:600;margin-bottom:6px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:1px}
-.login-box input{width:100%;padding:12px 14px;background:var(--bg);border:1px solid var(--border);border-radius:10px;font-size:14px;transition:all 0.3s}
-.login-box input:focus{border-color:var(--primary);box-shadow:0 0 0 4px rgba(99,102,241,0.15);transform:translateY(-2px)}
-.login-box .submit-btn{width:100%;padding:14px;background:var(--gradient);color:#fff;font-weight:800;font-size:14px;border-radius:12px;margin-top:10px;transition:all 0.4s cubic-bezier(0.68,-0.55,0.27,1.55);background-size:200% 200%;animation:gradientShift 3s ease infinite;position:relative;overflow:hidden;cursor:pointer;border:none}
-.login-box .submit-btn::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.3),transparent);animation:btnShine 3s infinite}
-@keyframes btnShine{0%{left:-100%}50%,100%{left:100%}}
-.login-box .submit-btn:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 12px 30px rgba(99,102,241,0.5)}
-.login-box .hint{font-size:11px;color:var(--text-secondary);margin-top:12px;text-align:center}
+                        <!DOCTYPE html>
+                        <html lang="en">
+                        <head>
+                            <meta charset="UTF-8">
+                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <style>
+                body {
+                  background-color: white; /* Ensure the iframe has a white background */
+                }
 
-.admin-panel{display:none}.admin-panel.active{display:block;animation:panelFadeIn 0.6s ease}
-@keyframes panelFadeIn{from{opacity:0}to{opacity:1}}
-.sidebar{position:fixed;top:0;left:0;width:260px;height:100vh;background:var(--card);border-right:1px solid var(--border);padding:20px;overflow-y:auto;z-index:100;transition:all 0.4s}
-.sidebar::-webkit-scrollbar{width:6px}.sidebar::-webkit-scrollbar-thumb{background:var(--gradient);border-radius:3px}
-.sidebar .logo{display:flex;align-items:center;gap:10px;margin-bottom:24px;padding-bottom:20px;border-bottom:2px solid var(--border)}
-.sidebar .logo img{width:42px;height:42px;border-radius:10px;animation:logoFloat 3s ease-in-out infinite}
-.sidebar .logo span{font-size:20px;font-weight:800;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-size:200% 200%;animation:gradientShift 3s ease infinite}
-.sidebar .menu-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;cursor:pointer;transition:all 0.4s cubic-bezier(0.4,0,0.2,1);margin-bottom:4px;font-size:14px;font-weight:500;position:relative;overflow:hidden;opacity:0;transform:translateX(-30px);animation:menuSlideIn 0.5s forwards}
-.sidebar .menu-item:nth-child(1){animation-delay:0.05s}.sidebar .menu-item:nth-child(2){animation-delay:0.1s}.sidebar .menu-item:nth-child(3){animation-delay:0.15s}.sidebar .menu-item:nth-child(4){animation-delay:0.2s}.sidebar .menu-item:nth-child(5){animation-delay:0.25s}.sidebar .menu-item:nth-child(6){animation-delay:0.3s}.sidebar .menu-item:nth-child(7){animation-delay:0.35s}
-@keyframes menuSlideIn{to{opacity:1;transform:translateX(0)}}
-.sidebar .menu-item::before{content:'';position:absolute;inset:0;background:var(--gradient);opacity:0;transition:opacity 0.3s}
-.sidebar .menu-item:hover::before{opacity:0.08}
-.sidebar .menu-item:hover{transform:translateX(6px)}
-.sidebar .menu-item.active{background:var(--gradient);color:#fff;box-shadow:0 6px 20px rgba(99,102,241,0.3)}.sidebar .menu-item.active::before{display:none}
-.sidebar .menu-item i{width:20px;font-size:16px;transition:all 0.4s}
-.sidebar .menu-item:hover i{transform:scale(1.2) rotate(-10deg)}
-.sidebar .back-link{margin-top:20px;padding-top:20px;border-top:1px solid var(--border);display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:12px;cursor:pointer;transition:all 0.3s;font-size:14px;font-weight:500}
-.sidebar .back-link:hover{background:var(--bg);transform:translateX(5px)}
+                
+              </style>
+                        </head>
+                        <body>
+                            <div class="chart-card"><h3>Order Status Overview</h3><canvas id="statusChart"></canvas></div>
+<div class="chart-card"><h3>📊 Popular Categories</h3><canvas id="popularCatsChart"></canvas></div>
 
-.main-panel{margin-left:260px;padding:24px;min-height:100vh;transition:margin 0.4s}
-.top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;padding:16px 20px;background:var(--card);border:1px solid var(--border);border-radius:14px;animation:topBarIn 0.5s ease}
-@keyframes topBarIn{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
-.top-bar h1{font-size:22px;font-weight:800}
-.top-bar .actions{display:flex;gap:10px;align-items:center}
-.theme-toggle{width:42px;height:42px;border-radius:12px;background:var(--bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.4s cubic-bezier(0.68,-0.55,0.27,1.55)}
-.theme-toggle:hover{background:var(--primary);color:#fff;transform:rotate(180deg) scale(1.1)}
 
-.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-bottom:24px}
-.stat-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;transition:all 0.4s;position:relative;overflow:hidden;opacity:0;transform:translateY(30px);animation:statIn 0.6s forwards}
-.stat-card:nth-child(1){animation-delay:0.1s}.stat-card:nth-child(2){animation-delay:0.2s}.stat-card:nth-child(3){animation-delay:0.3s}.stat-card:nth-child(4){animation-delay:0.4s}.stat-card:nth-child(5){animation-delay:0.5s}
-@keyframes statIn{to{opacity:1;transform:translateY(0)}}
-.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gradient);background-size:200% 200%;animation:gradientShift 3s ease infinite}
-.stat-card:hover{transform:translateY(-8px) scale(1.02);box-shadow:0 20px 40px rgba(99,102,241,0.15);border-color:var(--primary)}
-.stat-card .icon{width:50px;height:50px;border-radius:14px;background:var(--gradient);display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;margin-bottom:12px;transition:all 0.4s cubic-bezier(0.68,-0.55,0.27,1.55);background-size:200% 200%;animation:gradientShift 3s ease infinite}
-.stat-card:hover .icon{transform:scale(1.15) rotate(-10deg)}
-.stat-card .label{font-size:12px;color:var(--text-secondary);font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
-.stat-card .value{font-size:30px;font-weight:800}
+              <script>
+                              let ordersChart,popularCatsChart,visitorsChart;
 
-.charts-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(380px,1fr));gap:16px;margin-bottom:24px}
-.chart-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;transition:all 0.3s;animation:chartIn 0.6s ease 0.3s backwards}
-@keyframes chartIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-.chart-card:hover{border-color:var(--primary);box-shadow:var(--shadow)}
-.chart-card h3{font-size:16px;font-weight:700;margin-bottom:16px}
-
-.section{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:24px;animation:sectionIn 0.5s ease}
-@keyframes sectionIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-.section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px}
-.section-header h2{font-size:18px;font-weight:800}
-
-/* ===== BEST BUYER ===== */
-.best-buyer-showcase{background:linear-gradient(135deg,#fffbeb 0%,#fef3c7 30%,#fde68a 100%);border:2px solid var(--gold);border-radius:20px;padding:24px;margin-bottom:24px;position:relative;overflow:hidden;animation:showcaseIn 0.8s cubic-bezier(0.68,-0.55,0.27,1.55)}
-[data-theme="dark"] .best-buyer-showcase{background:linear-gradient(135deg,rgba(245,158,11,0.08) 0%,rgba(251,191,36,0.05) 50%,rgba(217,119,6,0.08) 100%);border-color:rgba(245,158,11,0.4)}
-@keyframes showcaseIn{from{opacity:0;transform:scale(0.9) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)}}
-.best-buyer-showcase::before{content:'';position:absolute;top:-50%;right:-20%;width:300px;height:300px;background:radial-gradient(circle,rgba(245,158,11,0.15) 0%,transparent 70%);animation:glowPulse 4s ease-in-out infinite}
-@keyframes glowPulse{0%,100%{transform:scale(1);opacity:0.5}50%{transform:scale(1.2);opacity:0.8}}
-.best-buyer-showcase::after{content:'';position:absolute;inset:0;background:linear-gradient(45deg,transparent 40%,rgba(255,255,255,0.3) 50%,transparent 60%);animation:shineSlide 4s infinite}
-@keyframes shineSlide{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
-.best-buyer-header{display:flex;align-items:center;gap:12px;margin-bottom:16px;position:relative;z-index:1}
-.best-buyer-header .crown-icon{font-size:32px;color:var(--gold);animation:crownBounce 2s ease-in-out infinite;filter:drop-shadow(0 4px 8px rgba(245,158,11,0.4))}
-@keyframes crownBounce{0%,100%{transform:translateY(0) rotate(0deg)}25%{transform:translateY(-4px) rotate(-5deg)}75%{transform:translateY(-2px) rotate(5deg)}}
-.best-buyer-header .bb-title{font-size:20px;font-weight:800;background:var(--gold-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.best-buyer-header .bb-sub{font-size:12px;color:var(--text-secondary);font-weight:600}
-.best-buyer-content{display:flex;align-items:center;gap:20px;position:relative;z-index:1;flex-wrap:wrap}
-.best-buyer-avatar{width:80px;height:80px;border-radius:50%;object-fit:cover;border:4px solid var(--gold);box-shadow:0 8px 25px rgba(245,158,11,0.3);transition:all 0.3s}
-.best-buyer-avatar:hover{transform:scale(1.1) rotate(5deg)}
-.best-buyer-stats{display:flex;gap:16px;flex-wrap:wrap;flex:1}
-.bb-stat{background:rgba(255,255,255,0.6);border:1px solid rgba(245,158,11,0.3);border-radius:12px;padding:12px 16px;text-align:center;min-width:120px;transition:all 0.3s}
-[data-theme="dark"] .bb-stat{background:rgba(245,158,11,0.08)}
-.bb-stat:hover{transform:translateY(-3px);box-shadow:0 6px 20px rgba(245,158,11,0.2)}
-.bb-stat .sv{font-size:22px;font-weight:800;color:var(--gold-dark)}
-[data-theme="dark"] .bb-stat .sv{color:var(--gold)}
-.bb-stat .sl{font-size:11px;color:var(--text-secondary);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-top:2px}
-.bb-email{font-size:13px;font-weight:600;background:rgba(255,255,255,0.7);padding:6px 14px;border-radius:8px;display:inline-block;margin-top:8px}
-[data-theme="dark"] .bb-email{background:rgba(245,158,11,0.1)}
-.crown-badge-table{display:inline-flex;align-items:center;gap:4px;background:var(--gold-gradient);color:#fff;padding:3px 10px;border-radius:12px;font-size:10px;font-weight:700;animation:crownPulse 2s infinite;box-shadow:0 2px 8px rgba(245,158,11,0.3)}
-@keyframes crownPulse{0%,100%{box-shadow:0 2px 8px rgba(245,158,11,0.3)}50%{box-shadow:0 2px 16px rgba(245,158,11,0.6)}}
-.best-buyer-row{background:linear-gradient(90deg,rgba(245,158,11,0.06) 0%,transparent 100%)!important;border-left:3px solid var(--gold)!important}
-
-/* ===== ORDER STATUS STYLES ===== */
-.status-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;cursor:pointer;transition:all 0.3s;position:relative;user-select:none}
-.status-badge:hover{transform:scale(1.05)}
-.status-badge .status-dot{width:8px;height:8px;border-radius:50%;animation:statusDotPulse 2s infinite}
-@keyframes statusDotPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(0.7)}}
-
-.status-pending{background:rgba(245,158,11,0.12);color:#d97706;border:1px solid rgba(245,158,11,0.3)}
-.status-pending .status-dot{background:#f59e0b}
-.status-processing{background:rgba(59,130,246,0.12);color:#2563eb;border:1px solid rgba(59,130,246,0.3)}
-.status-processing .status-dot{background:#3b82f6}
-.status-on-the-road{background:rgba(139,92,246,0.12);color:#7c3aed;border:1px solid rgba(139,92,246,0.3)}
-.status-on-the-road .status-dot{background:#8b5cf6}
-.status-delivered{background:rgba(16,185,129,0.12);color:#059669;border:1px solid rgba(16,185,129,0.3)}
-.status-delivered .status-dot{background:#10b981}
-.status-cancelled{background:rgba(239,68,68,0.12);color:#dc2626;border:1px solid rgba(239,68,68,0.3)}
-.status-cancelled .status-dot{background:#ef4444}
-
-/* Status Dropdown */
-.status-dropdown{position:absolute;top:100%;left:0;margin-top:6px;background:var(--card);border:1px solid var(--border);border-radius:12px;box-shadow:0 10px 40px rgba(0,0,0,0.15);z-index:100;min-width:200px;overflow:hidden;animation:dropdownIn 0.3s cubic-bezier(0.68,-0.55,0.27,1.55)}
-@keyframes dropdownIn{from{opacity:0;transform:translateY(-10px) scale(0.95)}to{opacity:1;transform:translateY(0) scale(1)}}
-.status-dropdown-item{display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;transition:all 0.2s;font-size:12px;font-weight:600}
-.status-dropdown-item:hover{background:var(--bg)}
-.status-dropdown-item .sd-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
-.status-dropdown-item.active{background:rgba(99,102,241,0.08)}
-.status-dropdown-item .sd-check{margin-left:auto;color:var(--success);font-size:14px}
-
-/* Status Timeline (in order detail view) */
-.status-timeline{display:flex;align-items:center;justify-content:space-between;margin:20px 0;position:relative;padding:0 10px}
-.status-timeline::before{content:'';position:absolute;top:20px;left:30px;right:30px;height:3px;background:var(--border);border-radius:2px;z-index:0}
-.timeline-step{display:flex;flex-direction:column;align-items:center;gap:8px;position:relative;z-index:1}
-.timeline-dot{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;transition:all 0.4s;border:3px solid var(--border);background:var(--card);color:var(--text-secondary)}
-.timeline-dot.completed{background:var(--success);border-color:var(--success);color:#fff;animation:dotComplete 0.5s ease}
-.timeline-dot.current{background:var(--info);border-color:var(--info);color:#fff;animation:dotCurrent 1.5s infinite}
-@keyframes dotComplete{from{transform:scale(0.5)}to{transform:scale(1)}}
-@keyframes dotCurrent{0%,100%{box-shadow:0 0 0 0 rgba(59,130,246,0.4)}50%{box-shadow:0 0 0 10px rgba(59,130,246,0)}}
-.timeline-label{font-size:10px;font-weight:600;color:var(--text-secondary);text-align:center;max-width:70px;text-transform:uppercase;letter-spacing:0.3px}
-.timeline-label.active{color:var(--primary);font-weight:700}
-.timeline-line-progress{position:absolute;top:20px;left:30px;height:3px;background:var(--success);border-radius:2px;z-index:0;transition:width 0.6s ease}
-
-/* Status Stats Cards */
-.status-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px}
-.status-stat-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center;transition:all 0.3s;position:relative;overflow:hidden}
-.status-stat-card:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
-.status-stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
-.status-stat-card.s-pending::before{background:#f59e0b}
-.status-stat-card.s-processing::before{background:#3b82f6}
-.status-stat-card.s-on-the-road::before{background:#8b5cf6}
-.status-stat-card.s-delivered::before{background:#10b981}
-.status-stat-card.s-cancelled::before{background:#ef4444}
-.status-stat-card .ssc-icon{font-size:24px;margin-bottom:6px}
-.status-stat-card .ssc-count{font-size:24px;font-weight:800}
-.status-stat-card .ssc-label{font-size:10px;color:var(--text-secondary);font-weight:600;text-transform:uppercase;letter-spacing:0.5px}
-
-/* Filter bar */
-.filter-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;align-items:center}
-.filter-chip{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;background:var(--bg);border:1px solid var(--border);cursor:pointer;transition:all 0.3s;display:flex;align-items:center;gap:6px}
-.filter-chip:hover{border-color:var(--primary)}
-.filter-chip.active{background:var(--gradient);color:#fff;border-color:transparent}
-.filter-chip .fc-count{background:rgba(0,0,0,0.1);padding:1px 6px;border-radius:10px;font-size:10px}
-.filter-chip.active .fc-count{background:rgba(255,255,255,0.2)}
-
-.btn{padding:10px 18px;border-radius:10px;font-size:13px;font-weight:600;transition:all 0.4s cubic-bezier(0.68,-0.55,0.27,1.55);display:inline-flex;align-items:center;gap:8px;position:relative;overflow:hidden;cursor:pointer;border:none}
-.btn::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent);transition:left 0.5s}
-.btn:hover::before{left:100%}
-.btn-primary{background:var(--gradient);color:#fff;background-size:200% 200%;animation:gradientShift 3s ease infinite}
-.btn-primary:hover{transform:translateY(-3px) scale(1.03);box-shadow:0 10px 25px rgba(99,102,241,0.4)}
-.btn-success{background:var(--success);color:#fff}.btn-success:hover{transform:translateY(-3px);box-shadow:0 10px 25px rgba(16,185,129,0.4)}
-.btn-danger{background:var(--danger);color:#fff}.btn-danger:hover{transform:translateY(-3px);box-shadow:0 10px 25px rgba(239,68,68,0.4)}
-.btn-secondary{background:var(--bg);border:1px solid var(--border);color:var(--text)}.btn-secondary:hover{background:var(--primary);color:#fff;border-color:var(--primary);transform:translateY(-3px)}
-.btn-info{background:var(--info);color:#fff}.btn-info:hover{transform:translateY(-3px);box-shadow:0 10px 25px rgba(59,130,246,0.4)}
-.btn:active{transform:translateY(-1px) scale(0.98)}
-
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(10px);z-index:3000;display:none;align-items:center;justify-content:center;padding:20px}
-.modal-overlay.active{display:flex;animation:overlayIn 0.3s ease}
-@keyframes overlayIn{from{opacity:0}to{opacity:1}}
-.modal{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:28px;width:100%;max-width:650px;max-height:90vh;overflow-y:auto;animation:modalBounceIn 0.5s cubic-bezier(0.68,-0.55,0.27,1.55)}
-@keyframes modalBounceIn{from{opacity:0;transform:scale(0.5) rotate(-5deg)}to{opacity:1;transform:scale(1) rotate(0)}}
-.modal::-webkit-scrollbar{width:4px}.modal::-webkit-scrollbar-thumb{background:var(--gradient);border-radius:2px}
-.modal h2{font-size:22px;margin-bottom:20px;font-weight:800;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-size:200% 200%;animation:gradientShift 3s ease infinite}
-.modal .close-modal{float:right;font-size:22px;cursor:pointer;transition:all 0.4s cubic-bezier(0.68,-0.55,0.27,1.55);padding:4px}
-.modal .close-modal:hover{transform:rotate(180deg) scale(1.2);color:var(--danger)}
-.form-group{margin-bottom:14px}
-.form-group label{display:block;font-size:12px;font-weight:600;margin-bottom:6px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:1px}
-.form-group input,.form-group select,.form-group textarea{width:100%;padding:12px 14px;background:var(--bg);border:1px solid var(--border);border-radius:10px;font-size:14px;transition:all 0.3s}
-.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--primary);box-shadow:0 0 0 4px rgba(99,102,241,0.15);transform:translateY(-2px)}
-.form-group textarea{resize:vertical;min-height:80px}
-.form-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
-
-.alert{padding:14px 18px;border-radius:10px;margin-bottom:16px;display:flex;align-items:center;gap:10px;font-size:14px;font-weight:500;animation:alertShake 0.4s ease}
-@keyframes alertShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
-.alert-success{background:rgba(16,185,129,0.1);color:var(--success);border:1px solid var(--success)}
-.alert-danger{background:rgba(239,68,68,0.1);color:var(--danger);border:1px solid var(--danger)}
-
-.msg-card{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;transition:all 0.3s}
-.msg-card:hover{border-color:var(--primary);transform:translateX(5px)}
-.msg-card .msg-header{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
-.msg-card .msg-header img{width:36px;height:36px;border-radius:50%;object-fit:cover}
-.msg-card .msg-header .name{font-weight:700;font-size:14px}
-.msg-card .msg-header .time{font-size:11px;color:var(--text-secondary);margin-left:auto}
-.msg-card .msg-body{font-size:14px;line-height:1.6}
-.msg-card .msg-body img,.msg-card .msg-body video{max-width:200px;border-radius:8px;margin-top:8px}
-.msg-card .msg-actions{display:flex;gap:8px;margin-top:10px}
-
-.page-section{display:none;animation:pageIn 0.5s ease}.page-section.active{display:block}
-@keyframes pageIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-
-.empty-state{text-align:center;padding:50px 20px;color:var(--text-secondary);animation:emptyIn 0.6s ease}
-@keyframes emptyIn{from{opacity:0;transform:scale(0.8)}to{opacity:1;transform:scale(1)}}
-.empty-state i{font-size:56px;margin-bottom:16px;opacity:0.3;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:emptyFloat 3s ease-in-out infinite}
-@keyframes emptyFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
-.empty-state p{font-size:14px;margin-bottom:16px}
-
-.admin-table{width:100%;border-collapse:collapse}
-.admin-table thead th{padding:12px;text-align:left;font-size:11px;text-transform:uppercase;color:var(--text-secondary);letter-spacing:1px;border-bottom:2px solid var(--border);background:var(--bg)}
-.admin-table tbody tr{transition:all 0.3s;animation:tableRowIn 0.4s ease backwards}
-.admin-table tbody tr:nth-child(1){animation-delay:0.05s}.admin-table tbody tr:nth-child(2){animation-delay:0.1s}.admin-table tbody tr:nth-child(3){animation-delay:0.15s}
-@keyframes tableRowIn{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)}}
-.admin-table tbody tr:hover{background:rgba(99,102,241,0.04);transform:translateX(4px)}
-.admin-table tbody td{padding:12px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:middle}
-
-.search-box{position:relative;max-width:300px}
-.search-box input{width:100%;padding:9px 14px 9px 36px;background:var(--bg);border:1px solid var(--border);border-radius:10px;font-size:13px;transition:all 0.3s;color:var(--text)}
-.search-box input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(99,102,241,0.1)}
-.search-box i{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-secondary);font-size:13px}
-
-.bulk-bar{display:none;align-items:center;gap:10px;padding:10px 16px;background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.2);border-radius:10px;margin-bottom:12px}
-.bulk-bar.show{display:flex}
-.bulk-bar span{font-size:13px;font-weight:600;color:var(--danger)}
-
-/* Order detail view in modal */
-.order-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
-.od-item{background:var(--bg);border-radius:10px;padding:10px 14px}
-.od-item .od-label{font-size:10px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.5px;font-weight:600}
-.od-item .od-value{font-size:13px;font-weight:600;margin-top:2px}
-.order-items-list{background:var(--bg);border-radius:10px;padding:14px;margin-bottom:16px}
-.order-items-list h4{font-size:12px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px}
-.oi-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)}
-.oi-row:last-child{border:none}
-.oi-row .oi-name{font-size:13px;font-weight:600}
-.oi-row .oi-detail{font-size:12px;color:var(--text-secondary)}
-
-@media(max-width:768px){
-.sidebar{left:-260px}.sidebar.active{left:0}.main-panel{margin-left:0}
-.mobile-menu-btn{display:flex!important}
-.stats-grid{grid-template-columns:1fr 1fr}
-.best-buyer-content{flex-direction:column;align-items:flex-start}
-.order-detail-grid{grid-template-columns:1fr}
-.status-timeline{flex-wrap:wrap;gap:10px;justify-content:center}
-}
-.mobile-menu-btn{display:none;width:40px;height:40px;border-radius:10px;background:var(--bg);border:1px solid var(--border);align-items:center;justify-content:center;cursor:pointer;font-size:16px;transition:all 0.3s}
-.mobile-menu-btn:hover{background:var(--primary);color:#fff}
-</style>
-</head>
-<body data-theme="light">
-<div class="animated-bg"></div>
-<div class="floating-shapes"><div class="shape"></div><div class="shape"></div><div class="shape"></div></div>
-<div class="particles" id="particles"></div>
-<div class="cursor-glow" id="cursorGlow"></div>
-<div class="toast-container" id="toastContainer"></div>
-
-<div class="login-screen" id="loginScreen">
-<div class="login-box">
-<div class="logo"><img src="https://www.image2url.com/r2/default/images/1788805311773-68d75ded-4271-402e-93dd-dd9b79cee693.png" alt="PickZone"><h1>PickZone Admin</h1><p>Secure Administrative Dashboard</p></div>
-<div id="loginAlert"></div>
-<div class="form-group"><label>Admin Email</label><input type="email" id="adminEmail" placeholder="admin@example.com"></div>
-<div class="form-group"><label>Passcode</label><input type="password" id="adminPass" placeholder="Enter passcode"></div>
-<button class="submit-btn" onclick="adminLogin()"><i class="fas fa-lock"></i> Access Admin Panel</button>
-<p class="hint">Authorized personnel only.</p>
-<div style="text-align:center;margin-top:16px"><button class="btn btn-secondary" onclick="toggleTheme()"><i class="fas fa-moon" id="themeIcon"></i> Toggle Theme</button></div>
-</div>
-</div>
-
-<div class="admin-panel" id="adminPanel">
-<aside class="sidebar" id="sidebar">
-<div class="logo"><img src="https://www.image2url.com/r2/default/images/1788805311773-68d75ded-4271-402e-93dd-dd9b79cee693.png" alt="PickZone"><span>PickZone</span></div>
-<div class="menu-item active" onclick="showSection('dashboard',this)"><i class="fas fa-chart-line"></i><span>Dashboard</span></div>
-<div class="menu-item" onclick="showSection('items',this)"><i class="fas fa-box"></i><span>Manage Items</span></div>
-<div class="menu-item" onclick="showSection('orders',this)"><i class="fas fa-receipt"></i><span>Orders</span></div>
-<div class="menu-item" onclick="showSection('users',this)"><i class="fas fa-users"></i><span>Customers</span></div>
-<div class="menu-item" onclick="showSection('messages',this)"><i class="fas fa-comments"></i><span>Message Arena</span></div>
-<div class="menu-item" onclick="showSection('visitors',this)"><i class="fas fa-eye"></i><span>Visitors</span></div>
-<a class="back-link" href="index.html"><i class="fas fa-arrow-left"></i><span>Back to Site</span></a>
-<div class="back-link" onclick="adminLogout()"><i class="fas fa-sign-out-alt"></i><span>Logout</span></div>
-</aside>
-
-<div class="main-panel">
-<div class="top-bar">
-<div style="display:flex;align-items:center;gap:12px">
-<button class="mobile-menu-btn" onclick="document.getElementById('sidebar').classList.toggle('active')"><i class="fas fa-bars"></i></button>
-<h1 id="pageTitle">Dashboard</h1>
-</div>
-<div class="actions"><button class="theme-toggle" onclick="toggleTheme()"><i class="fas fa-moon" id="themeIcon2"></i></button></div>
-</div>
-
-<!-- DASHBOARD -->
-<div class="page-section active" id="section-dashboard">
-<div class="stats-grid">
-<div class="stat-card"><div class="icon"><i class="fas fa-eye"></i></div><div class="label">Total Visitors</div><div class="value" id="statVisitors">0</div></div>
-<div class="stat-card"><div class="icon"><i class="fas fa-users"></i></div><div class="label">Registered Users</div><div class="value" id="statUsers">0</div></div>
-<div class="stat-card"><div class="icon"><i class="fas fa-box"></i></div><div class="label">Total Products</div><div class="value" id="statProducts">0</div></div>
-<div class="stat-card"><div class="icon"><i class="fas fa-receipt"></i></div><div class="label">Total Orders</div><div class="value" id="statOrders">0</div></div>
-<div class="stat-card"><div class="icon"><i class="fas fa-dollar-sign"></i></div><div class="label">Revenue</div><div class="value" id="statRevenue">LKR 0</div></div>
-</div>
-<div class="charts-grid">
-<div class="chart-card"><h3>Order Trends (Last 7 Days)</h3><canvas id="ordersChart"></canvas></div>
-<div class="chart-card"><h3>Popular Categories</h3><canvas id="categoriesChart"></canvas></div>
-</div>
-</div>
-
-<!-- ITEMS -->
-<div class="page-section" id="section-items">
-<div class="section">
-<div class="section-header"><h2>Manage Items</h2><button class="btn btn-primary" onclick="openItemModal()"><i class="fas fa-plus"></i> Add New Item</button></div>
-<div id="itemsListContainer"></div>
-</div>
-</div>
-
-<!-- ORDERS WITH STATUS -->
-<div class="page-section" id="section-orders">
-<!-- Status Stats -->
-<div class="status-stats" id="statusStats"></div>
-
-<div class="section">
-<div class="section-header">
-<h2>All Orders</h2>
-<div class="search-box"><i class="fas fa-search"></i><input type="text" id="orderSearch" placeholder="Search orders..." oninput="renderOrdersList()"></div>
-</div>
-<!-- Filter Chips -->
-<div class="filter-bar" id="orderFilterBar"></div>
-<div id="ordersListContainer"></div>
-</div>
-</div>
-
-<!-- USERS -->
-<div class="page-section" id="section-users">
-<div id="bestBuyerShowcase"></div>
-<div class="section">
-<div class="section-header">
-<h2>Registered Customers</h2>
-<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-<div class="search-box"><i class="fas fa-search"></i><input type="text" id="customerSearch" placeholder="Search customers..." oninput="renderUsersList()"></div>
-<button class="btn btn-success" onclick="broadcastEmail()"><i class="fas fa-envelope"></i> Broadcast Email</button>
-</div>
-</div>
-<div class="bulk-bar" id="bulkBar"><span id="bulkCount">0 selected</span><button class="btn btn-danger" onclick="bulkDeleteCustomers()" style="padding:7px 14px;font-size:12px"><i class="fas fa-trash"></i> Delete Selected</button><button class="btn btn-secondary" onclick="clearSelection()" style="padding:7px 14px;font-size:12px">Clear</button></div>
-<div id="usersListContainer"></div>
-</div>
-</div>
-
-<!-- MESSAGES -->
-<div class="page-section" id="section-messages">
-<div class="section"><div class="section-header"><h2>Message Arena</h2></div><div id="adminMessagesContainer"></div></div>
-</div>
-
-<!-- VISITORS -->
-<div class="page-section" id="section-visitors">
-<div class="section">
-<div class="section-header"><h2>Visitor Analytics</h2></div>
-<div class="stats-grid">
-<div class="stat-card"><div class="icon"><i class="fas fa-eye"></i></div><div class="label">Total Visitors</div><div class="value" id="visitorTotal">0</div></div>
-<div class="stat-card"><div class="icon"><i class="fas fa-calendar-day"></i></div><div class="label">Today</div><div class="value" id="visitorToday">0</div></div>
-</div>
-<div class="chart-card" style="margin-top:20px"><h3>Visitor Trends (Last 7 Days)</h3><canvas id="visitorsChart"></canvas></div>
-</div>
-</div>
-</div>
-</div>
-
-<!-- ORDER DETAIL MODAL -->
-<div class="modal-overlay" id="orderDetailModal">
-<div class="modal">
-<button class="close-modal" onclick="closeModal('orderDetailModal')"><i class="fas fa-times"></i></button>
-<h2><i class="fas fa-receipt"></i> Order Details</h2>
-<div id="orderDetailContent"></div>
-</div>
-</div>
-
-<!-- ITEM MODAL -->
-<div class="modal-overlay" id="itemModal">
-<div class="modal">
-<button class="close-modal" onclick="closeModal('itemModal')"><i class="fas fa-times"></i></button>
-<h2 id="itemModalTitle"><i class="fas fa-box"></i> Add New Item</h2>
-<input type="hidden" id="editItemIdx" value="-1">
-<div class="form-row">
-<div class="form-group"><label>Item Code *</label><input type="text" id="itemCode" placeholder="P00001"></div>
-<div class="form-group"><label>Price (LKR) *</label><input type="number" id="itemPrice" placeholder="1500"></div>
-</div>
-<div class="form-group"><label>Title *</label><input type="text" id="itemTitle" placeholder="Product name"></div>
-<div class="form-group"><label>Categories *</label><div id="itemCatsGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:6px;max-height:200px;overflow-y:auto;padding:10px;background:var(--bg);border:1px solid var(--border);border-radius:10px"></div></div>
-<div class="form-group">
-<label>Product Photos *</label>
-<div style="border:2px dashed var(--border);border-radius:14px;padding:20px;text-align:center;cursor:pointer;background:var(--bg);position:relative" id="itemUploadArea">
-<input type="file" id="itemPhotoInput" accept="image/*" multiple onchange="handleItemPhotos(event)" style="position:absolute;inset:0;opacity:0;cursor:pointer;z-index:2">
-<div id="itemUploadPlaceholder"><i style="font-size:36px;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;display:block;margin-bottom:8px" class="fas fa-cloud-upload-alt"></i><h4 style="font-size:14px;font-weight:700">Click to upload photos</h4><p style="font-size:12px;color:var(--text-secondary)">Multiple files allowed</p></div>
-</div>
-<div id="itemPhotosPreview" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:8px;margin-top:10px"></div>
-</div>
-<button class="btn btn-primary" onclick="saveItem()" style="width:100%;justify-content:center;padding:14px"><i class="fas fa-save"></i> Save Item</button>
-</div>
-</div>
-
-<!-- DELETE CUSTOMER MODAL -->
-<div class="modal-overlay" id="deleteCustomerModal">
-<div class="modal" style="max-width:480px">
-<button class="close-modal" onclick="closeModal('deleteCustomerModal')"><i class="fas fa-times"></i></button>
-<div style="text-align:center;padding:10px 0">
-<div style="width:70px;height:70px;border-radius:50%;background:rgba(239,68,68,0.1);display:flex;align-items:center;justify-content:center;margin:0 auto 16px"><i class="fas fa-user-slash" style="font-size:32px;color:var(--danger)"></i></div>
-<h3 style="font-size:18px;margin-bottom:8px">Remove Customer</h3>
-<p style="font-size:13px;color:var(--text-secondary)">Are you sure?</p>
-<div style="font-weight:700;color:var(--danger);font-size:14px;background:rgba(239,68,68,0.08);padding:6px 14px;border-radius:8px;display:inline-block;margin:8px 0" id="deleteCustomerEmail"></div>
-<div style="display:flex;gap:10px;justify-content:center;margin-top:20px">
-<button class="btn btn-secondary" onclick="closeModal('deleteCustomerModal')">Cancel</button>
-<button class="btn btn-danger" onclick="confirmDeleteCustomer()"><i class="fas fa-trash"></i> Remove</button>
-</div>
-</div>
-</div>
-</div>
-
-<!-- BULK DELETE MODAL -->
-<div class="modal-overlay" id="bulkDeleteModal">
-<div class="modal" style="max-width:480px">
-<button class="close-modal" onclick="closeModal('bulkDeleteModal')"><i class="fas fa-times"></i></button>
-<div style="text-align:center;padding:10px 0">
-<div style="width:70px;height:70px;border-radius:50%;background:rgba(239,68,68,0.1);display:flex;align-items:center;justify-content:center;margin:0 auto 16px"><i class="fas fa-users-slash" style="font-size:32px;color:var(--danger)"></i></div>
-<h3>Bulk Remove</h3>
-<p>Remove <strong id="bulkDeleteCount">0</strong> customers?</p>
-<div style="display:flex;gap:10px;justify-content:center;margin-top:20px">
-<button class="btn btn-secondary" onclick="closeModal('bulkDeleteModal')">Cancel</button>
-<button class="btn btn-danger" onclick="confirmBulkDelete()"><i class="fas fa-trash"></i> Remove All</button>
-</div>
-</div>
-</div>
-</div>
-
-<script>
-const MASTER_EMAIL='grbmsirithilaka@gmail.com';
-const MASTER_PASS='2009GrBmS@';
-const ALL_CATEGORIES=['Clothes','Shoes','Phones','Electronics','Home items','Kitchen items','Beauty products','Books','Stationery','Gifts','Pet supplies','Toys','Plants','Gardening supplies','Car accessories'];
-const ORDER_STATUSES=['pending','processing','on-the-road','delivered','cancelled'];
-const STATUS_CONFIG={
-'pending':{label:'Pending',icon:'fa-clock',color:'#f59e0b',class:'status-pending'},
-'processing':{label:'Processing',icon:'fa-cog',color:'#3b82f6',class:'status-processing'},
-'on-the-road':{label:'On the Road',icon:'fa-truck',color:'#8b5cf6',class:'status-on-the-road'},
-'delivered':{label:'Delivered',icon:'fa-check-circle',color:'#10b981',class:'status-delivered'},
-'cancelled':{label:'Cancelled',icon:'fa-times-circle',color:'#ef4444',class:'status-cancelled'}
-};
-
-let selectedItemCategories=[],uploadedItemPhotos=[],selectedCustomerEmails=[],pendingDeleteEmail=null,activeOrderStatusFilter='all';
-
-// Particles
-(function(){const c=document.getElementById('particles');const colors=['#6366f1','#ec4899','#f59e0b','#10b981','#818cf8'];for(let i=0;i<25;i++){const p=document.createElement('div');p.className='particle';p.style.left=Math.random()*100+'%';p.style.background=colors[Math.floor(Math.random()*colors.length)];p.style.animationDuration=(Math.random()*15+10)+'s';p.style.animationDelay=Math.random()*15+'s';const s=(Math.random()*5+2)+'px';p.style.width=s;p.style.height=s;c.appendChild(p)}})();
-
-const cursorGlow=document.getElementById('cursorGlow');
-document.addEventListener('mousemove',e=>{cursorGlow.style.left=e.clientX+'px';cursorGlow.style.top=e.clientY+'px'});
-
-function showToast(message,type='success',duration=3000){
-const t=document.createElement('div');t.className=`toast ${type}`;
-const icons={success:'fa-check-circle',error:'fa-exclamation-circle',info:'fa-info-circle'};
-t.innerHTML=`<i class="fas ${icons[type]||icons.info}"></i><span>${message}</span>`;
-document.getElementById('toastContainer').appendChild(t);
-setTimeout(()=>{t.classList.add('removing');setTimeout(()=>t.remove(),300)},duration);
-}
-
-document.addEventListener('click',function(e){
-const btn=e.target.closest('.btn,.submit-btn,.menu-item,.stat-card,.theme-toggle');if(!btn)return;
-const r=document.createElement('span');r.className='ripple-effect';
-const rect=btn.getBoundingClientRect();const size=Math.max(rect.width,rect.height);
-r.style.width=r.style.height=size+'px';r.style.left=(e.clientX-rect.left-size/2)+'px';r.style.top=(e.clientY-rect.top-size/2)+'px';
-btn.style.position=btn.style.position||'relative';btn.appendChild(r);setTimeout(()=>r.remove(),600);
-});
-
-function animateValue(el,start,end,duration,prefix='',suffix=''){
-let startTime=null;function step(ts){if(!startTime)startTime=ts;const p=Math.min((ts-startTime)/duration,1);el.textContent=prefix+Math.floor(p*(end-start)+start).toLocaleString()+suffix;if(p<1)requestAnimationFrame(step)}
-requestAnimationFrame(step);
-}
-
-function toggleTheme(){let t=document.body.getAttribute('data-theme'),n=t==='light'?'dark':'light';document.body.setAttribute('data-theme',n);['themeIcon','themeIcon2'].forEach(id=>{const el=document.getElementById(id);if(el)el.className=n==='dark'?'fas fa-sun':'fas fa-moon'});localStorage.setItem('pickzone_admin_theme',n);showToast(`Switched to ${n} mode`)}
-function loadTheme(){let t=localStorage.getItem('pickzone_admin_theme')||'light';document.body.setAttribute('data-theme',t);['themeIcon','themeIcon2'].forEach(id=>{const el=document.getElementById(id);if(el)el.className=t==='dark'?'fas fa-sun':'fas fa-moon'})}
-
-function adminLogin(){const e=document.getElementById('adminEmail').value.trim(),pass=document.getElementById('adminPass').value;if(e===MASTER_EMAIL&&pass===MASTER_PASS){sessionStorage.setItem('pickzone_admin','true');showAdminPanel();showToast('Welcome back, Admin!')}else{document.getElementById('loginAlert').innerHTML='<div class="alert alert-danger"><i class="fas fa-exclamation-circle"></i> Invalid credentials.</div>'}}
-function adminLogout(){sessionStorage.removeItem('pickzone_admin');document.getElementById('loginScreen').style.display='flex';document.getElementById('adminPanel').classList.remove('active');document.getElementById('adminEmail').value='';document.getElementById('adminPass').value='';document.getElementById('loginAlert').innerHTML=''}
-function showAdminPanel(){document.getElementById('loginScreen').style.display='none';document.getElementById('adminPanel').classList.add('active');loadDashboard()}
-function checkSession(){if(sessionStorage.getItem('pickzone_admin')==='true')showAdminPanel()}
-
-function showSection(section,el){
-document.querySelectorAll('.page-section').forEach(s=>s.classList.remove('active'));
-document.getElementById('section-'+section).classList.add('active');
-document.querySelectorAll('.menu-item').forEach(m=>m.classList.remove('active'));
-if(el)el.classList.add('active');
-document.getElementById('pageTitle').textContent={dashboard:'Dashboard',items:'Manage Items',orders:'Orders',users:'Customers',messages:'Message Arena',visitors:'Visitor Analytics'}[section];
-if(section==='dashboard')loadDashboard();
-if(section==='items')renderItemsList();
-if(section==='orders')renderOrdersList();
-if(section==='users'){renderUsersList();renderBestBuyer()}
-if(section==='messages')renderAdminMessages();
-if(section==='visitors')renderVisitors();
-}
-
-function loadDashboard(){
-const visitors=JSON.parse(localStorage.getItem('pickzone_visitors')||'[]');
-const users=JSON.parse(localStorage.getItem('pickzone_users')||'[]');
-const products=JSON.parse(localStorage.getItem('pickzone_items')||'[]');
-const orders=JSON.parse(localStorage.getItem('pickzone_orders')||'[]');
-const revenue=orders.reduce((a,o)=>a+(o.total||0),0);
-animateValue(document.getElementById('statVisitors'),0,visitors.length,1200);
-animateValue(document.getElementById('statUsers'),0,users.length,1200);
-animateValue(document.getElementById('statProducts'),0,products.length,1200);
-animateValue(document.getElementById('statOrders'),0,orders.length,1200);
-const revEl=document.getElementById('statRevenue');let st=null;function rs(ts){if(!st)st=ts;const p=Math.min((ts-st)/1500,1);revEl.textContent='LKR '+Math.floor(p*revenue).toLocaleString();if(p<1)requestAnimationFrame(rs)}
-requestAnimationFrame(rs);
-renderCharts(orders,products);
-}
-
-let ordersChart,categoriesChart,visitorsChart;
-function getItemCategories(p){if(Array.isArray(p.categories)&&p.categories.length)return p.categories;if(p.category)return[p.category];return[]}
-
-function renderCharts(orders,products){
+function renderDashboardCharts(orders,products){
 const isDark=document.body.getAttribute('data-theme')==='dark';
-const tc=isDark?'#F9FAFB':'#111827';const gc=isDark?'#334155':'#e2e8f0';
-const last7=[];for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const ds=d.toISOString().split('T')[0];last7.push({label:d.toLocaleDateString('en',{weekday:'short'}),count:orders.filter(o=>o.date&&o.date.startsWith(ds)).length})}
-const ctx1=document.getElementById('ordersChart').getContext('2d');if(ordersChart)ordersChart.destroy();
-ordersChart=new Chart(ctx1,{type:'line',data:{labels:last7.map(d=>d.label),datasets:[{label:'Orders',data:last7.map(d=>d.count),borderColor:'#6366f1',backgroundColor:'rgba(99,102,241,0.1)',fill:true,tension:0.4,borderWidth:3,pointBackgroundColor:'#6366f1',pointRadius:5}]},options:{responsive:true,animation:{duration:1500},plugins:{legend:{labels:{color:tc}}},scales:{x:{ticks:{color:tc},grid:{color:gc}},y:{ticks:{color:tc},grid:{color:gc},beginAtZero:true}}}});
-const cats={};products.forEach(p=>{getItemCategories(p).forEach(c=>{cats[c]=(cats[c]||0)+1})});
-const ctx2=document.getElementById('categoriesChart').getContext('2d');if(categoriesChart)categoriesChart.destroy();
-categoriesChart=new Chart(ctx2,{type:'doughnut',data:{labels:Object.keys(cats),datasets:[{data:Object.values(cats),backgroundColor:['#6366f1','#ec4899','#f59e0b','#10b981','#3b82f6','#8b5cf6','#ef4444','#14b8a6','#f97316','#84cc16','#06b6d4','#d946ef','#f43f5e','#a855f7','#eab308']}]},options:{responsive:true,animation:{duration:1500},plugins:{legend:{position:'bottom',labels:{color:tc,padding:10,font:{size:11}}}}}});
+const textColor=isDark?'#F9FAFB':'#111827';
+const gridColor=isDark?'#334155':'#e2e8f0';
+
+// ===== ORDER TRENDS CHART =====
+const last7=[];
+for(let i=6;i>=0;i--){
+const d=new Date();d.setDate(d.getDate()-i);
+const ds=d.toISOString().split('T')[0];
+const count=orders.filter(o=>o.date&&o.date.startsWith(ds)).length;
+last7.push({label:d.toLocaleDateString('en',{weekday:'short'}),count});
 }
 
-function compressImage(dataUrl,maxWidth,quality,callback){
-const img=new Image();img.onload=function(){const c=document.createElement('canvas');let w=img.width,h=img.height;if(w>maxWidth){h=(h*maxWidth)/w;w=maxWidth}c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);callback(c.toDataURL('image/jpeg',quality))};img.src=dataUrl;
+const ctx1=document.getElementById('ordersChart').getContext('2d');
+if(ordersChart)ordersChart.destroy();
+ordersChart=new Chart(ctx1,{
+type:'line',
+data:{
+labels:last7.map(d=>d.label),
+datasets:[{
+label:'Orders',
+data:last7.map(d=>d.count),
+borderColor:'#6366f1',
+backgroundColor:'rgba(99,102,241,0.1)',
+fill:true,tension:0.4,borderWidth:3,
+pointBackgroundColor:'#6366f1',
+pointRadius:5,pointHoverRadius:8
+}]
+},
+options:{
+responsive:true,
+animation:{duration:1500,easing:'easeOutQuart'},
+plugins:{legend:{labels:{color:textColor}}},
+scales:{
+x:{ticks:{color:textColor},grid:{color:gridColor}},
+y:{ticks:{color:textColor,stepSize:1},grid:{color:gridColor},beginAtZero:true}
 }
-
-// ===================================================================
-// ===== ORDER STATUS SYSTEM ========================================
-// ===================================================================
-
-function getOrderStatusCounts(){
-const orders=JSON.parse(localStorage.getItem('pickzone_orders')||'[]');
-const counts={pending:0,processing:0,on-the-road:0,delivered:0,cancelled:0};
-orders.forEach(o=>{const s=o.status||'pending';if(counts[s]!==undefined)counts[s]++});
-return counts;
 }
-
-function renderStatusStats(){
-const counts=getOrderStatusCounts();
-const container=document.getElementById('statusStats');
-container.innerHTML=ORDER_STATUSES.map(status=>{
-const cfg=STATUS_CONFIG[status];
-return`<div class="status-stat-card s-${status}">
-<div class="ssc-icon" style="color:${cfg.color}"><i class="fas ${cfg.icon}"></i></div>
-<div class="ssc-count" style="color:${cfg.color}">${counts[status]}</div>
-<div class="ssc-label">${cfg.label}</div>
-</div>`;
-}).join('');
-}
-
-function renderOrderFilterBar(){
-const counts=getOrderStatusCounts();
-const total=Object.values(counts).reduce((a,b)=>a+b,0);
-const container=document.getElementById('orderFilterBar');
-container.innerHTML=`<div class="filter-chip ${activeOrderStatusFilter==='all'?'active':''}" onclick="setOrderFilter('all')">All <span class="fc-count">${total}</span></div>`+
-ORDER_STATUSES.map(s=>`<div class="filter-chip ${activeOrderStatusFilter===s?'active':''}" onclick="setOrderFilter('${s}')"><i class="fas ${STATUS_CONFIG[s].icon}" style="font-size:10px;color:${STATUS_CONFIG[s].color}"></i> ${STATUS_CONFIG[s].label} <span class="fc-count">${counts[s]}</span></div>`).join('');
-}
-
-function setOrderFilter(status){
-activeOrderStatusFilter=status;
-renderOrdersList();
-}
-
-function renderOrdersList(){
-renderStatusStats();
-renderOrderFilterBar();
-
-const orders=JSON.parse(localStorage.getItem('pickzone_orders')||'[]').reverse();
-const container=document.getElementById('ordersListContainer');
-const searchVal=(document.getElementById('orderSearch')?.value||'').toLowerCase().trim();
-
-let filtered=orders;
-if(activeOrderStatusFilter!=='all'){
-filtered=filtered.filter(o=>(o.status||'pending')===activeOrderStatusFilter);
-}
-if(searchVal){
-filtered=filtered.filter(o=>
-(o.id||'').toLowerCase().includes(searchVal)||
-(o.customer?.name||'').toLowerCase().includes(searchVal)||
-(o.email||'').toLowerCase().includes(searchVal)
-);
-}
-
-if(!filtered.length){
-container.innerHTML='<div class="empty-state"><i class="fas fa-receipt"></i><p>No orders found</p></div>';
-return;
-}
-
-container.innerHTML='<div style="overflow-x:auto"><table class="admin-table"><thead><tr><th>Order ID</th><th>Customer</th><th>Items</th><th>Total</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead><tbody>'+filtered.map(o=>{
-const status=o.status||'pending';
-const cfg=STATUS_CONFIG[status];
-return`<tr>
-<td style="font-weight:700;font-size:12px">${o.id}</td>
-<td>${o.customer?.name||'N/A'}<br><small style="color:var(--text-secondary)">${o.email}</small></td>
-<td>${o.items.map(i=>i.title).join(', ').substring(0,40)}...</td>
-<td style="font-weight:700">LKR ${o.total.toLocaleString()}</td>
-<td>
-<div style="position:relative;display:inline-block">
-<span class="status-badge ${cfg.class}" onclick="toggleOrderStatusMenu(event,'${o.id}')">
-<span class="status-dot"></span>
-<i class="fas ${cfg.icon}" style="font-size:10px"></i>
-${cfg.label}
-<i class="fas fa-chevron-down" style="font-size:8px;margin-left:4px"></i>
-</span>
-</div>
-</td>
-<td style="font-size:12px;color:var(--text-secondary)">${new Date(o.date).toLocaleDateString()}</td>
-<td><button class="btn btn-secondary" onclick="viewOrderDetail('${o.id}')" style="padding:6px 10px;font-size:11px"><i class="fas fa-eye"></i></button></td>
-</tr>`;
-}).join('')+'</tbody></table></div>';
-}
-
-function toggleOrderStatusMenu(event,orderId){
-event.stopPropagation();
-// Remove existing dropdowns
-document.querySelectorAll('.status-dropdown').forEach(el=>el.remove());
-
-const badge=event.target.closest('.status-badge');
-const parent=badge.parentElement;
-const currentStatus=(JSON.parse(localStorage.getItem('pickzone_orders')||'[]').find(o=>o.id===orderId)?.status)||'pending';
-
-const dropdown=document.createElement('div');
-dropdown.className='status-dropdown';
-dropdown.innerHTML=ORDER_STATUSES.map(s=>{
-const cfg=STATUS_CONFIG[s];
-const isActive=s===currentStatus;
-return`<div class="status-dropdown-item ${isActive?'active':''}" onclick="changeOrderStatus('${orderId}','${s}')">
-<span class="sd-dot" style="background:${cfg.color}"></span>
-<i class="fas ${cfg.icon}" style="color:${cfg.color};font-size:12px"></i>
-<span>${cfg.label}</span>
-${isActive?'<i class="fas fa-check sd-check"></i>':''}
-</div>`;
-}).join('');
-
-parent.appendChild(dropdown);
-
-// Close on outside click
-setTimeout(()=>{
-document.addEventListener('click',function closeDD(){
-dropdown.remove();
-document.removeEventListener('click',closeDD);
-},{once:true});
-},10);
-}
-
-function changeOrderStatus(orderId,newStatus){
-document.querySelectorAll('.status-dropdown').forEach(el=>el.remove());
-
-let orders=JSON.parse(localStorage.getItem('pickzone_orders')||'[]');
-const idx=orders.findIndex(o=>o.id===orderId);
-if(idx===-1)return;
-
-const oldStatus=orders[idx].status||'pending';
-if(oldStatus===newStatus)return;
-
-orders[idx].status=newStatus;
-orders[idx].statusHistory=orders[idx].statusHistory||[];
-orders[idx].statusHistory.push({
-status:newStatus,
-changedAt:new Date().toISOString(),
-changedBy:'admin'
 });
 
-localStorage.setItem('pickzone_orders',JSON.stringify(orders));
-
-const cfg=STATUS_CONFIG[newStatus];
-renderOrdersList();
-showToast(`Order ${orderId} status → ${cfg.label}`,'success');
-}
-
-function viewOrderDetail(orderId){
-const orders=JSON.parse(localStorage.getItem('pickzone_orders')||'[]');
-const o=orders.find(x=>x.id===orderId);
-if(!o)return;
-
-const status=o.status||'pending';
-const statusIdx=ORDER_STATUSES.indexOf(status);
-
-// Build timeline
-const timelineSteps=ORDER_STATUSES.filter(s=>s!=='cancelled').map((s,i)=>{
-const cfg=STATUS_CONFIG[s];
-const isCompleted=ORDER_STATUSES.indexOf(s)<statusIdx;
-const isCurrent=s===status;
-const isCancelled=status==='cancelled';
-let dotClass='';
-if(isCancelled&&i===0)dotClass='current';
-else if(isCompleted)dotClass='completed';
-else if(isCurrent)dotClass='current';
-
-return`<div class="timeline-step">
-<div class="timeline-dot ${dotClass}"><i class="fas ${cfg.icon}"></i></div>
-<div class="timeline-label ${isCurrent||isCompleted?'active':''}">${cfg.label}</div>
-</div>`;
+// ===== POPULAR CATEGORIES CHART (ONLY categories with products) =====
+const catCounts={};
+products.forEach(p=>{
+getItemCategories(p).forEach(c=>{
+catCounts[c]=(catCounts[c]||0)+1;
+});
 });
 
-// Progress line width
-let progressPct=0;
-if(status==='cancelled')progressPct=0;
-else if(status==='delivered')progressPct=100;
-else progressPct=(statusIdx/(ORDER_STATUSES.length-2))*100;
+// Sort categories by count (most popular first) and filter out zero counts
+const sortedCats=Object.entries(catCounts)
+.filter(([cat,count])=>count>0)
+.sort((a,b)=>b[1]-a[1]);
 
-const content=document.getElementById('orderDetailContent');
-content.innerHTML=`
-<!-- Timeline -->
-<div style="background:var(--bg);border-radius:12px;padding:20px;margin-bottom:16px">
-<h4 style="font-size:12px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:16px">Order Progress</h4>
-<div class="status-timeline">
-<div class="timeline-line-progress" style="width:${progressPct}%"></div>
-${timelineSteps.join('')}
-</div>
-${status==='cancelled'?'<div style="text-align:center;margin-top:12px"><span class="status-badge status-cancelled"><span class="status-dot"></span><i class="fas fa-times-circle"></i> This order was cancelled</span></div>':''}
-</div>
+const catNames=sortedCats.map(([cat])=>cat);
+const catCountsValues=sortedCats.map(([,count])=>count);
 
-<!-- Change Status -->
-<div style="background:var(--bg);border-radius:12px;padding:14px;margin-bottom:16px">
-<h4 style="font-size:12px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px">Update Status</h4>
-<div style="display:flex;gap:8px;flex-wrap:wrap">
-${ORDER_STATUSES.map(s=>{
-const cfg=STATUS_CONFIG[s];
-const isCurrent=s===status;
-return`<button class="status-badge ${cfg.class}" style="${isCurrent?'transform:scale(1.05);box-shadow:0 4px 12px '+cfg.color+'40':''}" onclick="changeOrderStatusFromDetail('${orderId}','${s}')">
-<span class="status-dot"></i><i class="fas ${cfg.icon}" style="font-size:10px"></i> ${cfg.label}
-</button>`;
-}).join('')}
-</div>
-</div>
+// Color palette for bars
+const barColors=[
+'#6366f1','#ec4899','#f59e0b','#10b981','#3b82f6',
+'#8b5cf6','#ef4444','#14b8a6','#f97316','#84cc16',
+'#06b6d4','#d946ef','#f43f5e','#a855f7','#eab308'
+];
 
-<!-- Customer Info -->
-<div class="order-detail-grid">
-<div class="od-item"><div class="od-label">Order ID</div><div class="od-value">${o.id}</div></div>
-<div class="od-item"><div class="od-label">Date</div><div class="od-value">${new Date(o.date).toLocaleString()}</div></div>
-<div class="od-item"><div class="od-label">Customer</div><div class="od-value">${o.customer?.name||'N/A'}</div></div>
-<div class="od-item"><div class="od-label">Email</div><div class="od-value">${o.email}</div></div>
-<div class="od-item"><div class="od-label">Phone 1</div><div class="od-value">${o.customer?.phone1||'-'}</div></div>
-<div class="od-item"><div class="od-label">Phone 2</div><div class="od-value">${o.customer?.phone2||'-'}</div></div>
-<div class="od-item"><div class="od-label">City</div><div class="od-value">${o.customer?.city||'-'}</div></div>
-<div class="od-item"><div class="od-label">District</div><div class="od-value">${o.customer?.district||'-'}</div></div>
-</div>
+const ctx2=document.getElementById('popularCatsChart').getContext('2d');
+if(popularCatsChart)popularCatsChart.destroy();
 
-<!-- Items List -->
-<div class="order-items-list">
-<h4>Order Items</h4>
-${o.items.map(i=>`<div class="oi-row"><div><div class="oi-name">${i.title}</div><div class="oi-detail">${i.code} × ${i.qty}</div></div><div style="font-weight:700">LKR ${(i.price*i.qty).toLocaleString()}</div></div>`).join('')}
-<div class="oi-row" style="border-top:2px solid var(--border);margin-top:8px;padding-top:10px"><div class="oi-name">Subtotal</div><div style="font-weight:700">LKR ${o.subtotal?.toLocaleString()}</div></div>
-<div class="oi-row"><div class="oi-name">Delivery</div><div>LKR ${o.delivery||400}</div></div>
-<div class="oi-row" style="border-top:2px solid var(--border);margin-top:4px;padding-top:10px"><div class="oi-name" style="font-size:15px">Grand Total</div><div style="font-weight:800;font-size:16px;color:var(--primary)">LKR ${o.total?.toLocaleString()}</div></div>
-</div>
-
-<!-- Status History -->
-${o.statusHistory&&o.statusHistory.length?`<div style="background:var(--bg);border-radius:12px;padding:14px">
-<h4 style="font-size:12px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px">Status History</h4>
-${o.statusHistory.map(h=>{
-const cfg=STATUS_CONFIG[h.status];
-return`<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border)">
-<span class="sd-dot" style="width:8px;height:8px;border-radius:50%;background:${cfg.color};flex-shrink:0"></span>
-<span style="font-size:12px;font-weight:600">${cfg.label}</span>
-<span style="font-size:11px;color:var(--text-secondary);margin-left:auto">${new Date(h.changedAt).toLocaleString()}</span>
-</div>`;
-}).join('')}
-</div>`:''}
-`;
-
-document.getElementById('orderDetailModal').classList.add('active');
+if(catNames.length===0){
+// If no products exist, show a message
+popularCatsChart=new Chart(ctx2,{
+type:'bar',
+data:{labels:['No data'],datasets:[{data:[0],backgroundColor:'#ccc'}]},
+options:{
+responsive:true,
+plugins:{
+legend:{display:false},
+title:{display:true,text:'Add products to see popular categories',color:textColor,font:{size:14}}
+},
+scales:{
+x:{display:false},
+y:{display:false}
 }
-
-function changeOrderStatusFromDetail(orderId,newStatus){
-let orders=JSON.parse(localStorage.getItem('pickzone_orders')||'[]');
-const idx=orders.findIndex(o=>o.id===orderId);
-if(idx===-1)return;
-const oldStatus=orders[idx].status||'pending';
-if(oldStatus===newStatus)return;
-orders[idx].status=newStatus;
-orders[idx].statusHistory=orders[idx].statusHistory||[];
-orders[idx].statusHistory.push({status:newStatus,changedAt:new Date().toISOString(),changedBy:'admin'});
-localStorage.setItem('pickzone_orders',JSON.stringify(orders));
-const cfg=STATUS_CONFIG[newStatus];
-showToast(`Order status → ${cfg.label}`,'success');
-viewOrderDetail(orderId);
 }
-
-// ===================================================================
-// ===== BEST BUYER ==================================================
-// ===================================================================
-
-function getBestBuyer(){
-const users=JSON.parse(localStorage.getItem('pickzone_users')||'[]');
-const orders=JSON.parse(localStorage.getItem('pickzone_orders')||'[]');
-if(!users.length)return null;
-const stats=users.map(u=>{
-const uo=orders.filter(o=>o.email.toLowerCase().trim()===u.email.toLowerCase().trim());
-return{...u,totalOrders:uo.length,totalSpent:uo.reduce((s,o)=>s+(o.total||0),0)};
 });
-stats.sort((a,b)=>b.totalOrders!==a.totalOrders?b.totalOrders-a.totalOrders:b.totalSpent-a.totalSpent);
-return stats.length>0&&stats[0].totalOrders>0?stats[0]:null;
+}else{
+popularCatsChart=new Chart(ctx2,{
+type:'bar',
+data:{
+labels:catNames,
+datasets:[{
+label:'Products',
+data:catCountsValues,
+backgroundColor:catNames.map((_,i)=>barColors[i%barColors.length]+'cc'),
+borderColor:catNames.map((_,i)=>barColors[i%barColors.length]),
+borderWidth:2,
+borderRadius:8,
+borderSkipped:false
+}]
+},
+options:{
+indexAxis:'y',
+responsive:true,
+maintainAspectRatio:false,
+animation:{duration:1500,easing:'easeOutQuart'},
+plugins:{
+legend:{display:false},
+tooltip:{
+backgroundColor:isDark?'#1e293b':'#fff',
+titleColor:isDark?'#F9FAFB':'#111827',
+bodyColor:isDark?'#94a3b8':'#64748b',
+borderColor:isDark?'#334155':'#e2e8f0',
+borderWidth:1,
+padding:12,
+cornerRadius:8,
+callbacks:{
+label:function(context){
+return ` ${context.parsed.x} product${context.parsed.x>1?'s':''}`;
+}
+}
+}
+},
+scales:{
+x:{
+ticks:{color:textColor,stepSize:1},
+grid:{color:gridColor},
+beginAtZero:true,
+title:{display:true,text:'Number of Products',color:textColor,font:{size:12}}
+},
+y:{
+ticks:{color:textColor,font:{size:12,weight:'600'}},
+grid:{display:false}
+}
+}
+}
+});
+
+// Set canvas height based on number of categories
+const canvasHeight=Math.max(250,catNames.length*40+60);
+document.getElementById('popularCatsChart').style.height=canvasHeight+'px';
+}
 }
 
-function renderBestBuyer(){
-const container=document.getElementById('bestBuyerShowcase');
-const bb=getBestBuyer();
-if(!bb){container.innerHTML='';return}
-const pic=bb.profilePic||'https://ui-avatars.com/api/?name='+encodeURIComponent(bb.email)+'&background=f59e0b&color=fff&size=120';
-container.innerHTML=`<div class="best-buyer-showcase">
-<div class="best-buyer-header"><i class="fas fa-crown crown-icon"></i><div><div class="bb-title">Best Buyer</div><div class="bb-sub">Top customer with most orders</div></div></div>
-<div class="best-buyer-content">
-<img src="${pic}" class="best-buyer-avatar">
-<div class="best-buyer-stats">
-<div class="bb-stat"><div class="sv">${bb.totalOrders}</div><div class="sl"><i class="fas fa-shopping-bag"></i> Orders</div></div>
-<div class="bb-stat"><div class="sv">LKR ${bb.totalSpent.toLocaleString()}</div><div class="sl"><i class="fas fa-coins"></i> Total Spent</div></div>
-<div class="bb-stat"><div class="sv">${new Date(bb.createdAt).toLocaleDateString('en',{month:'short',year:'numeric'})}</div><div class="sl"><i class="fas fa-calendar"></i> Member Since</div></div>
-</div>
-</div>
-<div class="bb-email"><i class="fas fa-envelope" style="color:var(--gold);margin-right:6px"></i>${bb.email}</div>
-</div>`;
-}
 
-// ===================================================================
-// ===== CUSTOMERS ===================================================
-// ===================================================================
-
-function renderUsersList(){
-const users=JSON.parse(localStorage.getItem('pickzone_users')||'[]');
-const orders=JSON.parse(localStorage.getItem('pickzone_orders')||'[]');
-const container=document.getElementById('usersListContainer');
-const searchVal=(document.getElementById('customerSearch')?.value||'').toLowerCase().trim();
-const usersWithStats=users.map(u=>{const uo=orders.filter(o=>o.email.toLowerCase().trim()===u.email.toLowerCase().trim());return{...u,orderCount:uo.length,totalSpent:uo.reduce((s,o)=>s+(o.total||0),0)}});
-usersWithStats.sort((a,b)=>b.orderCount!==a.orderCount?b.orderCount-a.orderCount:b.totalSpent-a.totalSpent);
-let filtered=searchVal?usersWithStats.filter(u=>u.email.toLowerCase().includes(searchVal)||(u.whatsapp&&u.whatsapp.includes(searchVal))):usersWithStats;
-const bb=getBestBuyer();const bbEmail=bb?bb.email.toLowerCase().trim():'';
-if(!filtered.length){container.innerHTML=searchVal?'<div class="empty-state"><i class="fas fa-search"></i><p>No matches</p></div>':'<div class="empty-state"><i class="fas fa-users"></i><p>No customers yet</p></div>';updateBulkBar();return}
-container.innerHTML='<div style="overflow-x:auto"><table class="admin-table"><thead><tr><th style="width:30px"><input type="checkbox" id="selectAllCustomers" onchange="toggleSelectAll(this)" style="cursor:pointer"></th><th>Profile</th><th>Email</th><th>WhatsApp</th><th>Orders</th><th>Total Spent</th><th>Joined</th><th>Actions</th></tr></thead><tbody>'+filtered.map(u=>{
-const pic=u.profilePic||'https://ui-avatars.com/api/?name='+encodeURIComponent(u.email)+'&background=6366f1&color=fff&size=64';
-const isSel=selectedCustomerEmails.includes(u.email);
-const isBB=u.email.toLowerCase().trim()===bbEmail;
-return`<tr class="${isBB?'best-buyer-row':''}">
-<td><input type="checkbox" class="customer-check" data-email="${u.email}" ${isSel?'checked':''} onchange="toggleCustomerSelect(this)" style="cursor:pointer"></td>
-<td><img src="${pic}" style="width:40px;height:40px;border-radius:50%;object-fit:cover;${isBB?'border:2px solid var(--gold)':''}" alt=""></td>
-<td>${u.email} ${isBB?'<span class="crown-badge-table"><i class="fas fa-crown"></i> BEST</span>':''}</td>
-<td>${u.whatsapp||'-'}</td>
-<td><strong>${u.orderCount}</strong></td>
-<td>LKR ${u.totalSpent.toLocaleString()}</td>
-<td>${new Date(u.createdAt).toLocaleDateString()}</td>
-<td><button class="btn btn-danger" onclick="requestDeleteCustomer('${u.email}')" style="padding:6px 10px;font-size:11px"><i class="fas fa-user-slash"></i> Remove</button></td>
-</tr>`;
-}).join('')+'</tbody></table></div>';
-updateBulkBar();
-}
-
-function toggleSelectAll(cb){const users=JSON.parse(localStorage.getItem('pickzone_users')||'[]');selectedCustomerEmails=cb.checked?users.map(u=>u.email):[];document.querySelectorAll('.customer-check').forEach(c=>c.checked=cb.checked);updateBulkBar()}
-function toggleCustomerSelect(cb){const e=cb.dataset.email;if(cb.checked){if(!selectedCustomerEmails.includes(e))selectedCustomerEmails.push(e)}else{selectedCustomerEmails=selectedCustomerEmails.filter(x=>x!==e)}const all=document.querySelectorAll('.customer-check');const sa=document.getElementById('selectAllCustomers');if(sa)sa.checked=selectedCustomerEmails.length===all.length;updateBulkBar()}
-function updateBulkBar(){const bar=document.getElementById('bulkBar');if(selectedCustomerEmails.length>0){bar.classList.add('show');document.getElementById('bulkCount').textContent=`${selectedCustomerEmails.length} selected`}else{bar.classList.remove('show')}}
-function clearSelection(){selectedCustomerEmails=[];document.querySelectorAll('.customer-check').forEach(c=>c.checked=false);const sa=document.getElementById('selectAllCustomers');if(sa)sa.checked=false;updateBulkBar()}
-function requestDeleteCustomer(email){pendingDeleteEmail=email;document.getElementById('deleteCustomerEmail').textContent=email;document.getElementById('deleteCustomerModal').classList.add('active')}
-function confirmDeleteCustomer(){if(!pendingDeleteEmail)return;let users=JSON.parse(localStorage.getItem('pickzone_users')||'[]');users=users.filter(u=>u.email!==pendingDeleteEmail);localStorage.setItem('pickzone_users',JSON.stringify(users));const cs=localStorage.getItem('pickzone_current_user');if(cs){try{const su=JSON.parse(cs);if(su.email===pendingDeleteEmail)localStorage.removeItem('pickzone_current_user')}catch(e){}}selectedCustomerEmails=selectedCustomerEmails.filter(e=>e!==pendingDeleteEmail);closeModal('deleteCustomerModal');pendingDeleteEmail=null;renderUsersList();renderBestBuyer();showToast('Customer removed.','success')}
-function bulkDeleteCustomers(){if(!selectedCustomerEmails.length)return;document.getElementById('bulkDeleteCount').textContent=selectedCustomerEmails.length;document.getElementById('bulkDeleteModal').classList.add('active')}
-function confirmBulkDelete(){let users=JSON.parse(localStorage.getItem('pickzone_users')||'[]');const emails=[...selectedCustomerEmails];users=users.filter(u=>!emails.includes(u.email));localStorage.setItem('pickzone_users',JSON.stringify(users));const cs=localStorage.getItem('pickzone_current_user');if(cs){try{const su=JSON.parse(cs);if(emails.includes(su.email))localStorage.removeItem('pickzone_current_user')}catch(e){}}selectedCustomerEmails=[];closeModal('bulkDeleteModal');renderUsersList();renderBestBuyer();showToast(`${emails.length} customer(s) removed.`,'success')}
-function broadcastEmail(){const users=JSON.parse(localStorage.getItem('pickzone_users')||'[]');if(!users.length){showToast('No users','error');return}window.location.href=`mailto:?bcc=${users.map(u=>u.email).join(',')}&subject=${encodeURIComponent('PickZone Announcement')}&body=${encodeURIComponent('Dear Customer,\n\n[Your message here]\n\nBest regards,\nPickZone Team')}`;showToast('Opening email client...')}
-
-// ===================================================================
-// ===== ITEMS =======================================================
-// ===================================================================
-
-function renderItemsList(){
-const products=JSON.parse(localStorage.getItem('pickzone_items')||'[]');
-const container=document.getElementById('itemsListContainer');
-if(!products.length){container.innerHTML='<div class="empty-state"><i class="fas fa-box-open"></i><p>No items yet</p></div>';return}
-container.innerHTML='<div style="overflow-x:auto"><table class="admin-table"><thead><tr><th>Image</th><th>Code</th><th>Title</th><th>Categories</th><th>Price</th><th>Actions</th></tr></thead><tbody>'+products.map((p,i)=>{
-const cats=getItemCategories(p);
-return`<tr><td><img src="${(p.images&&p.images[0])||''}" style="width:40px;height:40px;border-radius:8px;object-fit:cover" alt=""></td><td style="font-weight:700">${p.code}</td><td>${p.title}</td><td><div style="display:flex;flex-wrap:wrap;gap:4px">${cats.map(c=>`<span style="padding:2px 8px;background:var(--gradient);color:#fff;border-radius:10px;font-size:10px;font-weight:600">${c}</span>`).join('')}</div></td><td>LKR ${p.price.toLocaleString()}</td><td><button class="btn btn-secondary" onclick="editItem(${i})" style="padding:6px 10px;font-size:11px"><i class="fas fa-edit"></i></button> <button class="btn btn-danger" onclick="deleteItem(${i})" style="padding:6px 10px;font-size:11px"><i class="fas fa-trash"></i></button></td></tr>`;
-}).join('')+'</tbody></table></div>';
-}
-
-function openItemModal(idx=-1){
-document.getElementById('editItemIdx').value=idx;selectedItemCategories=[];uploadedItemPhotos=[];
-document.getElementById('itemCode').value='';document.getElementById('itemTitle').value='';document.getElementById('itemPrice').value='';
-document.getElementById('itemPhotosPreview').innerHTML='';document.getElementById('itemUploadPlaceholder').style.display='block';
-renderItemCategoriesGrid();
-if(idx>=0){const products=JSON.parse(localStorage.getItem('pickzone_items')||'[]');const p=products[idx];document.getElementById('itemModalTitle').innerHTML='<i class="fas fa-edit"></i> Edit Item';document.getElementById('itemCode').value=p.code;document.getElementById('itemTitle').value=p.title;document.getElementById('itemPrice').value=p.price;selectedItemCategories=getItemCategories(p);uploadedItemPhotos=(p.images||[]).filter(img=>img.startsWith('data:image'));renderItemCategoriesGrid();renderItemPhotosPreview()}
-else{document.getElementById('itemModalTitle').innerHTML='<i class="fas fa-box"></i> Add New Item'}
-document.getElementById('itemModal').classList.add('active');
-}
-
-function renderItemCategoriesGrid(){
-document.getElementById('itemCatsGrid').innerHTML=ALL_CATEGORIES.map(cat=>{
-const isSel=selectedItemCategories.includes(cat);
-return`<div onclick="toggleItemCategory('${cat}')" style="display:flex;align-items:center;gap:6px;padding:7px 10px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;transition:all 0.3s;border:1px solid ${isSel?'transparent':'var(--border)'};background:${isSel?'var(--gradient)':'var(--card)'};color:${isSel?'#fff':'var(--text)'}"><i class="fas fa-${isSel?'check-circle':'circle'}" style="font-size:11px"></i>${cat}</div>`;
-}).join('');
-}
-function toggleItemCategory(cat){const i=selectedItemCategories.indexOf(cat);if(i>-1)selectedItemCategories.splice(i,1);else selectedItemCategories.push(cat);renderItemCategoriesGrid()}
-
-function handleItemPhotos(event){
-const files=event.target.files;if(!files.length)return;
-Array.from(files).forEach(file=>{if(!file.type.startsWith('image/'))return;if(file.size>2*1024*1024){showToast('Max 2MB','error');return}const reader=new FileReader();reader.onload=e=>{compressImage(e.target.result,600,0.7,c=>{uploadedItemPhotos.push(c);renderItemPhotosPreview()})};reader.readAsDataURL(file)});
-event.target.value='';
-}
-
-function renderItemPhotosPreview(){
-const c=document.getElementById('itemPhotosPreview');const p=document.getElementById('itemUploadPlaceholder');
-if(uploadedItemPhotos.length>0)p.style.display='none';else p.style.display='block';
-c.innerHTML=uploadedItemPhotos.map((photo,idx)=>`<div style="position:relative;aspect-ratio:1;border-radius:8px;overflow:hidden;border:1px solid var(--border)"><img src="${photo}" style="width:100%;height:100%;object-fit:cover" alt=""><button onclick="removeItemPhoto(${idx})" style="position:absolute;top:2px;right:2px;width:20px;height:20px;border-radius:50%;background:var(--danger);color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;cursor:pointer;border:none"><i class="fas fa-times"></i></button>${idx===0?'<span style="position:absolute;bottom:2px;left:2px;background:rgba(0,0,0,0.6);color:#fff;font-size:9px;padding:1px 5px;border-radius:4px">Cover</span>':''}</div>`).join('');
-}
-function removeItemPhoto(idx){uploadedItemPhotos.splice(idx,1);renderItemPhotosPreview()}
-
-function saveItem(){
-const idx=parseInt(document.getElementById('editItemIdx').value);
-const code=document.getElementById('itemCode').value.trim(),title=document.getElementById('itemTitle').value.trim(),price=parseFloat(document.getElementById('itemPrice').value);
-if(!code||!title||!price){showToast('Fill all fields','error');return}
-if(!selectedItemCategories.length){showToast('Select a category','error');return}
-if(!uploadedItemPhotos.length){showToast('Upload a photo','error');return}
-let products=JSON.parse(localStorage.getItem('pickzone_items')||'[]');
-const item={code,title,price,categories:[...selectedItemCategories],category:selectedItemCategories[0],images:[...uploadedItemPhotos]};
-if(idx>=0)products[idx]=item;else products.push(item);
-localStorage.setItem('pickzone_items',JSON.stringify(products));
-closeModal('itemModal');renderItemsList();showToast(idx>=0?'Item updated!':'Item added!');
-}
-function editItem(idx){openItemModal(idx)}
-function deleteItem(idx){if(!confirm('Delete?'))return;let products=JSON.parse(localStorage.getItem('pickzone_items')||'[]');products.splice(idx,1);localStorage.setItem('pickzone_items',JSON.stringify(products));renderItemsList();showToast('Deleted','error')}
-
-// ===================================================================
-// ===== MESSAGES ====================================================
-// ===================================================================
-
-function renderAdminMessages(){
-const messages=JSON.parse(localStorage.getItem('pickzone_messages')||'[]');
-const container=document.getElementById('adminMessagesContainer');
-if(!messages.length){container.innerHTML='<div class="empty-state"><i class="fas fa-comments"></i><p>No messages yet</p></div>';return}
-container.innerHTML=messages.map((m,i)=>{
-const pic=m.profilePic||'https://ui-avatars.com/api/?name='+encodeURIComponent(m.name||'U')+'&background=6366f1&color=fff&size=64';
-let att='';if(m.attachment){if(m.attachmentType&&m.attachmentType.startsWith('video'))att=`<video controls src="${m.attachment}"></video>`;else att=`<img src="${m.attachment}" alt="">`}
-return`<div class="msg-card"><div class="msg-header"><img src="${pic}" alt=""><span class="name">${m.name||'User'}</span><span style="font-size:11px;color:var(--text-secondary);margin-left:8px">${m.email}</span><span class="time">${new Date(m.time).toLocaleString()}</span></div><div class="msg-body">${m.text||''}${att}</div><div class="msg-actions"><button class="btn btn-secondary" onclick="editAdminMessage(${i})" style="padding:6px 10px;font-size:11px"><i class="fas fa-edit"></i> Edit</button><button class="btn btn-danger" onclick="deleteAdminMessage(${i})" style="padding:6px 10px;font-size:11px"><i class="fas fa-trash"></i> Delete</button></div></div>`;
-}).join('');
-}
-function editAdminMessage(idx){const m=JSON.parse(localStorage.getItem('pickzone_messages')||'[]');const n=prompt('Edit:',m[idx].text);if(n!==null){m[idx].text=n;localStorage.setItem('pickzone_messages',JSON.stringify(m));renderAdminMessages();showToast('Updated')}}
-function deleteAdminMessage(idx){if(!confirm('Delete?'))return;const m=JSON.parse(localStorage.getItem('pickzone_messages')||'[]');m.splice(idx,1);localStorage.setItem('pickzone_messages',JSON.stringify(m));renderAdminMessages();showToast('Deleted','error')}
-
-// ===================================================================
-// ===== VISITORS ====================================================
-// ===================================================================
-
-function renderVisitors(){
-const visitors=JSON.parse(localStorage.getItem('pickzone_visitors')||'[]');
-document.getElementById('visitorTotal').textContent=visitors.length;
-document.getElementById('visitorToday').textContent=visitors.filter(v=>v.time&&v.time.startsWith(new Date().toISOString().split('T')[0])).length;
-renderVisitorsChart();
-}
-function renderVisitorsChart(){
-const visitors=JSON.parse(localStorage.getItem('pickzone_visitors')||'[]');
-const isDark=document.body.getAttribute('data-theme')==='dark';
-const tc=isDark?'#F9FAFB':'#111827';const gc=isDark?'#334155':'#e2e8f0';
-const last7=[];for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const ds=d.toISOString().split('T')[0];last7.push({label:d.toLocaleDateString('en',{weekday:'short'}),count:visitors.filter(v=>v.time&&v.time.startsWith(ds)).length})}
-const ctx=document.getElementById('visitorsChart').getContext('2d');if(visitorsChart)visitorsChart.destroy();
-visitorsChart=new Chart(ctx,{type:'bar',data:{labels:last7.map(d=>d.label),datasets:[{label:'Visitors',data:last7.map(d=>d.count),backgroundColor:'rgba(99,102,241,0.7)',borderColor:'#6366f1',borderWidth:2,borderRadius:8}]},options:{responsive:true,animation:{duration:1500},plugins:{legend:{labels:{color:tc}}},scales:{x:{ticks:{color:tc},grid:{color:gc}},y:{ticks:{color:tc},grid:{color:gc},beginAtZero:true}}}});
-}
-
-function closeModal(id){document.getElementById(id).classList.remove('active')}
-
-loadTheme();
-checkSession();
-</script>
-</body>
-</html>
-<!-- ============ index.html - Customer Orders with Status Timeline ============ -->
-<!-- Replace the renderOrders function in your index.html with this updated version -->
-<script>
-// Add this updated renderOrders function to your index.html <script> section
-// It shows the order status timeline for customers
-
-function renderOrders(){
-let container=document.getElementById('ordersList');
-if(!isAuthenticated()){container.innerHTML='<div class="empty-state"><i class="fas fa-receipt"></i><p>Sign in to view orders</p></div>';return}
-let orders=JSON.parse(localStorage.getItem('pickzone_orders')||'[]');
-let userOrders=orders.filter(o=>o.email.toLowerCase()===currentUser.email.toLowerCase()).reverse();
-if(!userOrders.length){container.innerHTML='<div class="empty-state"><i class="fas fa-receipt"></i><p>No orders yet</p></div>';return}
-
-const STATUS_LABELS={
-'pending':{label:'Pending',icon:'fa-clock',color:'#f59e0b',bg:'rgba(245,158,11,0.1)'},
-'processing':{label:'Processing',icon:'fa-cog',color:'#3b82f6',bg:'rgba(59,130,246,0.1)'},
-'on-the-road':{label:'On the Road',icon:'fa-truck',color:'#8b5cf6',bg:'rgba(139,92,246,0.1)'},
-'delivered':{label:'Delivered',icon:'fa-check-circle',color:'#10b981',bg:'rgba(16,185,129,0.1)'},
-'cancelled':{label:'Cancelled',icon:'fa-times-circle',color:'#ef4444',bg:'rgba(239,68,68,0.1)'}
-};
-
-const STATUS_FLOW=['pending','processing','on-the-road','delivered'];
-
-container.innerHTML=userOrders.map(o=>{
-const status=o.status||'pending';
-const cfg=STATUS_LABELS[status]||STATUS_LABELS.pending;
-const statusFlowIdx=STATUS_FLOW.indexOf(status);
-const isCancelled=status==='cancelled';
-
-// Build mini timeline
-let timelineHTML='';
-if(!isCancelled){
-timelineHTML=`<div style="display:flex;align-items:center;gap:0;margin-top:14px;padding:12px;background:var(--bg);border-radius:10px">
-${STATUS_FLOW.map((s,i)=>{
-const sc=STATUS_LABELS[s];
-const isDone=i<statusFlowIdx;
-const isCurrent=i===statusFlowIdx;
-const dotBg=isDone?'var(--success)':isCurrent?s.color:'var(--border)';
-const dotColor=isDone||isCurrent?'#fff':'var(--text-secondary)';
-const lineColor=i<STATUS_FLOW.length-1?(isDone?'var(--success)':isCurrent?s.color:'var(--border)'):'transparent';
-const lineFlex=i<STATUS_FLOW.length-1?'1':'0';
-return`<div style="display:flex;flex-direction:column;align-items:center;gap:4px;position:relative;z-index:1">
-<div style="width:24px;height:24px;border-radius:50%;background:${dotBg};display:flex;align-items:center;justify-content:center;${isCurrent?'box-shadow:0 0 0 4px '+s.color+'30;animation:orderDotPulse 2s infinite':''}"><i class="fas ${sc.icon}" style="font-size:10px;color:${dotColor}"></i></div>
-<span style="font-size:9px;font-weight:600;color:${isDone||isCurrent?s.color:'var(--text-secondary)'};text-align:center;white-space:nowrap">${sc.label}</span>
-</div>${i<STATUS_FLOW.length-1?`<div style="flex:${lineFlex};height:2px;background:${lineColor};margin:0 -2px;margin-bottom:18px;border-radius:1px;transition:background 0.5s"></div>`:''}`;
-}).join('')}
-</div>`;
-}
-
-return`<div class="order-card" style="position:relative;overflow:hidden">
-<div style="position:absolute;top:0;left:0;right:0;height:3px;background:${cfg.color}"></div>
-<div class="order-header">
-<div>
-<span style="font-weight:700;font-size:13px">${o.id}</span>
-<span style="font-size:11px;color:var(--text-secondary);margin-left:8px">${new Date(o.date).toLocaleDateString()}</span>
-</div>
-<span style="display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:15px;font-size:11px;font-weight:700;background:${cfg.bg};color:${cfg.color};border:1px solid ${cfg.color}30">
-<span style="width:6px;height:6px;border-radius:50%;background:${cfg.color};animation:orderDotPulse 2s infinite"></span>
-<i class="fas ${cfg.icon}" style="font-size:10px"></i>
-${cfg.label}
-</span>
-</div>
-<div class="order-items">${o.items.map(i=>`${i.title} ×${i.qty}`).join(', ')}</div>
-<div class="order-total">Total: LKR ${o.total.toLocaleString()}</div>
-${isCancelled?'<div style="margin-top:8px;padding:8px 12px;background:rgba(239,68,68,0.08);border-radius:8px;font-size:12px;color:var(--danger);font-weight:600"><i class="fas fa-times-circle"></i> This order was cancelled</div>':''}
-${timelineHTML}
-</div>`;
-}).join('');
-}
-</script>
-
-<!-- Add this CSS to your index.html <style> section -->
-<style>
-@keyframes orderDotPulse{0%,100%{box-shadow:0 0 0 0 currentColor}50%{box-shadow:0 0 0 6px transparent}}
-</style>
+              </script>
+                        </body>
+                        </html>
+                    
