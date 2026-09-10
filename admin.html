@@ -1,3 +1,54 @@
+
+                        <!DOCTYPE html>
+                        <html lang="en">
+                        <head>
+                            <meta charset="UTF-8">
+                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <style>
+                body {
+                  background-color: white; /* Ensure the iframe has a white background */
+                }
+
+                /* ===== ORDER STATUS STYLES FOR CUSTOMER SITE ===== */
+.order-status-bar{display:flex;align-items:center;gap:8px;padding:12px 18px;border-radius:12px;margin:12px 0;font-size:14px;font-weight:700;animation:statusSlideIn 0.5s ease}
+@keyframes statusSlideIn{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)}}
+.order-status-bar.pending{background:rgba(245,158,11,0.1);color:#d97706;border:1px solid rgba(245,158,11,0.3)}
+.order-status-bar.on_the_road{background:rgba(59,130,246,0.1);color:#2563eb;border:1px solid rgba(59,130,246,0.3)}
+.order-status-bar.delivered{background:rgba(16,185,129,0.1);color:#059669;border:1px solid rgba(16,185,129,0.3)}
+.order-status-bar.cancelled{background:rgba(239,68,68,0.1);color:#dc2626;border:1px solid rgba(239,68,68,0.3)}
+.order-status-bar i{margin-right:4px}
+.order-status-bar.pending i{animation:statusPulseIcon 1.5s infinite}
+@keyframes statusPulseIcon{0%,100%{opacity:1}50%{opacity:0.3}}
+.order-status-bar.on_the_road i{animation:truckIcon 1.5s infinite}
+@keyframes truckIcon{0%,100%{transform:translateX(0)}50%{transform:translateX(6px)}}
+.order-status-bar.delivered i{animation:checkIcon 0.5s ease}
+@keyframes checkIcon{from{transform:scale(0) rotate(-180deg)}to{transform:scale(1) rotate(0)}}
+
+.order-progress{display:flex;align-items:center;margin:12px 0 8px;position:relative}
+.order-progress::before{content:'';position:absolute;top:13px;left:16px;right:16px;height:3px;background:var(--border);z-index:0;border-radius:2px}
+.order-progress-step{display:flex;flex-direction:column;align-items:center;gap:6px;flex:1;position:relative;z-index:1}
+.order-progress-step .op-circle{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;border:2px solid var(--border);background:var(--card);transition:all 0.4s}
+.order-progress-step .op-label{font-size:10px;font-weight:600;color:var(--text-secondary);text-align:center}
+.order-progress-step.done .op-circle{background:var(--success);border-color:var(--success);color:#fff}
+.order-progress-step.done .op-label{color:var(--success)}
+.order-progress-step.current .op-circle{background:var(--primary);border-color:var(--primary);color:#fff;animation:opPulse 2s infinite}
+.order-progress-step.current .op-label{color:var(--primary);font-weight:700}
+@keyframes opPulse{0%,100%{box-shadow:0 0 0 0 rgba(99,102,241,0.4)}50%{box-shadow:0 0 0 8px rgba(99,102,241,0)}}
+.order-progress-step.cancelled-step .op-circle{background:var(--danger);border-color:var(--danger);color:#fff}
+.order-progress-step.cancelled-step .op-label{color:var(--danger)}
+
+.order-custom-msg{
+margin-top:8px;padding:10px 14px;background:rgba(99,102,241,0.06);
+border:1px solid rgba(99,102,241,0.15);border-radius:10px;
+font-size:12px;color:var(--text-secondary);font-style:italic;
+}
+.order-custom-msg::before{content:'💬 ';font-style:normal}
+
+
+              </style>
+                        </head>
+                        <body>
+                            <!-- ============ admin.html ============ -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,7 +64,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--primary:#6366f1;--primary-dark:#4f46e5;--primary-light:#818cf8;--secondary:#ec4899;--accent:#f59e0b;--success:#10b981;--danger:#ef4444;--gold:#f59e0b;--gold-light:#fbbf24;--gold-dark:#d97706;--bg:#f8fafc;--card:#ffffff;--text:#111827;--text-secondary:#64748b;--border:#e2e8f0;--shadow:0 10px 40px rgba(99,102,241,0.1);--gradient:linear-gradient(135deg,#6366f1 0%,#ec4899 100%);--gold-gradient:linear-gradient(135deg,#f59e0b 0%,#fbbf24 50%,#d97706 100%)}
+:root{--primary:#6366f1;--primary-dark:#4f46e5;--primary-light:#818cf8;--secondary:#ec4899;--accent:#f59e0b;--success:#10b981;--danger:#ef4444;--gold:#f59e0b;--gold-light:#fbbf24;--gold-dark:#d97706;--bg:#f8fafc;--card:#ffffff;--text:#111827;--text-secondary:#64748b;--border:#e2e8f0;--shadow:0 10px 40px rgba(99,102,241,0.1);--gradient:linear-gradient(135deg,#6366f1 0%,#ec4899 100%);--gold-gradient:linear-gradient(135deg,#f59e0b 0%,#fbbf24 50%,#d97706 100%);--status-pending:#f59e0b;--status-road:#3b82f6;--status-delivered:#10b981;--status-cancelled:#ef4444}
 [data-theme="dark"]{--bg:#0f172a;--card:#1e293b;--text:#F9FAFB;--text-secondary:#94a3b8;--border:#334155;--shadow:0 10px 40px rgba(0,0,0,0.4)}
 html{scroll-behavior:smooth}
 body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;transition:background 0.5s,color 0.5s;overflow-x:hidden}
@@ -63,7 +114,6 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 
 .admin-panel{display:none}.admin-panel.active{display:block;animation:panelFadeIn 0.6s ease}
 @keyframes panelFadeIn{from{opacity:0}to{opacity:1}}
-
 .sidebar{position:fixed;top:0;left:0;width:260px;height:100vh;background:var(--card);border-right:1px solid var(--border);padding:20px;overflow-y:auto;z-index:100;transition:all 0.4s}
 .sidebar::-webkit-scrollbar{width:6px}.sidebar::-webkit-scrollbar-thumb{background:var(--gradient);border-radius:3px}
 .sidebar .logo{display:flex;align-items:center;gap:10px;margin-bottom:24px;padding-bottom:20px;border-bottom:2px solid var(--border)}
@@ -112,58 +162,116 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 .section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px}
 .section-header h2{font-size:18px;font-weight:800}
 
-/* ===== POPULAR CATEGORIES SHOWCASE ===== */
+/* ===== STATUS BADGES ===== */
+.status-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap}
+.status-badge.pending{background:rgba(245,158,11,0.12);color:#d97706;border:1px solid rgba(245,158,11,0.3)}
+.status-badge.pending i{animation:pendingPulse 1.5s infinite}
+@keyframes pendingPulse{0%,100%{opacity:1}50%{opacity:0.4}}
+.status-badge.on_the_road{background:rgba(59,130,246,0.12);color:#2563eb;border:1px solid rgba(59,130,246,0.3)}
+.status-badge.on_the_road i{animation:truckMove 2s infinite linear}
+@keyframes truckMove{0%{transform:translateX(-3px)}50%{transform:translateX(3px)}100%{transform:translateX(-3px)}}
+.status-badge.delivered{background:rgba(16,185,129,0.12);color:#059669;border:1px solid rgba(16,185,129,0.3)}
+.status-badge.cancelled{background:rgba(239,68,68,0.12);color:#dc2626;border:1px solid rgba(239,68,68,0.3)}
+
+/* ===== NOTIFY BUTTON ===== */
+.notify-btn{
+display:inline-flex;align-items:center;gap:6px;
+padding:7px 14px;border-radius:10px;font-size:11px;font-weight:700;
+cursor:pointer;border:none;transition:all 0.4s cubic-bezier(0.68,-0.55,0.27,1.55);
+position:relative;overflow:hidden;
+background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;
+}
+.notify-btn::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.3),transparent);transition:left 0.5s}
+.notify-btn:hover::before{left:100%}
+.notify-btn:hover{transform:translateY(-2px) scale(1.05);box-shadow:0 6px 20px rgba(99,102,241,0.4)}
+.notify-btn i{animation:bellRing 2s ease-in-out infinite}
+@keyframes bellRing{0%,100%{transform:rotate(0)}10%{transform:rotate(14deg)}20%{transform:rotate(-14deg)}30%{transform:rotate(10deg)}40%{transform:rotate(-8deg)}50%,100%{transform:rotate(0)}}
+
+/* ===== NOTIFY MODAL ===== */
+.notify-modal-content{text-align:left}
+.notify-order-info{
+background:var(--bg);border:1px solid var(--border);border-radius:12px;
+padding:16px;margin-bottom:20px;
+}
+.notify-order-info .order-row{display:flex;justify-content:space-between;padding:4px 0;font-size:13px}
+.notify-order-info .order-row .label{color:var(--text-secondary)}
+.notify-order-info .order-row .val{font-weight:600}
+
+.status-options{display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
+.status-option{
+display:flex;align-items:center;gap:14px;padding:14px 18px;
+border:2px solid var(--border);border-radius:14px;cursor:pointer;
+transition:all 0.3s cubic-bezier(0.4,0,0.2,1);position:relative;overflow:hidden;
+}
+.status-option::before{content:'';position:absolute;inset:0;opacity:0;transition:opacity 0.3s}
+.status-option:hover{transform:translateX(5px)}
+.status-option:hover::before{opacity:0.03}
+.status-option.selected{border-color:var(--primary);background:rgba(99,102,241,0.05)}
+.status-option.selected::before{opacity:0.05;background:var(--gradient)}
+.status-option .status-radio{
+width:22px;height:22px;border-radius:50%;border:2px solid var(--border);
+display:flex;align-items:center;justify-content:center;flex-shrink:0;
+transition:all 0.3s;
+}
+.status-option.selected .status-radio{border-color:var(--primary);background:var(--primary)}
+.status-option.selected .status-radio::after{content:'';width:8px;height:8px;border-radius:50%;background:#fff}
+.status-option .status-icon{
+width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;
+font-size:18px;flex-shrink:0;transition:all 0.3s;
+}
+.status-option:hover .status-icon{transform:scale(1.1)}
+.status-option .status-text{flex:1}
+.status-option .status-text .status-name{font-size:14px;font-weight:700}
+.status-option .status-text .status-desc{font-size:11px;color:var(--text-secondary);margin-top:2px}
+
+.status-option.opt-pending .status-icon{background:rgba(245,158,11,0.12);color:#d97706}
+.status-option.opt-on_the_road .status-icon{background:rgba(59,130,246,0.12);color:#2563eb}
+.status-option.opt-delivered .status-icon{background:rgba(16,185,129,0.12);color:#059669}
+.status-option.opt-cancelled .status-icon{background:rgba(239,68,68,0.12);color:#dc2626}
+
+.notify-custom-msg{margin-bottom:20px}
+.notify-custom-msg label{display:block;font-size:12px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.notify-custom-msg textarea{
+width:100%;padding:12px;background:var(--bg);border:1px solid var(--border);
+border-radius:10px;font-size:13px;resize:vertical;min-height:60px;
+font-family:inherit;color:var(--text);transition:all 0.3s;
+}
+.notify-custom-msg textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(99,102,241,0.1)}
+
+.notify-actions{display:flex;gap:10px;flex-wrap:wrap}
+.notify-send-btn{
+flex:1;padding:14px;border-radius:12px;font-weight:700;font-size:14px;
+cursor:pointer;border:none;transition:all 0.4s;
+display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.notify-send-btn.whatsapp{background:linear-gradient(135deg,#25d366,#128c7e);color:#fff}
+.notify-send-btn.whatsapp:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(37,211,102,0.4)}
+.notify-send-btn.save-only{background:var(--gradient);color:#fff}
+.notify-send-btn.save-only:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(99,102,241,0.4)}
+
+/* ===== POPULAR CATEGORIES ===== */
 .categories-showcase{margin-bottom:24px}
 .categories-showcase h3{font-size:16px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
 .categories-showcase h3 i{color:var(--primary)}
 .cat-showcase-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
-.cat-showcase-card{
-background:var(--card);border:1px solid var(--border);border-radius:14px;
-padding:16px;text-align:center;transition:all 0.4s cubic-bezier(0.4,0,0.2,1);
-position:relative;overflow:hidden;cursor:default;
-}
-.cat-showcase-card::before{
-content:'';position:absolute;top:0;left:0;right:0;height:3px;
-background:var(--gradient);transform:scaleX(0);transition:transform 0.4s;
-transform-origin:left;
-}
+.cat-showcase-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;text-align:center;transition:all 0.4s;position:relative;overflow:hidden}
+.cat-showcase-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gradient);transform:scaleX(0);transition:transform 0.4s;transform-origin:left}
 .cat-showcase-card:hover::before{transform:scaleX(1)}
 .cat-showcase-card:hover{transform:translateY(-6px);box-shadow:0 12px 30px rgba(99,102,241,0.15);border-color:var(--primary)}
-.cat-showcase-card .cat-icon{
-width:50px;height:50px;border-radius:14px;
-display:flex;align-items:center;justify-content:center;
-font-size:22px;margin:0 auto 10px;
-transition:all 0.4s cubic-bezier(0.68,-0.55,0.27,1.55);
-}
+.cat-showcase-card .cat-icon{width:50px;height:50px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;margin:0 auto 10px;transition:all 0.4s}
 .cat-showcase-card:hover .cat-icon{transform:scale(1.15) rotate(-8deg)}
 .cat-showcase-card .cat-name{font-size:13px;font-weight:700;margin-bottom:4px}
 .cat-showcase-card .cat-count{font-size:20px;font-weight:800;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .cat-showcase-card .cat-label{font-size:10px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.5px}
-.cat-showcase-card .cat-bar{
-width:100%;height:4px;background:var(--border);border-radius:2px;
-margin-top:10px;overflow:hidden;
-}
-.cat-showcase-card .cat-bar-fill{
-height:100%;background:var(--gradient);border-radius:2px;
-transition:width 1s cubic-bezier(0.4,0,0.2,1);
-width:0;
-}
+.cat-showcase-card .cat-bar{width:100%;height:4px;background:var(--border);border-radius:2px;margin-top:10px;overflow:hidden}
+.cat-showcase-card .cat-bar-fill{height:100%;background:var(--gradient);border-radius:2px;transition:width 1s;width:0}
 .cat-showcase-card.animated .cat-bar-fill{width:var(--fill-width)}
 
-/* Top categories ranking */
 .top-categories-list{margin-top:20px}
-.top-cat-item{
-display:flex;align-items:center;gap:12px;padding:12px 16px;
-background:var(--card);border:1px solid var(--border);border-radius:12px;
-margin-bottom:8px;transition:all 0.3s;
-}
-.top-cat-item:hover{border-color:var(--primary);transform:translateX(5px);box-shadow:0 4px 15px rgba(99,102,241,0.1)}
-.top-cat-item .rank{
-width:32px;height:32px;border-radius:50%;
-display:flex;align-items:center;justify-content:center;
-font-size:13px;font-weight:800;flex-shrink:0;
-}
-.top-cat-item .rank.gold{background:linear-gradient(135deg,#f59e0b,#fbbf24);color:#fff;box-shadow:0 3px 10px rgba(245,158,11,0.3)}
+.top-cat-item{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:8px;transition:all 0.3s}
+.top-cat-item:hover{border-color:var(--primary);transform:translateX(5px)}
+.top-cat-item .rank{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex-shrink:0}
+.top-cat-item .rank.gold{background:linear-gradient(135deg,#f59e0b,#fbbf24);color:#fff}
 .top-cat-item .rank.silver{background:linear-gradient(135deg,#9ca3af,#d1d5db);color:#fff}
 .top-cat-item .rank.bronze{background:linear-gradient(135deg,#d97706,#f59e0b);color:#fff}
 .top-cat-item .rank.normal{background:var(--bg);color:var(--text-secondary);border:1px solid var(--border)}
@@ -171,15 +279,15 @@ font-size:13px;font-weight:800;flex-shrink:0;
 .top-cat-item .cat-info .name{font-size:14px;font-weight:600}
 .top-cat-item .cat-info .items-count{font-size:11px;color:var(--text-secondary)}
 .top-cat-item .cat-bar-wrap{width:120px;height:6px;background:var(--border);border-radius:3px;overflow:hidden}
-.top-cat-item .cat-bar-inner{height:100%;background:var(--gradient);border-radius:3px;transition:width 1s ease}
+.top-cat-item .cat-bar-inner{height:100%;background:var(--gradient);border-radius:3px;transition:width 1s}
 
 .btn{padding:10px 18px;border-radius:10px;font-size:13px;font-weight:600;transition:all 0.4s;display:inline-flex;align-items:center;gap:8px;position:relative;overflow:hidden;cursor:pointer;border:none}
 .btn::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent);transition:left 0.5s}
 .btn:hover::before{left:100%}
 .btn-primary{background:var(--gradient);color:#fff;background-size:200% 200%;animation:gradientShift 3s ease infinite}
 .btn-primary:hover{transform:translateY(-3px) scale(1.03);box-shadow:0 10px 25px rgba(99,102,241,0.4)}
-.btn-success{background:var(--success);color:#fff}.btn-success:hover{transform:translateY(-3px);box-shadow:0 10px 25px rgba(16,185,129,0.4)}
-.btn-danger{background:var(--danger);color:#fff}.btn-danger:hover{transform:translateY(-3px);box-shadow:0 10px 25px rgba(239,68,68,0.4)}
+.btn-success{background:var(--success);color:#fff}.btn-success:hover{transform:translateY(-3px)}
+.btn-danger{background:var(--danger);color:#fff}.btn-danger:hover{transform:translateY(-3px)}
 .btn-secondary{background:var(--bg);border:1px solid var(--border);color:var(--text)}.btn-secondary:hover{background:var(--primary);color:#fff;border-color:var(--primary);transform:translateY(-3px)}
 .btn-sm{padding:6px 12px;font-size:11px;border-radius:8px}
 .btn:active{transform:translateY(-1px) scale(0.98)}
@@ -248,7 +356,7 @@ font-size:13px;font-weight:800;flex-shrink:0;
 .best-buyer-stat .stat-label{font-size:11px;color:var(--text-secondary);font-weight:600;text-transform:uppercase;margin-top:2px}
 .best-buyer-email{font-size:13px;font-weight:600;background:rgba(255,255,255,0.7);padding:6px 14px;border-radius:8px;display:inline-block;margin-top:8px}
 [data-theme="dark"] .best-buyer-email{background:rgba(245,158,11,0.1)}
-.crown-badge{display:inline-flex;align-items:center;gap:4px;background:var(--gold-gradient);color:#fff;padding:3px 10px;border-radius:12px;font-size:10px;font-weight:700;animation:crownBadgePulse 2s infinite;box-shadow:0 2px 8px rgba(245,158,11,0.3)}
+.crown-badge{display:inline-flex;align-items:center;gap:4px;background:var(--gold-gradient);color:#fff;padding:3px 10px;border-radius:12px;font-size:10px;font-weight:700;animation:crownBadgePulse 2s infinite}
 @keyframes crownBadgePulse{0%,100%{box-shadow:0 2px 8px rgba(245,158,11,0.3)}50%{box-shadow:0 2px 16px rgba(245,158,11,0.6)}}
 .crown-badge i{animation:crownSpin 3s ease-in-out infinite}
 @keyframes crownSpin{0%,100%{transform:rotate(0deg)}25%{transform:rotate(-10deg)}75%{transform:rotate(10deg)}}
@@ -322,19 +430,14 @@ font-size:13px;font-weight:800;flex-shrink:0;
 <div class="stat-card"><div class="icon"><i class="fas fa-receipt"></i></div><div class="label">Orders</div><div class="value" id="statOrders">0</div></div>
 <div class="stat-card"><div class="icon"><i class="fas fa-dollar-sign"></i></div><div class="label">Revenue</div><div class="value" id="statRevenue">LKR 0</div></div>
 </div>
-
-<!-- Popular Categories Showcase -->
 <div class="categories-showcase" id="categoriesShowcase">
 <h3><i class="fas fa-layer-group"></i> Popular Categories</h3>
 <div class="cat-showcase-grid" id="catShowcaseGrid"></div>
 </div>
-
 <div class="charts-grid">
 <div class="chart-card"><h3><i class="fas fa-chart-line" style="color:var(--primary);margin-right:6px"></i>Order Trends (Last 7 Days)</h3><canvas id="ordersChart"></canvas></div>
 <div class="chart-card"><h3><i class="fas fa-chart-pie" style="color:var(--secondary);margin-right:6px"></i>Category Distribution</h3><canvas id="categoriesChart"></canvas></div>
 </div>
-
-<!-- Top Categories Ranking -->
 <div class="section" style="margin-top:0">
 <div class="section-header"><h2><i class="fas fa-trophy" style="color:var(--gold)"></i> Top Categories Ranking</h2></div>
 <div class="top-categories-list" id="topCategoriesList"></div>
@@ -349,10 +452,11 @@ font-size:13px;font-weight:800;flex-shrink:0;
 </div>
 </div>
 
-<!-- ORDERS (NO STATUS) -->
+<!-- ORDERS WITH NOTIFY -->
 <div class="page-section" id="section-orders">
 <div class="section">
-<div class="section-header"><h2><i class="fas fa-receipt" style="color:var(--primary)"></i> All Orders</h2>
+<div class="section-header">
+<h2><i class="fas fa-receipt" style="color:var(--primary)"></i> Order Management</h2>
 <div class="search-box"><i class="fas fa-search"></i><input type="text" id="orderSearch" placeholder="Search orders..." oninput="renderOrdersList()"></div>
 </div>
 <div id="ordersListContainer"></div>
@@ -365,10 +469,10 @@ font-size:13px;font-weight:800;flex-shrink:0;
 <div class="section">
 <div class="section-header"><h2>Registered Customers</h2>
 <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-<div class="search-box"><i class="fas fa-search"></i><input type="text" id="customerSearch" placeholder="Search customers..." oninput="renderUsersList()"></div>
-<button class="btn btn-success" onclick="broadcastEmail()"><i class="fas fa-envelope"></i> Broadcast Email</button>
+<div class="search-box"><i class="fas fa-search"></i><input type="text" id="customerSearch" placeholder="Search..." oninput="renderUsersList()"></div>
+<button class="btn btn-success" onclick="broadcastEmail()"><i class="fas fa-envelope"></i> Broadcast</button>
 </div></div>
-<div class="bulk-bar" id="bulkBar"><span id="bulkCount">0 selected</span><button class="btn btn-danger btn-sm" onclick="bulkDeleteCustomers()"><i class="fas fa-trash"></i> Delete Selected</button><button class="btn btn-secondary btn-sm" onclick="clearSelection()">Clear</button></div>
+<div class="bulk-bar" id="bulkBar"><span id="bulkCount">0 selected</span><button class="btn btn-danger btn-sm" onclick="bulkDeleteCustomers()"><i class="fas fa-trash"></i> Delete</button><button class="btn btn-secondary btn-sm" onclick="clearSelection()">Clear</button></div>
 <div id="usersListContainer"></div>
 </div>
 </div>
@@ -392,7 +496,64 @@ font-size:13px;font-weight:800;flex-shrink:0;
 </div>
 </div>
 
-<!-- ORDER DETAIL MODAL (NO STATUS) -->
+<!-- ===== NOTIFY BUYER MODAL ===== -->
+<div class="modal-overlay" id="notifyModal">
+<div class="modal" style="max-width:550px">
+<button class="close-modal" onclick="closeModal('notifyModal')"><i class="fas fa-times"></i></button>
+<h2><i class="fas fa-bell"></i> Notify Buyer</h2>
+<input type="hidden" id="notifyOrderId" value="">
+
+<div class="notify-order-info" id="notifyOrderInfo"></div>
+
+<h4 style="font-size:13px;font-weight:700;margin-bottom:12px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:1px"><i class="fas fa-map-marker-alt"></i> Select Order Status</h4>
+<div class="status-options" id="statusOptions">
+<div class="status-option opt-pending" onclick="selectNotifyStatus('pending',this)">
+<div class="status-radio"></div>
+<div class="status-icon"><i class="fas fa-clock"></i></div>
+<div class="status-text">
+<div class="status-name">Pending</div>
+<div class="status-desc">Order received, being processed</div>
+</div>
+</div>
+<div class="status-option opt-on_the_road" onclick="selectNotifyStatus('on_the_road',this)">
+<div class="status-radio"></div>
+<div class="status-icon"><i class="fas fa-truck"></i></div>
+<div class="status-text">
+<div class="status-name">On The Road</div>
+<div class="status-desc">Order is out for delivery</div>
+</div>
+</div>
+<div class="status-option opt-delivered" onclick="selectNotifyStatus('delivered',this)">
+<div class="status-radio"></div>
+<div class="status-icon"><i class="fas fa-check-circle"></i></div>
+<div class="status-text">
+<div class="status-name">Delivered</div>
+<div class="status-desc">Order successfully delivered</div>
+</div>
+</div>
+<div class="status-option opt-cancelled" onclick="selectNotifyStatus('cancelled',this)">
+<div class="status-radio"></div>
+<div class="status-icon"><i class="fas fa-times-circle"></i></div>
+<div class="status-text">
+<div class="status-name">Cancelled</div>
+<div class="status-desc">Order has been cancelled</div>
+</div>
+</div>
+</div>
+
+<div class="notify-custom-msg">
+<label><i class="fas fa-comment"></i> Custom Message (optional)</label>
+<textarea id="notifyCustomMsg" placeholder="Add a personal message to the buyer..."></textarea>
+</div>
+
+<div class="notify-actions">
+<button class="notify-send-btn save-only" onclick="saveNotifyStatus()"><i class="fas fa-save"></i> Save Status</button>
+<button class="notify-send-btn whatsapp" onclick="sendNotifyWhatsApp()"><i class="fab fa-whatsapp"></i> Save & Send WhatsApp</button>
+</div>
+</div>
+</div>
+
+<!-- ORDER DETAIL MODAL -->
 <div class="modal-overlay" id="orderDetailModal">
 <div class="modal">
 <button class="close-modal" onclick="closeModal('orderDetailModal')"><i class="fas fa-times"></i></button>
@@ -415,7 +576,7 @@ font-size:13px;font-weight:800;flex-shrink:0;
 <div class="form-group"><label>Categories *</label><div id="itemCatsGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:6px;max-height:200px;overflow-y:auto;padding:10px;background:var(--bg);border:1px solid var(--border);border-radius:10px"></div></div>
 <div class="form-group">
 <label>Product Photos *</label>
-<div style="border:2px dashed var(--border);border-radius:14px;padding:20px;text-align:center;cursor:pointer;background:var(--bg);position:relative" id="itemUploadArea">
+<div style="border:2px dashed var(--border);border-radius:14px;padding:20px;text-align:center;cursor:pointer;background:var(--bg);position:relative">
 <input type="file" id="itemPhotoInput" accept="image/*" multiple onchange="handleItemPhotos(event)" style="position:absolute;inset:0;opacity:0;cursor:pointer;z-index:2">
 <div id="itemUploadPlaceholder"><i style="font-size:36px;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;display:block;margin-bottom:8px" class="fas fa-cloud-upload-alt"></i><h4 style="font-size:14px;font-weight:700">Click to upload photos</h4><p style="font-size:12px;color:var(--text-secondary)">Multiple files allowed</p></div>
 </div>
@@ -431,8 +592,8 @@ font-size:13px;font-weight:800;flex-shrink:0;
 <button class="close-modal" onclick="closeModal('deleteCustomerModal')"><i class="fas fa-times"></i></button>
 <div style="text-align:center;padding:10px 0">
 <div style="width:70px;height:70px;border-radius:50%;background:rgba(239,68,68,0.1);display:flex;align-items:center;justify-content:center;margin:0 auto 16px"><i class="fas fa-user-slash" style="font-size:32px;color:var(--danger)"></i></div>
-<h3 style="font-size:18px;margin-bottom:8px">Remove Customer</h3>
-<p style="font-size:13px;color:var(--text-secondary);margin-bottom:6px">Are you sure?</p>
+<h3>Remove Customer</h3>
+<p style="font-size:13px;color:var(--text-secondary)">Are you sure?</p>
 <div style="font-weight:700;color:var(--danger);font-size:14px;background:rgba(239,68,68,0.08);padding:6px 14px;border-radius:8px;display:inline-block;margin:8px 0" id="deleteCustomerEmail"></div>
 <div style="display:flex;gap:10px;justify-content:center;margin-top:20px">
 <button class="btn btn-secondary" onclick="closeModal('deleteCustomerModal')">Cancel</button>
@@ -442,7 +603,6 @@ font-size:13px;font-weight:800;flex-shrink:0;
 </div>
 </div>
 
-<!-- BULK DELETE MODAL -->
 <div class="modal-overlay" id="bulkDeleteModal">
 <div class="modal" style="max-width:480px">
 <button class="close-modal" onclick="closeModal('bulkDeleteModal')"><i class="fas fa-times"></i></button>
@@ -462,20 +622,13 @@ font-size:13px;font-weight:800;flex-shrink:0;
 const MASTER_EMAIL='grbmsirithilaka@gmail.com';
 const MASTER_PASS='2009GrBmS@';
 const ALL_CATEGORIES=['Clothes','Shoes','Phones','Electronics','Home items','Kitchen items','Beauty products','Books','Stationery','Gifts','Pet supplies','Toys','Plants','Gardening supplies','Car accessories'];
-const CAT_ICONS={
-'Clothes':'fa-tshirt','Shoes':'fa-shoe-prints','Phones':'fa-mobile-alt','Electronics':'fa-plug',
-'Home items':'fa-couch','Kitchen items':'fa-utensils','Beauty products':'fa-spa','Books':'fa-book',
-'Stationery':'fa-pen','Gifts':'fa-gift','Pet supplies':'fa-paw','Toys':'fa-gamepad',
-'Plants':'fa-leaf','Gardening supplies':'fa-seedling','Car accessories':'fa-car'
-};
-const CAT_COLORS={
-'Clothes':'#6366f1','Shoes':'#ec4899','Phones':'#3b82f6','Electronics':'#8b5cf6',
-'Home items':'#f59e0b','Kitchen items':'#ef4444','Beauty products':'#ec4899','Books':'#10b981',
-'Stationery':'#06b6d4','Gifts':'#f59e0b','Pet supplies':'#84cc16','Toys':'#d946ef',
-'Plants':'#10b981','Gardening supplies':'#22c55e','Car accessories':'#64748b'
-};
+const CAT_ICONS={'Clothes':'fa-tshirt','Shoes':'fa-shoe-prints','Phones':'fa-mobile-alt','Electronics':'fa-plug','Home items':'fa-couch','Kitchen items':'fa-utensils','Beauty products':'fa-spa','Books':'fa-book','Stationery':'fa-pen','Gifts':'fa-gift','Pet supplies':'fa-paw','Toys':'fa-gamepad','Plants':'fa-leaf','Gardening supplies':'fa-seedling','Car accessories':'fa-car'};
+const CAT_COLORS={'Clothes':'#6366f1','Shoes':'#ec4899','Phones':'#3b82f6','Electronics':'#8b5cf6','Home items':'#f59e0b','Kitchen items':'#ef4444','Beauty products':'#ec4899','Books':'#10b981','Stationery':'#06b6d4','Gifts':'#f59e0b','Pet supplies':'#84cc16','Toys':'#d946ef','Plants':'#10b981','Gardening supplies':'#22c55e','Car accessories':'#64748b'};
+const STATUS_LABELS={pending:'Pending',on_the_road:'On The Road',delivered:'Delivered',cancelled:'Cancelled'};
+const STATUS_ICONS={pending:'fa-clock',on_the_road:'fa-truck',delivered:'fa-check-circle',cancelled:'fa-times-circle'};
 
 let selectedItemCategories=[],uploadedItemPhotos=[],selectedCustomerEmails=[],pendingDeleteEmail=null;
+let selectedNotifyStatus='';
 
 // Particles
 (function(){const c=document.getElementById('particles');const colors=['#6366f1','#ec4899','#f59e0b','#10b981','#818cf8'];for(let i=0;i<25;i++){const p=document.createElement('div');p.className='particle';p.style.left=Math.random()*100+'%';p.style.background=colors[Math.floor(Math.random()*colors.length)];p.style.animationDuration=(Math.random()*15+10)+'s';p.style.animationDelay=Math.random()*15+'s';const s=(Math.random()*5+2)+'px';p.style.width=s;p.style.height=s;c.appendChild(p)}})();
@@ -492,7 +645,7 @@ c.appendChild(t);setTimeout(()=>{t.classList.add('removing');setTimeout(()=>t.re
 }
 
 document.addEventListener('click',function(e){
-const btn=e.target.closest('.btn,.submit-btn,.menu-item,.stat-card,.theme-toggle');
+const btn=e.target.closest('.btn,.submit-btn,.menu-item,.stat-card,.theme-toggle,.notify-send-btn');
 if(!btn)return;const r=document.createElement('span');r.className='ripple-effect';
 const rect=btn.getBoundingClientRect(),size=Math.max(rect.width,rect.height);
 r.style.width=r.style.height=size+'px';r.style.left=(e.clientX-rect.left-size/2)+'px';r.style.top=(e.clientY-rect.top-size/2)+'px';
@@ -516,7 +669,7 @@ document.querySelectorAll('.page-section').forEach(s=>s.classList.remove('active
 document.getElementById('section-'+section).classList.add('active');
 document.querySelectorAll('.menu-item').forEach(m=>m.classList.remove('active'));
 if(el)el.classList.add('active');
-const titles={dashboard:'Dashboard',items:'Manage Items',orders:'All Orders',users:'Customers',messages:'Message Arena',visitors:'Visitor Analytics'};
+const titles={dashboard:'Dashboard',items:'Manage Items',orders:'Order Management',users:'Customers',messages:'Message Arena',visitors:'Visitor Analytics'};
 document.getElementById('pageTitle').textContent=titles[section];
 if(section==='dashboard')loadDashboard();
 if(section==='items')renderItemsList();
@@ -526,43 +679,14 @@ if(section==='messages')renderAdminMessages();
 if(section==='visitors')renderVisitors();
 }
 
-// ===================================================================
-// ===== POPULAR CATEGORIES ==========================================
-// ===================================================================
-
+// ===== POPULAR CATEGORIES =====
 function getCategoryStats(){
 const products=JSON.parse(localStorage.getItem('pickzone_items')||'[]');
 const orders=JSON.parse(localStorage.getItem('pickzone_orders')||'[]');
-
 const stats={};
-ALL_CATEGORIES.forEach(cat=>{
-stats[cat]={productCount:0,orderCount:0,totalRevenue:0};
-});
-
-// Count products per category
-products.forEach(p=>{
-const cats=p.categories&&p.categories.length?p.categories:(p.category?[p.category]:[]);
-cats.forEach(cat=>{
-if(stats[cat])stats[cat].productCount++;
-});
-});
-
-// Count orders and revenue per category
-orders.forEach(o=>{
-o.items.forEach(item=>{
-const itemProduct=products.find(p=>p.code===item.code);
-if(itemProduct){
-const cats=itemProduct.categories&&itemProduct.categories.length?itemProduct.categories:(itemProduct.category?[itemProduct.category]:[]);
-cats.forEach(cat=>{
-if(stats[cat]){
-stats[cat].orderCount+=item.qty;
-stats[cat].totalRevenue+=(item.price*item.qty);
-}
-});
-}
-});
-});
-
+ALL_CATEGORIES.forEach(cat=>{stats[cat]={productCount:0,orderCount:0,totalRevenue:0}});
+products.forEach(p=>{(p.categories&&p.categories.length?p.categories:(p.category?[p.category]:[])).forEach(cat=>{if(stats[cat])stats[cat].productCount++})});
+orders.forEach(o=>{o.items.forEach(item=>{const ip=products.find(p=>p.code===item.code);if(ip){(ip.categories&&ip.categories.length?ip.categories:(ip.category?[ip.category]:[])).forEach(cat=>{if(stats[cat]){stats[cat].orderCount+=item.qty;stats[cat].totalRevenue+=(item.price*item.qty)}})}})});
 return stats;
 }
 
@@ -570,68 +694,32 @@ function renderPopularCategories(){
 const stats=getCategoryStats();
 const grid=document.getElementById('catShowcaseGrid');
 const listEl=document.getElementById('topCategoriesList');
-
-// Sort by product count descending
 const sorted=Object.entries(stats).sort((a,b)=>b[1].productCount-a[1].productCount);
-const maxProducts=Math.max(...sorted.map(s=>s[1].productCount),1);
+const maxP=Math.max(...sorted.map(s=>s[1].productCount),1);
 
-// Render showcase cards
 grid.innerHTML=sorted.map(([cat,data])=>{
-const fillPct=Math.round((data.productCount/maxProducts)*100);
-const icon=CAT_ICONS[cat]||'fa-tag';
-const color=CAT_COLORS[cat]||'#6366f1';
-return`<div class="cat-showcase-card" style="--fill-width:${fillPct}%">
-<div class="cat-icon" style="background:${color}15;color:${color}"><i class="fas ${icon}"></i></div>
-<div class="cat-name">${cat}</div>
-<div class="cat-count">${data.productCount}</div>
-<div class="cat-label">Products</div>
-<div class="cat-bar"><div class="cat-bar-fill"></div></div>
-</div>`;
+const pct=Math.round((data.productCount/maxP)*100);
+return`<div class="cat-showcase-card" style="--fill-width:${pct}%"><div class="cat-icon" style="background:${CAT_COLORS[cat]||'#6366f1'}15;color:${CAT_COLORS[cat]||'#6366f1'}"><i class="fas ${CAT_ICONS[cat]||'fa-tag'}"></i></div><div class="cat-name">${cat}</div><div class="cat-count">${data.productCount}</div><div class="cat-label">Products</div><div class="cat-bar"><div class="cat-bar-fill"></div></div></div>`;
 }).join('');
+setTimeout(()=>{document.querySelectorAll('.cat-showcase-card').forEach(c=>c.classList.add('animated'))},100);
 
-// Animate bars after a short delay
-setTimeout(()=>{
-document.querySelectorAll('.cat-showcase-card').forEach(card=>{
-card.classList.add('animated');
-});
-},100);
-
-// Render top categories ranking list
-const sortedByOrders=Object.entries(stats).sort((a,b)=>b[1].orderCount-a[1].orderCount).slice(0,10);
-const maxOrders=Math.max(...sortedByOrders.map(s=>s[1].orderCount),1);
-
-if(sortedByOrders.length===0||sortedByOrders.every(s=>s[1].orderCount===0)){
-listEl.innerHTML='<div class="empty-state" style="padding:30px"><i class="fas fa-chart-bar"></i><p>No order data yet. Categories will rank once orders are placed.</p></div>';
-return;
-}
-
-listEl.innerHTML=sortedByOrders.map(([cat,data],i)=>{
-const fillPct=Math.round((data.orderCount/maxOrders)*100);
-const rankClass=i===0?'gold':i===1?'silver':i===2?'bronze':'normal';
-const icon=CAT_ICONS[cat]||'fa-tag';
-return`<div class="top-cat-item">
-<div class="rank ${rankClass}">${i+1}</div>
-<div style="width:36px;height:36px;border-radius:10px;background:${CAT_COLORS[cat]||'#6366f1'}15;display:flex;align-items:center;justify-content:center;color:${CAT_COLORS[cat]||'#6366f1'};font-size:16px;flex-shrink:0"><i class="fas ${icon}"></i></div>
-<div class="cat-info">
-<div class="name">${cat}</div>
-<div class="items-count">${data.orderCount} items ordered • LKR ${data.totalRevenue.toLocaleString()} revenue</div>
-</div>
-<div class="cat-bar-wrap"><div class="cat-bar-inner" style="width:${fillPct}%"></div></div>
-</div>`;
+const byOrders=Object.entries(stats).sort((a,b)=>b[1].orderCount-a[1].orderCount).slice(0,10);
+const maxO=Math.max(...byOrders.map(s=>s[1].orderCount),1);
+if(!byOrders.length||byOrders.every(s=>s[1].orderCount===0)){listEl.innerHTML='<div class="empty-state" style="padding:30px"><i class="fas fa-chart-bar"></i><p>No order data yet.</p></div>';return}
+listEl.innerHTML=byOrders.map(([cat,data],i)=>{
+const pct=Math.round((data.orderCount/maxO)*100);
+const rc=i===0?'gold':i===1?'silver':i===2?'bronze':'normal';
+return`<div class="top-cat-item"><div class="rank ${rc}">${i+1}</div><div style="width:36px;height:36px;border-radius:10px;background:${CAT_COLORS[cat]||'#6366f1'}15;display:flex;align-items:center;justify-content:center;color:${CAT_COLORS[cat]||'#6366f1'};font-size:16px;flex-shrink:0"><i class="fas ${CAT_ICONS[cat]||'fa-tag'}"></i></div><div class="cat-info"><div class="name">${cat}</div><div class="items-count">${data.orderCount} ordered • LKR ${data.totalRevenue.toLocaleString()}</div></div><div class="cat-bar-wrap"><div class="cat-bar-inner" style="width:${pct}%"></div></div></div>`;
 }).join('');
 }
 
-// ===================================================================
-// ===== DASHBOARD ===================================================
-// ===================================================================
-
+// ===== DASHBOARD =====
 function loadDashboard(){
 const visitors=JSON.parse(localStorage.getItem('pickzone_visitors')||'[]');
 const users=JSON.parse(localStorage.getItem('pickzone_users')||'[]');
 const products=JSON.parse(localStorage.getItem('pickzone_items')||'[]');
 const orders=JSON.parse(localStorage.getItem('pickzone_orders')||'[]');
 const revenue=orders.reduce((a,o)=>a+(o.total||0),0);
-
 animateValue(document.getElementById('statVisitors'),0,visitors.length,1200);
 animateValue(document.getElementById('statUsers'),0,users.length,1200);
 animateValue(document.getElementById('statProducts'),0,products.length,1200);
@@ -639,7 +727,6 @@ animateValue(document.getElementById('statOrders'),0,orders.length,1200);
 const revEl=document.getElementById('statRevenue');
 let st=null;function rs(ts){if(!st)st=ts;const p=Math.min((ts-st)/1500,1);revEl.textContent='LKR '+Math.floor(p*revenue).toLocaleString();if(p<1)requestAnimationFrame(rs)}
 requestAnimationFrame(rs);
-
 renderPopularCategories();
 renderDashboardCharts(orders,products);
 }
@@ -649,31 +736,19 @@ function getItemCategories(p){if(Array.isArray(p.categories)&&p.categories.lengt
 
 function renderDashboardCharts(orders,products){
 const isDark=document.body.getAttribute('data-theme')==='dark';
-const textColor=isDark?'#F9FAFB':'#111827';const gridColor=isDark?'#334155':'#e2e8f0';
-
-// Order trends
-const last7=[];for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const ds=d.toISOString().split('T')[0];const count=orders.filter(o=>o.date&&o.date.startsWith(ds)).length;last7.push({label:d.toLocaleDateString('en',{weekday:'short'}),count})}
-const ctx1=document.getElementById('ordersChart').getContext('2d');
-if(ordersChart)ordersChart.destroy();
-ordersChart=new Chart(ctx1,{type:'line',data:{labels:last7.map(d=>d.label),datasets:[{label:'Orders',data:last7.map(d=>d.count),borderColor:'#6366f1',backgroundColor:'rgba(99,102,241,0.1)',fill:true,tension:0.4,borderWidth:3,pointBackgroundColor:'#6366f1',pointRadius:5}]},options:{responsive:true,animation:{duration:1500},plugins:{legend:{labels:{color:textColor}}},scales:{x:{ticks:{color:textColor},grid:{color:gridColor}},y:{ticks:{color:textColor},grid:{color:gridColor},beginAtZero:true}}}});
-
-// Category distribution (products)
+const tc=isDark?'#F9FAFB':'#111827';const gc=isDark?'#334155':'#e2e8f0';
+const last7=[];for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const ds=d.toISOString().split('T')[0];last7.push({label:d.toLocaleDateString('en',{weekday:'short'}),count:orders.filter(o=>o.date&&o.date.startsWith(ds)).length})}
+const ctx1=document.getElementById('ordersChart').getContext('2d');if(ordersChart)ordersChart.destroy();
+ordersChart=new Chart(ctx1,{type:'line',data:{labels:last7.map(d=>d.label),datasets:[{label:'Orders',data:last7.map(d=>d.count),borderColor:'#6366f1',backgroundColor:'rgba(99,102,241,0.1)',fill:true,tension:0.4,borderWidth:3,pointBackgroundColor:'#6366f1',pointRadius:5}]},options:{responsive:true,animation:{duration:1500},plugins:{legend:{labels:{color:tc}}},scales:{x:{ticks:{color:tc},grid:{color:gc}},y:{ticks:{color:tc},grid:{color:gc},beginAtZero:true}}}});
 const cats={};products.forEach(p=>{getItemCategories(p).forEach(c=>{cats[c]=(cats[c]||0)+1})});
-const ctx2=document.getElementById('categoriesChart').getContext('2d');
-if(categoriesChart)categoriesChart.destroy();
-const catLabels=Object.keys(cats);
-const catColors=catLabels.map(c=>CAT_COLORS[c]||'#6366f1');
-categoriesChart=new Chart(ctx2,{type:'doughnut',data:{labels:catLabels,datasets:[{data:Object.values(cats),backgroundColor:catColors}]},options:{responsive:true,animation:{duration:1500},plugins:{legend:{position:'bottom',labels:{color:textColor,padding:10,font:{size:11}}}}}});
+const ctx2=document.getElementById('categoriesChart').getContext('2d');if(categoriesChart)categoriesChart.destroy();
+const cl=Object.keys(cats),cc=cl.map(c=>CAT_COLORS[c]||'#6366f1');
+categoriesChart=new Chart(ctx2,{type:'doughnut',data:{labels:cl,datasets:[{data:Object.values(cats),backgroundColor:cc}]},options:{responsive:true,animation:{duration:1500},plugins:{legend:{position:'bottom',labels:{color:tc,padding:10,font:{size:11}}}}}});
 }
 
-function compressImage(dataUrl,maxWidth,quality,callback){
-const img=new Image();img.onload=function(){const c=document.createElement('canvas');let w=img.width,h=img.height;if(w>maxWidth){h=(h*maxWidth)/w;w=maxWidth}c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);callback(c.toDataURL('image/jpeg',quality))};img.src=dataUrl;
-}
+function compressImage(dataUrl,maxWidth,quality,callback){const img=new Image();img.onload=function(){const c=document.createElement('canvas');let w=img.width,h=img.height;if(w>maxWidth){h=(h*maxWidth)/w;w=maxWidth}c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);callback(c.toDataURL('image/jpeg',quality))};img.src=dataUrl}
 
-// ===================================================================
-// ===== BEST BUYER ==================================================
-// ===================================================================
-
+// ===== BEST BUYER =====
 function getBestBuyer(){
 const users=JSON.parse(localStorage.getItem('pickzone_users')||'[]');
 const orders=JSON.parse(localStorage.getItem('pickzone_orders')||'[]');
@@ -684,11 +759,10 @@ return stats.length>0&&stats[0].totalOrders>0?stats[0]:null;
 }
 
 function renderBestBuyerShowcase(){
-const c=document.getElementById('bestBuyerShowcase');
-const bb=getBestBuyer();
+const c=document.getElementById('bestBuyerShowcase');const bb=getBestBuyer();
 if(!bb){c.innerHTML='';return}
 const pic=bb.profilePic||'https://ui-avatars.com/api/?name='+encodeURIComponent(bb.email)+'&background=f59e0b&color=fff&size=120';
-c.innerHTML=`<div class="best-buyer-showcase"><div class="best-buyer-header"><i class="fas fa-crown crown-icon"></i><div><div class="best-buyer-title">Best Buyer</div><div style="font-size:12px;color:var(--text-secondary);font-weight:600">Top customer with most orders</div></div></div><div class="best-buyer-content"><img src="${pic}" class="best-buyer-avatar"><div class="best-buyer-stats"><div class="best-buyer-stat"><div class="stat-value">${bb.totalOrders}</div><div class="stat-label"><i class="fas fa-shopping-bag"></i> Orders</div></div><div class="best-buyer-stat"><div class="stat-value">LKR ${bb.totalSpent.toLocaleString()}</div><div class="stat-label"><i class="fas fa-coins"></i> Total Spent</div></div><div class="best-buyer-stat"><div class="stat-value">${new Date(bb.createdAt).toLocaleDateString('en',{month:'short',year:'numeric'})}</div><div class="stat-label"><i class="fas fa-calendar"></i> Member Since</div></div></div></div><div class="best-buyer-email"><i class="fas fa-envelope" style="color:var(--gold);margin-right:6px"></i>${bb.email}</div></div>`;
+c.innerHTML=`<div class="best-buyer-showcase"><div class="best-buyer-header"><i class="fas fa-crown crown-icon"></i><div><div class="best-buyer-title">Best Buyer</div><div style="font-size:12px;color:var(--text-secondary);font-weight:600">Top customer</div></div></div><div class="best-buyer-content"><img src="${pic}" class="best-buyer-avatar"><div class="best-buyer-stats"><div class="best-buyer-stat"><div class="stat-value">${bb.totalOrders}</div><div class="stat-label"><i class="fas fa-shopping-bag"></i> Orders</div></div><div class="best-buyer-stat"><div class="stat-value">LKR ${bb.totalSpent.toLocaleString()}</div><div class="stat-label"><i class="fas fa-coins"></i> Spent</div></div><div class="best-buyer-stat"><div class="stat-value">${new Date(bb.createdAt).toLocaleDateString('en',{month:'short',year:'numeric'})}</div><div class="stat-label"><i class="fas fa-calendar"></i> Since</div></div></div></div><div class="best-buyer-email"><i class="fas fa-envelope" style="color:var(--gold);margin-right:6px"></i>${bb.email}</div></div>`;
 }
 
 // ===== CUSTOMERS =====
@@ -700,13 +774,12 @@ const sv=(document.getElementById('customerSearch')?.value||'').toLowerCase().tr
 const uws=users.map(u=>{const uo=orders.filter(o=>o.email.toLowerCase().trim()===u.email.toLowerCase().trim());return{...u,orderCount:uo.length,totalSpent:uo.reduce((s,o)=>s+(o.total||0),0)}});
 uws.sort((a,b)=>b.orderCount!==a.orderCount?b.orderCount-a.orderCount:b.totalSpent-a.totalSpent);
 let fu=uws;if(sv)fu=uws.filter(u=>u.email.toLowerCase().includes(sv)||(u.whatsapp&&u.whatsapp.includes(sv)));
-const bb=getBestBuyer();const bbEmail=bb?bb.email.toLowerCase().trim():'';
-if(!fu.length){c.innerHTML=sv?'<div class="empty-state"><i class="fas fa-search"></i><p>No match</p></div>':'<div class="empty-state"><i class="fas fa-users"></i><p>No customers yet</p></div>';updateBulkBar();return}
+const bb=getBestBuyer();const bbE=bb?bb.email.toLowerCase().trim():'';
+if(!fu.length){c.innerHTML=sv?'<div class="empty-state"><i class="fas fa-search"></i><p>No match</p></div>':'<div class="empty-state"><i class="fas fa-users"></i><p>No customers</p></div>';updateBulkBar();return}
 c.innerHTML='<div style="overflow-x:auto"><table class="admin-table"><thead><tr><th style="width:30px"><input type="checkbox" id="selectAllCustomers" onchange="toggleSelectAll(this)" style="cursor:pointer"></th><th>Profile</th><th>Email</th><th>WhatsApp</th><th>Orders</th><th>Spent</th><th>Joined</th><th>Actions</th></tr></thead><tbody>'+fu.map(u=>{
 const pic=u.profilePic||'https://ui-avatars.com/api/?name='+encodeURIComponent(u.email)+'&background=6366f1&color=fff&size=64';
-const isSel=selectedCustomerEmails.includes(u.email);
-const isBB=u.email.toLowerCase().trim()===bbEmail;
-return`<tr class="${isBB?'best-buyer-row':''}"><td><input type="checkbox" class="customer-check" data-email="${u.email}" ${isSel?'checked':''} onchange="toggleCustomerSelect(this)" style="cursor:pointer"></td><td><img src="${pic}" style="width:40px;height:40px;border-radius:50%;object-fit:cover;${isBB?'border:2px solid var(--gold)':''}" alt=""></td><td>${u.email} ${isBB?'<span class="crown-badge"><i class="fas fa-crown"></i> BEST</span>':''}</td><td>${u.whatsapp||'-'}</td><td><strong>${u.orderCount}</strong></td><td>LKR ${u.totalSpent.toLocaleString()}</td><td>${new Date(u.createdAt).toLocaleDateString()}</td><td><button class="btn btn-danger btn-sm" onclick="requestDeleteCustomer('${u.email}')"><i class="fas fa-user-slash"></i></button></td></tr>`;
+const isSel=selectedCustomerEmails.includes(u.email);const isBB=u.email.toLowerCase().trim()===bbE;
+return`<tr class="${isBB?'best-buyer-row':''}"><td><input type="checkbox" class="customer-check" data-email="${u.email}" ${isSel?'checked':''} onchange="toggleCustomerSelect(this)" style="cursor:pointer"></td><td><img src="${pic}" style="width:40px;height:40px;border-radius:50%;object-fit:cover;${isBB?'border:2px solid var(--gold)':''}"></td><td>${u.email} ${isBB?'<span class="crown-badge"><i class="fas fa-crown"></i> BEST</span>':''}</td><td>${u.whatsapp||'-'}</td><td><strong>${u.orderCount}</strong></td><td>LKR ${u.totalSpent.toLocaleString()}</td><td>${new Date(u.createdAt).toLocaleDateString()}</td><td><button class="btn btn-danger btn-sm" onclick="requestDeleteCustomer('${u.email}')"><i class="fas fa-user-slash"></i></button></td></tr>`;
 }).join('')+'</tbody></table></div>';
 renderBestBuyerShowcase();updateBulkBar();
 }
@@ -718,52 +791,218 @@ function clearSelection(){selectedCustomerEmails=[];document.querySelectorAll('.
 function requestDeleteCustomer(e){pendingDeleteEmail=e;document.getElementById('deleteCustomerEmail').textContent=e;document.getElementById('deleteCustomerModal').classList.add('active')}
 function confirmDeleteCustomer(){if(!pendingDeleteEmail)return;let u=JSON.parse(localStorage.getItem('pickzone_users')||'[]');u=u.filter(x=>x.email!==pendingDeleteEmail);localStorage.setItem('pickzone_users',JSON.stringify(u));const cs=localStorage.getItem('pickzone_current_user');if(cs){try{const s=JSON.parse(cs);if(s.email===pendingDeleteEmail)localStorage.removeItem('pickzone_current_user')}catch(e){}}selectedCustomerEmails=selectedCustomerEmails.filter(x=>x!==pendingDeleteEmail);closeModal('deleteCustomerModal');pendingDeleteEmail=null;renderUsersList();showToast('Customer removed','success')}
 function bulkDeleteCustomers(){if(!selectedCustomerEmails.length)return;document.getElementById('bulkDeleteCount').textContent=selectedCustomerEmails.length;document.getElementById('bulkDeleteModal').classList.add('active')}
-function confirmBulkDelete(){let u=JSON.parse(localStorage.getItem('pickzone_users')||'[]');const e=[...selectedCustomerEmails];u=u.filter(x=>!e.includes(x.email));localStorage.setItem('pickzone_users',JSON.stringify(u));const cs=localStorage.getItem('pickzone_current_user');if(cs){try{const s=JSON.parse(cs);if(e.includes(s.email))localStorage.removeItem('pickzone_current_user')}catch(e){}}selectedCustomerEmails=[];closeModal('bulkDeleteModal');renderUsersList();showToast(`${e.length} customer(s) removed`,'success')}
+function confirmBulkDelete(){let u=JSON.parse(localStorage.getItem('pickzone_users')||'[]');const e=[...selectedCustomerEmails];u=u.filter(x=>!e.includes(x.email));localStorage.setItem('pickzone_users',JSON.stringify(u));const cs=localStorage.getItem('pickzone_current_user');if(cs){try{const s=JSON.parse(cs);if(e.includes(s.email))localStorage.removeItem('pickzone_current_user')}catch(e){}}selectedCustomerEmails=[];closeModal('bulkDeleteModal');renderUsersList();showToast(`${e.length} removed`,'success')}
 function broadcastEmail(){const u=JSON.parse(localStorage.getItem('pickzone_users')||'[]');if(!u.length){showToast('No users','error');return}window.location.href=`mailto:?bcc=${u.map(x=>x.email).join(',')}&subject=${encodeURIComponent('PickZone Announcement')}&body=${encodeURIComponent('Dear Customer,\n\n[Your message]\n\nBest regards,\nPickZone Team')}`;showToast('Opening email...')}
 
-// ===== ORDERS (NO STATUS) =====
+// ===================================================================
+// ===== ORDERS WITH NOTIFY BUYER ====================================
+// ===================================================================
+
 function renderOrdersList(){
 const allOrders=JSON.parse(localStorage.getItem('pickzone_orders')||'[]').reverse();
 const container=document.getElementById('ordersListContainer');
-const searchVal=(document.getElementById('orderSearch')?.value||'').toLowerCase().trim();
+const sv=(document.getElementById('orderSearch')?.value||'').toLowerCase().trim();
 let filtered=allOrders;
-if(searchVal){filtered=filtered.filter(o=>(o.id&&o.id.toLowerCase().includes(searchVal))||(o.customer?.name&&o.customer.name.toLowerCase().includes(searchVal))||(o.email&&o.email.toLowerCase().includes(searchVal)))}
+if(sv){filtered=filtered.filter(o=>(o.id&&o.id.toLowerCase().includes(sv))||(o.customer?.name&&o.customer.name.toLowerCase().includes(sv))||(o.email&&o.email.toLowerCase().includes(sv)))}
 if(!filtered.length){container.innerHTML='<div class="empty-state"><i class="fas fa-receipt"></i><p>No orders found</p></div>';return}
-container.innerHTML='<div style="overflow-x:auto"><table class="admin-table"><thead><tr><th>Order ID</th><th>Customer</th><th>Items</th><th>Total</th><th>Date</th><th>Details</th></tr></thead><tbody>'+filtered.map(o=>`<tr>
+
+container.innerHTML='<div style="overflow-x:auto"><table class="admin-table"><thead><tr><th>Order ID</th><th>Customer</th><th>Items</th><th>Total</th><th>Status</th><th>Actions</th></tr></thead><tbody>'+filtered.map(o=>{
+const status=o.status||'pending';
+return`<tr>
 <td style="font-weight:700;font-size:12px">${o.id}</td>
 <td>${o.customer?.name||'N/A'}<br><small style="color:var(--text-secondary)">${o.email}</small></td>
-<td>${o.items.map(i=>i.title).join(', ').substring(0,40)}...</td>
+<td>${o.items.map(i=>i.title).join(', ').substring(0,35)}...</td>
 <td style="font-weight:700">LKR ${o.total.toLocaleString()}</td>
-<td>${new Date(o.date).toLocaleDateString()}</td>
-<td><button class="btn btn-secondary btn-sm" onclick="viewOrderDetails('${o.id}')"><i class="fas fa-eye"></i> View</button></td>
-</tr>`).join('')+'</tbody></table></div>';
+<td><span class="status-badge ${status}"><i class="fas ${STATUS_ICONS[status]}"></i> ${STATUS_LABELS[status]}</span></td>
+<td style="white-space:nowrap">
+<button class="notify-btn" onclick="openNotifyModal('${o.id}')"><i class="fas fa-bell"></i> Notify</button>
+<button class="btn btn-secondary btn-sm" onclick="viewOrderDetails('${o.id}')" style="margin-left:4px"><i class="fas fa-eye"></i></button>
+</td>
+</tr>`;
+}).join('')+'</tbody></table></div>';
+}
+
+// ===== NOTIFY BUYER FUNCTIONS =====
+function openNotifyModal(orderId){
+const orders=JSON.parse(localStorage.getItem('pickzone_orders')||'[]');
+const order=orders.find(o=>o.id===orderId);
+if(!order)return;
+
+document.getElementById('notifyOrderId').value=orderId;
+document.getElementById('notifyCustomMsg').value='';
+selectedNotifyStatus='';
+
+// Reset all status options
+document.querySelectorAll('.status-option').forEach(opt=>opt.classList.remove('selected'));
+
+// Show order info
+const status=order.status||'pending';
+document.getElementById('notifyOrderInfo').innerHTML=`
+<div class="order-row"><span class="label">Order ID</span><span class="val">${order.id}</span></div>
+<div class="order-row"><span class="label">Customer</span><span class="val">${order.customer?.name||'N/A'}</span></div>
+<div class="order-row"><span class="label">Email</span><span class="val">${order.email}</span></div>
+<div class="order-row"><span class="label">Phone</span><span class="val">${order.customer?.phone1||'N/A'}</span></div>
+<div class="order-row"><span class="label">Total</span><span class="val" style="color:var(--primary);font-weight:800">LKR ${order.total.toLocaleString()}</span></div>
+<div class="order-row"><span class="label">Current Status</span><span class="val"><span class="status-badge ${status}"><i class="fas ${STATUS_ICONS[status]}"></i> ${STATUS_LABELS[status]}</span></span></div>
+`;
+
+// Pre-select current status
+const currentOpt=document.querySelector(`.status-option.opt-${status}`);
+if(currentOpt){currentOpt.classList.add('selected');selectedNotifyStatus=status}
+
+document.getElementById('notifyModal').classList.add('active');
+}
+
+function selectNotifyStatus(status,el){
+document.querySelectorAll('.status-option').forEach(opt=>opt.classList.remove('selected'));
+el.classList.add('selected');
+selectedNotifyStatus=status;
+}
+
+function saveNotifyStatus(){
+const orderId=document.getElementById('notifyOrderId').value;
+if(!selectedNotifyStatus){showToast('Please select a status','error');return}
+
+let orders=JSON.parse(localStorage.getItem('pickzone_orders')||'[]');
+const order=orders.find(o=>o.id===orderId);
+if(!order)return;
+
+const oldStatus=order.status||'pending';
+order.status=selectedNotifyStatus;
+order.statusUpdatedAt=new Date().toISOString();
+if(!order.statusHistory)order.statusHistory=[];
+order.statusHistory.push({status:selectedNotifyStatus,changedAt:new Date().toISOString(),customMsg:document.getElementById('notifyCustomMsg').value.trim()});
+
+localStorage.setItem('pickzone_orders',JSON.stringify(orders));
+closeModal('notifyModal');
+renderOrdersList();
+showToast(`Order status updated to "${STATUS_LABELS[selectedNotifyStatus]}"`,'success');
+}
+
+function sendNotifyWhatsApp(){
+const orderId=document.getElementById('notifyOrderId').value;
+if(!selectedNotifyStatus){showToast('Please select a status','error');return}
+
+let orders=JSON.parse(localStorage.getItem('pickzone_orders')||'[]');
+const order=orders.find(o=>o.id===orderId);
+if(!order)return;
+
+// Save status
+order.status=selectedNotifyStatus;
+order.statusUpdatedAt=new Date().toISOString();
+if(!order.statusHistory)order.statusHistory=[];
+const customMsg=document.getElementById('notifyCustomMsg').value.trim();
+order.statusHistory.push({status:selectedNotifyStatus,changedAt:new Date().toISOString(),customMsg});
+localStorage.setItem('pickzone_orders',JSON.stringify(orders));
+
+// Build WhatsApp message
+const statusEmoji={pending:'⏳',on_the_road:'🚚',delivered:'✅',cancelled:'❌'};
+const statusText=STATUS_LABELS[selectedNotifyStatus];
+const emoji=statusEmoji[selectedNotifyStatus]||'';
+
+let waMsg=`========================================\n▶ PICKZONE ORDER UPDATE ◀\n========================================\n\n`;
+waMsg+=`Dear ${order.customer?.name||'Customer'},\n\n`;
+waMsg+=`${emoji} Your order status has been updated:\n\n`;
+waMsg+=`--- Order ID: ${order.id}\n`;
+waMsg+=`--- Status: ${statusText}\n`;
+waMsg+=`--- Total: LKR ${order.total.toLocaleString()}\n\n`;
+
+if(customMsg){
+waMsg+=`--- Message from PickZone:\n"${customMsg}"\n\n`;
+}
+
+// Status timeline
+const steps=['pending','on_the_road','delivered'];
+const currentIdx=steps.indexOf(selectedNotifyStatus);
+if(selectedNotifyStatus!=='cancelled'){
+waMsg+=`--- Order Progress:\n`;
+steps.forEach((s,i)=>{
+const icon=i<currentIdx?'✅':i===currentIdx?'🔵':'⬜';
+waMsg+=`${icon} ${STATUS_LABELS[s]}\n`;
+});
+}else{
+waMsg+=`--- Order Status: ❌ Cancelled\n`;
+}
+
+waMsg+=`\n========================================\n`;
+waMsg+=`Thank you for shopping with PickZone!\n`;
+waMsg+=`Questions? Reply to this message.\n`;
+waMsg+=`========================================`;
+
+// Get buyer's phone from users list
+const users=JSON.parse(localStorage.getItem('pickzone_users')||'[]');
+const buyer=users.find(u=>u.email.toLowerCase().trim()===order.email.toLowerCase().trim());
+const buyerPhone=buyer?.whatsapp||order.customer?.phone1||'';
+
+// Open WhatsApp
+if(buyerPhone){
+const cleanPhone=buyerPhone.replace(/\D/g,'');
+const fullPhone=cleanPhone.startsWith('94')?cleanPhone:'94'+cleanPhone.replace(/^0/,'');
+window.open(`https://wa.me/${fullPhone}?text=${encodeURIComponent(waMsg)}`,'_blank');
+}else{
+// Fallback: open with owner's number
+window.open(`https://wa.me/94779783990?text=${encodeURIComponent('Please forward this to '+order.email+':\n\n'+waMsg)}`,'_blank');
+showToast('Buyer phone not found. Opening with your number.','info');
+}
+
+closeModal('notifyModal');
+renderOrdersList();
+showToast(`Status updated & WhatsApp sent!`,'success');
 }
 
 function viewOrderDetails(orderId){
 const orders=JSON.parse(localStorage.getItem('pickzone_orders')||'[]');
-const o=orders.find(x=>x.id===orderId);
-if(!o)return;
+const o=orders.find(x=>x.id===orderId);if(!o)return;
+const status=o.status||'pending';
+const steps=['pending','on_the_road','delivered'];
+const ci=steps.indexOf(status);
+
+let timeline='';
+if(status!=='cancelled'){
+timeline='<div style="display:flex;align-items:center;margin:16px 0">';
+steps.forEach((s,i)=>{
+const cls=i<ci?'color:var(--success)':i===ci?'color:var(--primary);font-weight:700':'color:var(--text-secondary)';
+const icon=i<ci?'✅':i===ci?'🔵':'⬜';
+timeline+=`<div style="flex:1;text-align:center"><div style="font-size:20px">${icon}</div><div style="font-size:10px;${cls}">${STATUS_LABELS[s]}</div></div>`;
+if(i<steps.length-1)timeline+=`<div style="flex:0.5;height:2px;background:${i<ci?'var(--success)':'var(--border)'};margin-bottom:16px"></div>`;
+});
+timeline+='</div>';
+}else{
+timeline='<div style="text-align:center;margin:16px 0"><span class="status-badge cancelled"><i class="fas fa-times-circle"></i> Cancelled</span></div>';
+}
+
+let history='';
+if(o.statusHistory&&o.statusHistory.length>0){
+history='<div style="margin-top:16px;padding:12px;background:var(--bg);border-radius:10px"><h4 style="font-size:12px;color:var(--text-secondary);margin-bottom:8px"><i class="fas fa-history"></i> Status History</h4>';
+o.statusHistory.forEach(h=>{
+history+=`<div style="display:flex;align-items:center;gap:8px;padding:4px 0;font-size:12px"><span class="status-badge ${h.status}" style="font-size:10px"><i class="fas ${STATUS_ICONS[h.status]}"></i> ${STATUS_LABELS[h.status]}</span><span style="color:var(--text-secondary)">${new Date(h.changedAt).toLocaleString()}</span>${h.customMsg?`<span style="color:var(--text-secondary);font-style:italic">"${h.customMsg.substring(0,30)}${h.customMsg.length>30?'...':''}"</span>`:''}</div>`;
+});
+history+='</div>';
+}
+
 document.getElementById('orderDetailContent').innerHTML=`
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
-<div style="padding:12px;background:var(--bg);border-radius:10px"><div style="font-size:11px;color:var(--text-secondary);text-transform:uppercase">Order ID</div><div style="font-weight:700;font-size:14px">${o.id}</div></div>
-<div style="padding:12px;background:var(--bg);border-radius:10px"><div style="font-size:11px;color:var(--text-secondary);text-transform:uppercase">Date</div><div style="font-weight:700;font-size:14px">${new Date(o.date).toLocaleString()}</div></div>
+<div style="padding:12px;background:var(--bg);border-radius:10px"><div style="font-size:11px;color:var(--text-secondary);text-transform:uppercase">Order ID</div><div style="font-weight:700">${o.id}</div></div>
+<div style="padding:12px;background:var(--bg);border-radius:10px"><div style="font-size:11px;color:var(--text-secondary);text-transform:uppercase">Date</div><div style="font-weight:700">${new Date(o.date).toLocaleString()}</div></div>
 </div>
-<h4 style="font-size:14px;margin:16px 0 10px"><i class="fas fa-user"></i> Customer</h4>
+<h4 style="font-size:13px;margin-bottom:8px;color:var(--text-secondary)"><i class="fas fa-map-marker-alt"></i> Current Status</h4>
+<span class="status-badge ${status}" style="font-size:13px;padding:6px 16px"><i class="fas ${STATUS_ICONS[status]}"></i> ${STATUS_LABELS[status]}</span>
+${timeline}
+<h4 style="font-size:13px;margin:16px 0 8px;color:var(--text-secondary)"><i class="fas fa-user"></i> Customer</h4>
 <div style="padding:12px;background:var(--bg);border-radius:10px;font-size:13px;line-height:1.8">
 <strong>${o.customer?.name||'N/A'}</strong><br>
 <i class="fas fa-envelope" style="color:var(--primary);width:16px"></i> ${o.email}<br>
 <i class="fas fa-phone" style="color:var(--primary);width:16px"></i> ${o.customer?.phone1||'N/A'}<br>
-<i class="fas fa-phone" style="color:var(--primary);width:16px"></i> ${o.customer?.phone2||'N/A'}<br>
 <i class="fas fa-map" style="color:var(--primary);width:16px"></i> ${o.customer?.city||''}, ${o.customer?.district||''}<br>
 <i class="fas fa-home" style="color:var(--primary);width:16px"></i> ${o.customer?.address||''}
 </div>
-<h4 style="font-size:14px;margin:16px 0 10px"><i class="fas fa-box"></i> Items</h4>
+<h4 style="font-size:13px;margin:16px 0 8px;color:var(--text-secondary)"><i class="fas fa-box"></i> Items</h4>
 <div style="padding:12px;background:var(--bg);border-radius:10px">
 ${o.items.map(i=>`<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);font-size:13px"><span>${i.title} <small style="color:var(--text-secondary)">(${i.code}) x${i.qty}</small></span><span style="font-weight:700">LKR ${(i.price*i.qty).toLocaleString()}</span></div>`).join('')}
-<div style="display:flex;justify-content:space-between;padding:8px 0;font-size:13px"><span>Subtotal</span><span>LKR ${o.subtotal.toLocaleString()}</span></div>
-<div style="display:flex;justify-content:space-between;padding:8px 0;font-size:13px"><span>Delivery</span><span>LKR ${o.delivery}</span></div>
-<div style="display:flex;justify-content:space-between;padding:8px 0;font-size:15px;font-weight:800;color:var(--primary);border-top:2px solid var(--border)"><span>Grand Total</span><span>LKR ${o.total.toLocaleString()}</span></div>
-</div>`;
+<div style="display:flex;justify-content:space-between;padding:8px 0;font-size:15px;font-weight:800;color:var(--primary);border-top:2px solid var(--border);margin-top:4px"><span>Total</span><span>LKR ${o.total.toLocaleString()}</span></div>
+</div>
+${history}
+`;
 document.getElementById('orderDetailModal').classList.add('active');
 }
 
@@ -843,3 +1082,73 @@ loadTheme();checkSession();
 </script>
 </body>
 </html>
+<!-- REPLACE the page-orders section in index.html with this: -->
+<div class="page" id="page-orders">
+<h2 class="section-title reveal">My Orders</h2>
+<div class="orders-page" id="ordersList"></div>
+</div>
+
+
+              <script>
+                              function renderOrders(){
+let container=document.getElementById('ordersList');
+if(!isAuthenticated()){container.innerHTML='<div class="empty-state"><i class="fas fa-receipt"></i><p>Sign in to view orders</p></div>';return}
+let orders=JSON.parse(localStorage.getItem('pickzone_orders')||'[]');
+let userOrders=orders.filter(o=>o.email.toLowerCase().trim()===currentUser.email.toLowerCase().trim()).reverse();
+if(!userOrders.length){container.innerHTML='<div class="empty-state"><i class="fas fa-receipt"></i><p>No orders yet</p></div>';return}
+
+const statusMessages={
+pending:{icon:'fa-clock',text:'Your order is Pending',subtext:'We are processing your order'},
+on_the_road:{icon:'fa-truck',text:'Your order is On The Road!',subtext:'It will be delivered soon'},
+delivered:{icon:'fa-check-circle',text:'Your order has been Delivered!',subtext:'Thank you for shopping with us'},
+cancelled:{icon:'fa-times-circle',text:'Your order was Cancelled',subtext:'Please contact us for details'}
+};
+const statusSteps=['pending','on_the_road','delivered'];
+
+container.innerHTML=userOrders.map(o=>{
+const status=o.status||'pending';
+const sm=statusMessages[status];
+const currentIdx=statusSteps.indexOf(status);
+
+let progressHtml='';
+if(status!=='cancelled'){
+progressHtml='<div class="order-progress">';
+statusSteps.forEach((s,i)=>{
+let cls='';
+if(i<currentIdx)cls='done';
+else if(i===currentIdx)cls='current';
+progressHtml+=`<div class="order-progress-step ${cls}"><div class="op-circle"><i class="fas ${statusMessages[s].icon}"></i></div><div class="op-label">${s==='pending'?'Pending':s==='on_the_road'?'On Road':'Delivered'}</div></div>`;
+});
+progressHtml+='</div>';
+}else{
+progressHtml='<div class="order-progress"><div class="order-progress-step cancelled-step"><div class="op-circle"><i class="fas fa-times-circle"></i></div><div class="op-label">Cancelled</div></div></div>';
+}
+
+// Get latest custom message from admin
+let customMsgHtml='';
+if(o.statusHistory&&o.statusHistory.length>0){
+const latest=o.statusHistory[o.statusHistory.length-1];
+if(latest.customMsg){
+customMsgHtml=`<div class="order-custom-msg">${latest.customMsg}</div>`;
+}
+}
+
+return`<div class="order-card">
+<div class="order-header"><span class="order-date">${new Date(o.date).toLocaleString()}</span></div>
+<div class="order-status-bar ${status}"><i class="fas ${sm.icon}"></i> ${sm.text}</div>
+<p style="font-size:12px;color:var(--text-secondary);margin-bottom:4px">${sm.subtext}</p>
+${progressHtml}
+${customMsgHtml}
+<div class="order-items" style="margin-top:10px">${o.items.map(i=>`${i.title} x${i.qty}`).join(', ')}</div>
+<div class="order-total">Total: LKR ${o.total.toLocaleString()}</div>
+</div>`;
+}).join('');
+
+setTimeout(setupScrollReveal,100);
+}
+
+
+              </script>
+                        </body>
+                        </html>
+                    
