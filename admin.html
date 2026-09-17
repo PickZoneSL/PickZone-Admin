@@ -41,6 +41,8 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 .login-card .login-btn{width:100%;padding:14px;background:var(--gradient);color:#fff;font-weight:700;font-size:15px;border-radius:12px;cursor:pointer;transition:all 0.3s;border:none;margin-top:8px}
 .login-card .login-btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(99,102,241,0.4)}
 .login-error{color:var(--danger);font-size:12px;margin-top:10px;display:none}
+.login-error.show{display:block;animation:shake 0.4s ease}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
 
 .app{display:none;min-height:100vh}
 .app.active{display:flex}
@@ -213,11 +215,15 @@ tr:hover td{background:var(--bg)}
 <div class="login-card">
 <img src="https://www.image2url.com/r2/default/images/1788805311773-68d75ded-4271-402e-93dd-dd9b79cee693.png" alt="PickZone">
 <h2>Admin Access</h2>
-<p class="subtitle">Enter admin credentials to continue</p>
-<div class="input-group"><label>Admin Email</label><input type="email" id="adminEmail" placeholder="admin@gmail.com"></div>
-<div class="input-group"><label>Password</label><input type="password" id="adminPassword" placeholder="Enter password"></div>
+<p class="subtitle">Authorized personnel only</p>
+<div class="input-group"><label>Admin Email</label><input type="email" id="adminEmail" placeholder="admin@gmail.com" autocomplete="off"></div>
+<div class="input-group"><label>Password</label><input type="password" id="adminPassword" placeholder="Enter password" autocomplete="off"></div>
 <button class="login-btn" onclick="adminLogin()"><i class="fas fa-lock-open" style="margin-right:6px"></i>Access Dashboard</button>
-<div class="login-error" id="loginError">Invalid credentials. Access denied.</div>
+<div class="login-error" id="loginError"><i class="fas fa-exclamation-circle"></i> <span id="loginErrorMsg">Invalid credentials. Access denied.</span></div>
+<div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border);font-size:11px;color:var(--text-secondary)">
+<i class="fas fa-shield-alt" style="color:var(--primary);margin-right:4px"></i>
+Secured by PickZone Admin System
+</div>
 </div>
 </div>
 
@@ -281,7 +287,7 @@ tr:hover td{background:var(--bg)}
 <div class="panel-header">
 <h3><i class="fas fa-coins"></i> Revenue Overview</h3>
 <div class="panel-actions">
-<button class="btn btn-danger btn-sm" onclick="confirmAction('clearRevenue','Clear all revenue data?','This will permanently delete all revenue records. This action cannot be undone.')"><i class="fas fa-trash-alt"></i>Clear All Revenue</button>
+<button class="btn btn-danger btn-sm" onclick="confirmAction('clearRevenue','Clear all revenue data?','This will permanently delete all revenue records.')"><i class="fas fa-trash-alt"></i>Clear All Revenue</button>
 </div>
 </div>
 <div class="panel-body">
@@ -311,7 +317,7 @@ tr:hover td{background:var(--bg)}
 <h3><i class="fas fa-receipt"></i> All Orders</h3>
 <div class="panel-actions">
 <div class="search-wrap"><i class="fas fa-search"></i><input class="search-input" placeholder="Search orders..." oninput="filterOrders(this.value)"></div>
-<button class="btn btn-danger btn-sm" onclick="confirmAction('clearOrders','Clear ALL orders?','This will permanently delete all customer orders. This action cannot be undone.')"><i class="fas fa-trash-alt"></i>Clear All Orders</button>
+<button class="btn btn-danger btn-sm" onclick="confirmAction('clearOrders','Clear ALL orders?','This will permanently delete all customer orders.')"><i class="fas fa-trash-alt"></i>Clear All Orders</button>
 </div>
 </div>
 <div class="panel-body">
@@ -477,333 +483,392 @@ tr:hover td{background:var(--bg)}
 </div>
 
 <script>
-const ADMIN_EMAILS=['gaming.blinky2000@gmail.com','grbmsirithilaka@gmail.com'];
-const ADMIN_PASSWORD='12345';
-let adminUser=null;
-let confirmCallback=null;
-let editingCustomerIdx=-1;
-let editingProductIdx=-1;
+// ===== STRICT ADMIN CREDENTIALS =====
+const ADMIN_EMAIL = 'grbmsirithilaka@gmail.com';
+const ADMIN_PASSWORD = '2009GrBmS@';
 
-window.addEventListener('load',()=>{
-setTimeout(()=>{
-document.getElementById('adminLoader').classList.add('hidden');
-setTimeout(()=>{document.getElementById('adminLoader').style.display='none';checkAdminAuth()},800);
-},2200);
+let adminUser = null;
+let confirmCallback = null;
+let editingCustomerIdx = -1;
+let editingProductIdx = -1;
+let failedAttempts = 0;
+const MAX_ATTEMPTS = 5;
+
+window.addEventListener('load', () => {
+    setTimeout(() => {
+        document.getElementById('adminLoader').classList.add('hidden');
+        setTimeout(() => {
+            document.getElementById('adminLoader').style.display = 'none';
+            checkAdminAuth();
+        }, 800);
+    }, 2200);
 });
 
-function checkAdminAuth(){
-const saved=localStorage.getItem('pickzone_admin');
-if(saved){
-try{
-const a=JSON.parse(saved);
-if(ADMIN_EMAILS.includes(a.email)){adminUser=a;showApp();return}
-}catch(e){}
-}
-document.getElementById('loginScreen').classList.remove('hidden');
-}
-
-function adminLogin(){
-const email=document.getElementById('adminEmail').value.trim().toLowerCase();
-const password=document.getElementById('adminPassword').value.trim();
-const errEl=document.getElementById('loginError');
-
-if(!ADMIN_EMAILS.includes(email)){errEl.style.display='block';errEl.textContent='Email not authorized as admin.';return}
-
-if(password===ADMIN_PASSWORD){
-adminUser={email:email,fullName:'Admin'};
-localStorage.setItem('pickzone_admin',JSON.stringify(adminUser));
-errEl.style.display='none';
-document.getElementById('loginScreen').classList.add('hidden');
-showApp();
-return;
+function checkAdminAuth() {
+    const saved = localStorage.getItem('pickzone_admin');
+    if (saved) {
+        try {
+            const a = JSON.parse(saved);
+            // STRICT CHECK: Only allow the authorized admin email
+            if (a.email === ADMIN_EMAIL) {
+                adminUser = a;
+                showApp();
+                return;
+            } else {
+                // Invalid saved session - clear it
+                localStorage.removeItem('pickzone_admin');
+            }
+        } catch (e) {
+            localStorage.removeItem('pickzone_admin');
+        }
+    }
+    document.getElementById('loginScreen').classList.remove('hidden');
 }
 
-const users=JSON.parse(localStorage.getItem('pickzone_users')||'[]');
-const user=users.find(u=>u.email.toLowerCase()===email&&u.password===password);
-if(!user){errEl.style.display='block';errEl.textContent='Invalid password. Please try again.';return}
+function adminLogin() {
+    const email = document.getElementById('adminEmail').value.trim().toLowerCase();
+    const password = document.getElementById('adminPassword').value;
+    const errEl = document.getElementById('loginError');
+    const errMsg = document.getElementById('loginErrorMsg');
 
-errEl.style.display='none';
-adminUser=user;
-localStorage.setItem('pickzone_admin',JSON.stringify(user));
-document.getElementById('loginScreen').classList.add('hidden');
-showApp();
+    // Rate limiting
+    if (failedAttempts >= MAX_ATTEMPTS) {
+        errEl.classList.add('show');
+        errMsg.textContent = 'Too many failed attempts. Please try again later.';
+        setTimeout(() => { failedAttempts = 0; errEl.classList.remove('show'); }, 30000);
+        return;
+    }
+
+    // STRICT VALIDATION: Email AND Password must BOTH match exactly
+    if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+        adminUser = { email: ADMIN_EMAIL, fullName: 'Administrator' };
+        localStorage.setItem('pickzone_admin', JSON.stringify(adminUser));
+        errEl.classList.remove('show');
+        failedAttempts = 0;
+        document.getElementById('loginScreen').classList.add('hidden');
+        showApp();
+        return;
+    }
+
+    // Failed attempt
+    failedAttempts++;
+    errEl.classList.add('show');
+
+    if (email !== ADMIN_EMAIL && password !== ADMIN_PASSWORD) {
+        errMsg.textContent = 'Invalid email and password. Access denied.';
+    } else if (email !== ADMIN_EMAIL) {
+        errMsg.textContent = 'Email not authorized. Only admin can access this panel.';
+    } else {
+        errMsg.textContent = 'Incorrect password. Access denied.';
+    }
+
+    document.getElementById('adminPassword').value = '';
+
+    // Log failed attempt (for security tracking)
+    console.warn(`[PickZone Admin] Failed login attempt #${failedAttempts} from email: ${email}`);
 }
 
-function adminLogout(){
-localStorage.removeItem('pickzone_admin');
-adminUser=null;
-document.getElementById('app').classList.remove('active');
-document.getElementById('loginScreen').classList.remove('hidden');
-document.getElementById('adminEmail').value='';
-document.getElementById('adminPassword').value='';
+// Allow Enter key to submit
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && !document.getElementById('loginScreen').classList.contains('hidden')) {
+        adminLogin();
+    }
+});
+
+function adminLogout() {
+    localStorage.removeItem('pickzone_admin');
+    adminUser = null;
+    failedAttempts = 0;
+    document.getElementById('app').classList.remove('active');
+    document.getElementById('loginScreen').classList.remove('hidden');
+    document.getElementById('adminEmail').value = '';
+    document.getElementById('adminPassword').value = '';
+    document.getElementById('loginError').classList.remove('show');
 }
 
-function showApp(){
-document.getElementById('app').classList.add('active');
-document.getElementById('adminName').textContent=adminUser.email?adminUser.email.split('@')[0]:(adminUser.fullName||'Admin');
-renderDashboard();renderOrders();renderCustomers();renderProducts();renderNotifications();renderArena();
+function showApp() {
+    document.getElementById('app').classList.add('active');
+    document.getElementById('adminName').textContent = 'Administrator';
+    renderDashboard();
+    renderOrders();
+    renderCustomers();
+    renderProducts();
+    renderNotifications();
+    renderArena();
 }
 
-function showSection(id,el){
-document.querySelectorAll('.page-section').forEach(s=>s.classList.remove('active'));
-document.getElementById('sec-'+id).classList.add('active');
-document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-if(el)el.classList.add('active');
-const titles={dashboard:'Dashboard',orders:'Orders',customers:'Customers',products:'Products',notifications:'Notifications',arena:'Message Arena',settings:'Settings'};
-document.getElementById('sectionTitle').textContent=titles[id]||'Dashboard';
-if(window.innerWidth<=768)document.getElementById('sidebar').classList.remove('open');
-if(id==='dashboard')renderDashboard();if(id==='orders')renderOrders();if(id==='customers')renderCustomers();if(id==='products')renderProducts();if(id==='notifications')renderNotifDropdowns();if(id==='arena')renderArena();
+function showSection(id, el) {
+    document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+    document.getElementById('sec-' + id).classList.add('active');
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    if (el) el.classList.add('active');
+    const titles = { dashboard: 'Dashboard', orders: 'Orders', customers: 'Customers', products: 'Products', notifications: 'Notifications', arena: 'Message Arena', settings: 'Settings' };
+    document.getElementById('sectionTitle').textContent = titles[id] || 'Dashboard';
+    if (window.innerWidth <= 768) document.getElementById('sidebar').classList.remove('open');
+    if (id === 'dashboard') renderDashboard();
+    if (id === 'orders') renderOrders();
+    if (id === 'customers') renderCustomers();
+    if (id === 'products') renderProducts();
+    if (id === 'notifications') renderNotifDropdowns();
+    if (id === 'arena') renderArena();
 }
 
-function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open')}
-function toggleTheme(){let t=document.body.getAttribute('data-theme'),n=t==='light'?'dark':'light';document.body.setAttribute('data-theme',n);document.getElementById('themeIcon').className=n==='dark'?'fas fa-sun':'fas fa-moon';localStorage.setItem('pickzone_theme',n)}
-
-function getOrders(){return JSON.parse(localStorage.getItem('pickzone_orders')||'[]')}
-function getUsers(){return JSON.parse(localStorage.getItem('pickzone_users')||'[]')}
-function getProducts(){return JSON.parse(localStorage.getItem('pickzone_items')||'[]')}
-function getNotifs(){return JSON.parse(localStorage.getItem('pickzone_notifications')||'[]')}
-function getMessages(){return JSON.parse(localStorage.getItem('pickzone_messages')||'[]')}
-function getVisitors(){return parseInt(localStorage.getItem('pickzone_visitor_count')||'0')}
-
-function toast(msg,type='success'){
-const t=document.createElement('div');t.className='toast '+type;
-const icons={success:'fa-check-circle',error:'fa-times-circle',info:'fa-info-circle'};
-t.innerHTML=`<i class="fas ${icons[type]||icons.info}"></i>${msg}`;
-document.body.appendChild(t);
-setTimeout(()=>{t.classList.add('hide');setTimeout(()=>t.remove(),300)},3000);
+function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+function toggleTheme() {
+    let t = document.body.getAttribute('data-theme'), n = t === 'light' ? 'dark' : 'light';
+    document.body.setAttribute('data-theme', n);
+    document.getElementById('themeIcon').className = n === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+    localStorage.setItem('pickzone_theme', n);
 }
 
-function openModal(id){document.getElementById(id).classList.add('active')}
-function closeModal(id){document.getElementById(id).classList.remove('active')}
+function getOrders() { return JSON.parse(localStorage.getItem('pickzone_orders') || '[]'); }
+function getUsers() { return JSON.parse(localStorage.getItem('pickzone_users') || '[]'); }
+function getProducts() { return JSON.parse(localStorage.getItem('pickzone_items') || '[]'); }
+function getNotifs() { return JSON.parse(localStorage.getItem('pickzone_notifications') || '[]'); }
+function getMessages() { return JSON.parse(localStorage.getItem('pickzone_messages') || '[]'); }
+function getVisitors() { return parseInt(localStorage.getItem('pickzone_visitor_count') || '0'); }
 
-function confirmAction(action,title,msg){
-document.getElementById('confirmTitle').textContent=title;
-document.getElementById('confirmMsg').textContent=msg;
-document.getElementById('confirmDialog').classList.add('active');
-confirmCallback=action;
-}
-function closeConfirm(){document.getElementById('confirmDialog').classList.remove('active');confirmCallback=null}
-function executeConfirm(){
-if(!confirmCallback)return;
-const action=confirmCallback;closeConfirm();
-switch(action){
-case 'clearOrders':localStorage.setItem('pickzone_orders','[]');toast('All orders cleared!');renderDashboard();renderOrders();break;
-case 'clearRevenue':localStorage.setItem('pickzone_orders','[]');toast('All revenue data cleared!');renderDashboard();break;
-case 'clearCustomers':localStorage.setItem('pickzone_users','[]');toast('All customers cleared!');renderCustomers();renderDashboard();break;
-case 'clearProducts':localStorage.setItem('pickzone_items','[]');toast('All products cleared!');renderProducts();break;
-case 'clearNotifs':localStorage.setItem('pickzone_notifications','[]');toast('All notifications cleared!');renderNotifications();break;
-case 'clearVisitors':localStorage.setItem('pickzone_visitor_count','0');toast('Visitor count reset!');renderDashboard();break;
-case 'clearArena':localStorage.setItem('pickzone_messages','[]');toast('All arena messages cleared!');renderArena();break;
-}
+function toast(msg, type = 'success') {
+    const t = document.createElement('div');
+    t.className = 'toast ' + type;
+    const icons = { success: 'fa-check-circle', error: 'fa-times-circle', info: 'fa-info-circle' };
+    t.innerHTML = `<i class="fas ${icons[type] || icons.info}"></i>${msg}`;
+    document.body.appendChild(t);
+    setTimeout(() => { t.classList.add('hide'); setTimeout(() => t.remove(), 300); }, 3000);
 }
 
-function renderDashboard(){
-const orders=getOrders();const users=getUsers();const products=getProducts();const visitors=getVisitors();
-const totalRevenue=orders.reduce((s,o)=>s+(o.total||0),0);
-const deliveredRevenue=orders.filter(o=>o.status==='delivered').reduce((s,o)=>s+(o.total||0),0);
-const pendingOrders=orders.filter(o=>o.status==='pending').length;
-const activeOrders=orders.filter(o=>o.status!=='delivered'&&o.status!=='cancelled').length;
+function openModal(id) { document.getElementById(id).classList.add('active'); }
+function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
-document.getElementById('dashStats').innerHTML=`
+function confirmAction(action, title, msg) {
+    document.getElementById('confirmTitle').textContent = title;
+    document.getElementById('confirmMsg').textContent = msg;
+    document.getElementById('confirmDialog').classList.add('active');
+    confirmCallback = action;
+}
+function closeConfirm() { document.getElementById('confirmDialog').classList.remove('active'); confirmCallback = null; }
+function executeConfirm() {
+    if (!confirmCallback) return;
+    const action = confirmCallback;
+    closeConfirm();
+    switch (action) {
+        case 'clearOrders': localStorage.setItem('pickzone_orders', '[]'); toast('All orders cleared!'); renderDashboard(); renderOrders(); break;
+        case 'clearRevenue': localStorage.setItem('pickzone_orders', '[]'); toast('All revenue data cleared!'); renderDashboard(); break;
+        case 'clearCustomers': localStorage.setItem('pickzone_users', '[]'); toast('All customers cleared!'); renderCustomers(); renderDashboard(); break;
+        case 'clearProducts': localStorage.setItem('pickzone_items', '[]'); toast('All products cleared!'); renderProducts(); break;
+        case 'clearNotifs': localStorage.setItem('pickzone_notifications', '[]'); toast('All notifications cleared!'); renderNotifications(); break;
+        case 'clearVisitors': localStorage.setItem('pickzone_visitor_count', '0'); toast('Visitor count reset!'); renderDashboard(); break;
+        case 'clearArena': localStorage.setItem('pickzone_messages', '[]'); toast('All arena messages cleared!'); renderArena(); break;
+    }
+}
+
+function renderDashboard() {
+    const orders = getOrders(); const users = getUsers(); const products = getProducts(); const visitors = getVisitors();
+    const totalRevenue = orders.reduce((s, o) => s + (o.total || 0), 0);
+    const deliveredRevenue = orders.filter(o => o.status === 'delivered').reduce((s, o) => s + (o.total || 0), 0);
+    const pendingOrders = orders.filter(o => o.status === 'pending').length;
+    const activeOrders = orders.filter(o => o.status !== 'delivered' && o.status !== 'cancelled').length;
+
+    document.getElementById('dashStats').innerHTML = `
 <div class="stat-card purple"><div class="sc-icon"><i class="fas fa-receipt"></i></div><div class="sc-value">${orders.length}</div><div class="sc-label">Total Orders</div></div>
 <div class="stat-card green"><div class="sc-icon"><i class="fas fa-coins"></i></div><div class="sc-value">LKR ${totalRevenue.toLocaleString()}</div><div class="sc-label">Total Revenue</div></div>
 <div class="stat-card pink"><div class="sc-icon"><i class="fas fa-users"></i></div><div class="sc-value">${users.length}</div><div class="sc-label">Customers</div></div>
 <div class="stat-card blue"><div class="sc-icon"><i class="fas fa-box"></i></div><div class="sc-value">${products.length}</div><div class="sc-label">Products</div></div>`;
 
-document.getElementById('visitorCount').textContent=visitors.toLocaleString();
+    document.getElementById('visitorCount').textContent = visitors.toLocaleString();
 
-document.getElementById('revenueStats').innerHTML=`
+    document.getElementById('revenueStats').innerHTML = `
 <div class="stat-card green"><div class="sc-icon"><i class="fas fa-check-circle"></i></div><div class="sc-value">LKR ${deliveredRevenue.toLocaleString()}</div><div class="sc-label">Delivered Revenue</div></div>
 <div class="stat-card pink"><div class="sc-icon"><i class="fas fa-clock"></i></div><div class="sc-value">${pendingOrders}</div><div class="sc-label">Pending Orders</div></div>
 <div class="stat-card blue"><div class="sc-icon"><i class="fas fa-shipping-fast"></i></div><div class="sc-value">${activeOrders}</div><div class="sc-label">Active Orders</div></div>`;
 
-const revOrders=[...orders].reverse().slice(0,10);
-document.getElementById('revenueTable').innerHTML=revOrders.length?revOrders.map(o=>`<tr><td>${new Date(o.date).toLocaleDateString()}</td><td style="font-weight:700;color:var(--primary)">${o.id}</td><td>${o.customer?.name||o.email}</td><td>${o.items?.length||0} items</td><td style="font-weight:700;color:var(--success)">LKR ${(o.total||0).toLocaleString()}</td></tr>`).join(''):'<tr><td colspan="5" class="empty"><i class="fas fa-coins"></i><p>No revenue data yet</p></td></tr>';
+    const revOrders = [...orders].reverse().slice(0, 10);
+    document.getElementById('revenueTable').innerHTML = revOrders.length ? revOrders.map(o => `<tr><td>${new Date(o.date).toLocaleDateString()}</td><td style="font-weight:700;color:var(--primary)">${o.id}</td><td>${o.customer?.name || o.email}</td><td>${o.items?.length || 0} items</td><td style="font-weight:700;color:var(--success)">LKR ${(o.total || 0).toLocaleString()}</td></tr>`).join('') : '<tr><td colspan="5" class="empty"><i class="fas fa-coins"></i><p>No revenue data yet</p></td></tr>';
 
-const recent=[...orders].reverse().slice(0,5);
-document.getElementById('recentOrdersTable').innerHTML=recent.length?recent.map(o=>{
-const bc={pending:'badge-pending',on_the_road:'badge-road',delivered:'badge-delivered',cancelled:'badge-cancelled'};
-const bl={pending:'Pending',on_the_road:'On Road',delivered:'Delivered',cancelled:'Cancelled'};
-return`<tr><td style="font-weight:700;color:var(--primary)">${o.id}</td><td>${o.customer?.name||o.email}</td><td>LKR ${(o.total||0).toLocaleString()}</td><td><span class="badge ${bc[o.status]||'badge-pending'}">${bl[o.status]||'Pending'}</span></td><td>${new Date(o.date).toLocaleDateString()}</td></tr>`;
-}).join(''):'<tr><td colspan="5" class="empty"><i class="fas fa-receipt"></i><p>No orders yet</p></td></tr>';
+    const recent = [...orders].reverse().slice(0, 5);
+    document.getElementById('recentOrdersTable').innerHTML = recent.length ? recent.map(o => {
+        const bc = { pending: 'badge-pending', on_the_road: 'badge-road', delivered: 'badge-delivered', cancelled: 'badge-cancelled' };
+        const bl = { pending: 'Pending', on_the_road: 'On Road', delivered: 'Delivered', cancelled: 'Cancelled' };
+        return `<tr><td style="font-weight:700;color:var(--primary)">${o.id}</td><td>${o.customer?.name || o.email}</td><td>LKR ${(o.total || 0).toLocaleString()}</td><td><span class="badge ${bc[o.status] || 'badge-pending'}">${bl[o.status] || 'Pending'}</span></td><td>${new Date(o.date).toLocaleDateString()}</td></tr>`;
+    }).join('') : '<tr><td colspan="5" class="empty"><i class="fas fa-receipt"></i><p>No orders yet</p></td></tr>';
 
-document.getElementById('ordersBadge').textContent=activeOrders;
+    document.getElementById('ordersBadge').textContent = activeOrders;
 }
 
-let ordersSearchTerm='';
-function filterOrders(v){ordersSearchTerm=v.toLowerCase();renderOrders()}
-function renderOrders(){
-const orders=getOrders();
-let filtered=orders;
-if(ordersSearchTerm){filtered=orders.filter(o=>(o.id||'').toLowerCase().includes(ordersSearchTerm)||(o.customer?.name||'').toLowerCase().includes(ordersSearchTerm)||(o.email||'').toLowerCase().includes(ordersSearchTerm))}
-const sorted=[...filtered].reverse();
-document.getElementById('allOrdersTable').innerHTML=sorted.length?sorted.map((o,ri)=>{
-const idx=orders.length-1-ri;
-const bc={pending:'badge-pending',on_the_road:'badge-road',delivered:'badge-delivered',cancelled:'badge-cancelled'};
-const bl={pending:'Pending',on_the_road:'On Road',delivered:'Delivered',cancelled:'Cancelled'};
-return`<tr>
+let ordersSearchTerm = '';
+function filterOrders(v) { ordersSearchTerm = v.toLowerCase(); renderOrders(); }
+function renderOrders() {
+    const orders = getOrders();
+    let filtered = orders;
+    if (ordersSearchTerm) { filtered = orders.filter(o => (o.id || '').toLowerCase().includes(ordersSearchTerm) || (o.customer?.name || '').toLowerCase().includes(ordersSearchTerm) || (o.email || '').toLowerCase().includes(ordersSearchTerm)); }
+    const sorted = [...filtered].reverse();
+    document.getElementById('allOrdersTable').innerHTML = sorted.length ? sorted.map((o, ri) => {
+        const idx = orders.length - 1 - ri;
+        const bc = { pending: 'badge-pending', on_the_road: 'badge-road', delivered: 'badge-delivered', cancelled: 'badge-cancelled' };
+        const bl = { pending: 'Pending', on_the_road: 'On Road', delivered: 'Delivered', cancelled: 'Cancelled' };
+        return `<tr>
 <td style="font-weight:700;color:var(--primary)">${o.id}</td>
-<td><div style="font-weight:600">${o.customer?.name||'N/A'}</div><div style="font-size:11px;color:var(--text-secondary)">${o.email||''}</div></td>
-<td>${(o.items?.map(i=>i.title).join(', ')||'N/A').substring(0,30)}${(o.items?.map(i=>i.title).join(', ')||'').length>30?'...':''}</td>
-<td style="font-weight:700">LKR ${(o.total||0).toLocaleString()}</td>
-<td><span class="badge ${bc[o.status]||'badge-pending'}">${bl[o.status]||'Pending'}</span></td>
+<td><div style="font-weight:600">${o.customer?.name || 'N/A'}</div><div style="font-size:11px;color:var(--text-secondary)">${o.email || ''}</div></td>
+<td>${(o.items?.map(i => i.title).join(', ') || 'N/A').substring(0, 30)}${(o.items?.map(i => i.title).join(', ') || '').length > 30 ? '...' : ''}</td>
+<td style="font-weight:700">LKR ${(o.total || 0).toLocaleString()}</td>
+<td><span class="badge ${bc[o.status] || 'badge-pending'}">${bl[o.status] || 'Pending'}</span></td>
 <td>${new Date(o.date).toLocaleDateString()}</td>
 <td><div style="display:flex;gap:4px">
 <button class="btn btn-primary btn-sm" onclick="openStatusModal(${idx})" title="Update Status"><i class="fas fa-edit"></i></button>
 <button class="btn btn-danger btn-sm" onclick="deleteOrder(${idx})" title="Delete"><i class="fas fa-trash"></i></button>
 </div></td></tr>`;
-}).join(''):'<tr><td colspan="7" class="empty"><i class="fas fa-receipt"></i><p>No orders found</p></td></tr>';
-document.getElementById('ordersBadge').textContent=orders.filter(o=>o.status!=='delivered'&&o.status!=='cancelled').length;
+    }).join('') : '<tr><td colspan="7" class="empty"><i class="fas fa-receipt"></i><p>No orders found</p></td></tr>';
+    document.getElementById('ordersBadge').textContent = orders.filter(o => o.status !== 'delivered' && o.status !== 'cancelled').length;
 }
 
-function deleteOrder(idx){const orders=getOrders();orders.splice(idx,1);localStorage.setItem('pickzone_orders',JSON.stringify(orders));toast('Order deleted!');renderOrders();renderDashboard()}
+function deleteOrder(idx) { const orders = getOrders(); orders.splice(idx, 1); localStorage.setItem('pickzone_orders', JSON.stringify(orders)); toast('Order deleted!'); renderOrders(); renderDashboard(); }
 
-function openStatusModal(idx){
-const orders=getOrders();const o=orders[idx];
-document.getElementById('statusOrderId').textContent=o.id;
-document.getElementById('statusSelect').value=o.status||'pending';
-document.getElementById('statusMsg').value='';
-document.getElementById('statusOrderIdx').value=idx;
-openModal('statusModal');
+function openStatusModal(idx) {
+    const orders = getOrders(); const o = orders[idx];
+    document.getElementById('statusOrderId').textContent = o.id;
+    document.getElementById('statusSelect').value = o.status || 'pending';
+    document.getElementById('statusMsg').value = '';
+    document.getElementById('statusOrderIdx').value = idx;
+    openModal('statusModal');
 }
 
-function updateOrderStatus(){
-const idx=parseInt(document.getElementById('statusOrderIdx').value);
-const newStatus=document.getElementById('statusSelect').value;
-const customMsg=document.getElementById('statusMsg').value.trim();
-const orders=getOrders();if(!orders[idx])return;
-if(!orders[idx].statusHistory)orders[idx].statusHistory=[];
-orders[idx].statusHistory.push({from:orders[idx].status,to:newStatus,customMsg:customMsg||'',changedAt:new Date().toISOString(),changedBy:adminUser.email});
-orders[idx].status=newStatus;
-localStorage.setItem('pickzone_orders',JSON.stringify(orders));
-if(customMsg||newStatus){
-const notifs=getNotifs();
-const statusLabels={pending:'Pending',on_the_road:'On The Road',delivered:'Delivered',cancelled:'Cancelled'};
-notifs.push({email:orders[idx].email,orderId:orders[idx].id,status:newStatus,title:'Order '+statusLabels[newStatus],message:customMsg||('Your order status has been updated to '+statusLabels[newStatus]+'.'),read:false,createdAt:new Date().toISOString()});
-localStorage.setItem('pickzone_notifications',JSON.stringify(notifs));
-}
-closeModal('statusModal');toast('Order status updated! Notification sent.');
-renderOrders();renderDashboard();renderNotifications();
+function updateOrderStatus() {
+    const idx = parseInt(document.getElementById('statusOrderIdx').value);
+    const newStatus = document.getElementById('statusSelect').value;
+    const customMsg = document.getElementById('statusMsg').value.trim();
+    const orders = getOrders(); if (!orders[idx]) return;
+    if (!orders[idx].statusHistory) orders[idx].statusHistory = [];
+    orders[idx].statusHistory.push({ from: orders[idx].status, to: newStatus, customMsg: customMsg || '', changedAt: new Date().toISOString(), changedBy: adminUser.email });
+    orders[idx].status = newStatus;
+    localStorage.setItem('pickzone_orders', JSON.stringify(orders));
+    if (customMsg || newStatus) {
+        const notifs = getNotifs();
+        const statusLabels = { pending: 'Pending', on_the_road: 'On The Road', delivered: 'Delivered', cancelled: 'Cancelled' };
+        notifs.push({ email: orders[idx].email, orderId: orders[idx].id, status: newStatus, title: 'Order ' + statusLabels[newStatus], message: customMsg || ('Your order status has been updated to ' + statusLabels[newStatus] + '.'), read: false, createdAt: new Date().toISOString() });
+        localStorage.setItem('pickzone_notifications', JSON.stringify(notifs));
+    }
+    closeModal('statusModal'); toast('Order status updated! Notification sent.');
+    renderOrders(); renderDashboard(); renderNotifications();
 }
 
-let custSearchTerm='';
-function filterCustomers(v){custSearchTerm=v.toLowerCase();renderCustomers()}
-function renderCustomers(){
-const users=getUsers();const orders=getOrders();
-let filtered=users;
-if(custSearchTerm){filtered=users.filter(u=>(u.email||'').toLowerCase().includes(custSearchTerm)||(u.fullName||'').toLowerCase().includes(custSearchTerm)||(u.whatsapp||'').toLowerCase().includes(custSearchTerm))}
-document.getElementById('customersTable').innerHTML=filtered.length?filtered.map((u,i)=>{
-const userOrders=orders.filter(o=>o.email===u.email.toLowerCase());
-return`<tr>
+let custSearchTerm = '';
+function filterCustomers(v) { custSearchTerm = v.toLowerCase(); renderCustomers(); }
+function renderCustomers() {
+    const users = getUsers(); const orders = getOrders();
+    let filtered = users;
+    if (custSearchTerm) { filtered = users.filter(u => (u.email || '').toLowerCase().includes(custSearchTerm) || (u.fullName || '').toLowerCase().includes(custSearchTerm) || (u.whatsapp || '').toLowerCase().includes(custSearchTerm)); }
+    document.getElementById('customersTable').innerHTML = filtered.length ? filtered.map((u, i) => {
+        const userOrders = orders.filter(o => o.email === u.email.toLowerCase());
+        return `<tr>
 <td style="font-weight:600">${u.email}</td>
-<td>${u.whatsapp||'-'}</td>
-<td>${u.fullName||'-'}</td>
-<td>${u.nearestCity||'-'}</td>
-<td>${u.district||'-'}</td>
+<td>${u.whatsapp || '-'}</td>
+<td>${u.fullName || '-'}</td>
+<td>${u.nearestCity || '-'}</td>
+<td>${u.district || '-'}</td>
 <td><span class="badge badge-delivered">${userOrders.length}</span></td>
 <td>${new Date(u.createdAt).toLocaleDateString()}</td>
 <td><div style="display:flex;gap:4px">
 <button class="btn btn-primary btn-sm" onclick="editCustomer(${i})" title="Edit"><i class="fas fa-edit"></i></button>
 <button class="btn btn-danger btn-sm" onclick="deleteCustomer(${i})" title="Delete"><i class="fas fa-trash"></i></button>
 </div></td></tr>`;
-}).join(''):'<tr><td colspan="8" class="empty"><i class="fas fa-users"></i><p>No customers found</p></td></tr>';
+    }).join('') : '<tr><td colspan="8" class="empty"><i class="fas fa-users"></i><p>No customers found</p></td></tr>';
 }
 
-function openAddCustomerModal(){
-editingCustomerIdx=-1;
-['acEmail','acWhatsapp','acPassword','acFullName','acContact2','acCity','acAddress'].forEach(id=>document.getElementById(id).value='');
-document.getElementById('acDistrict').value='';
-document.getElementById('customerModalTitle').innerHTML='<i class="fas fa-user-plus"></i>Add Customer';
-document.getElementById('customerModalBtn').innerHTML='<i class="fas fa-user-plus"></i>Add Customer';
-document.getElementById('customerModalBtn').onclick=()=>addCustomer();
-openModal('addCustomerModal');
+function openAddCustomerModal() {
+    editingCustomerIdx = -1;
+    ['acEmail', 'acWhatsapp', 'acPassword', 'acFullName', 'acContact2', 'acCity', 'acAddress'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('acDistrict').value = '';
+    document.getElementById('customerModalTitle').innerHTML = '<i class="fas fa-user-plus"></i>Add Customer';
+    document.getElementById('customerModalBtn').innerHTML = '<i class="fas fa-user-plus"></i>Add Customer';
+    document.getElementById('customerModalBtn').onclick = () => addCustomer();
+    openModal('addCustomerModal');
 }
 
-function addCustomer(){
-const email=document.getElementById('acEmail').value.trim().toLowerCase();
-const whatsapp=document.getElementById('acWhatsapp').value.trim();
-const password=document.getElementById('acPassword').value.trim();
-const fullName=document.getElementById('acFullName').value.trim();
-const contactNumber2=document.getElementById('acContact2').value.trim();
-const nearestCity=document.getElementById('acCity').value.trim();
-const district=document.getElementById('acDistrict').value;
-const deliveryAddress=document.getElementById('acAddress').value.trim();
+function addCustomer() {
+    const email = document.getElementById('acEmail').value.trim().toLowerCase();
+    const whatsapp = document.getElementById('acWhatsapp').value.trim();
+    const password = document.getElementById('acPassword').value.trim();
+    const fullName = document.getElementById('acFullName').value.trim();
+    const contactNumber2 = document.getElementById('acContact2').value.trim();
+    const nearestCity = document.getElementById('acCity').value.trim();
+    const district = document.getElementById('acDistrict').value;
+    const deliveryAddress = document.getElementById('acAddress').value.trim();
 
-if(!email||!email.endsWith('@gmail.com')){toast('Valid Gmail required!','error');return}
-if(!whatsapp||whatsapp.length<9){toast('Valid WhatsApp number required!','error');return}
-if(!password){toast('Password is required!','error');return}
+    if (!email || !email.endsWith('@gmail.com')) { toast('Valid Gmail required!', 'error'); return; }
+    if (!whatsapp || whatsapp.length < 9) { toast('Valid WhatsApp number required!', 'error'); return; }
+    if (!password) { toast('Password is required!', 'error'); return; }
 
-const users=getUsers();
-if(users.find(u=>u.email.toLowerCase()===email)){toast('Email already registered!','error');return}
+    const users = getUsers();
+    if (users.find(u => u.email.toLowerCase() === email)) { toast('Email already registered!', 'error'); return; }
 
-users.push({email,whatsapp,password,fullName:fullName||'',contactNumber2:contactNumber2||'',nearestCity:nearestCity||'',district:district||'',deliveryAddress:deliveryAddress||'',profilePic:'',orderCount:0,createdAt:new Date().toISOString(),addedBy:'admin'});
-localStorage.setItem('pickzone_users',JSON.stringify(users));
-closeModal('addCustomerModal');toast('Customer added successfully!');
-renderCustomers();renderDashboard();
+    users.push({ email, whatsapp, password, fullName: fullName || '', contactNumber2: contactNumber2 || '', nearestCity: nearestCity || '', district: district || '', deliveryAddress: deliveryAddress || '', profilePic: '', orderCount: 0, createdAt: new Date().toISOString(), addedBy: 'admin' });
+    localStorage.setItem('pickzone_users', JSON.stringify(users));
+    closeModal('addCustomerModal'); toast('Customer added successfully!');
+    renderCustomers(); renderDashboard();
 }
 
-function editCustomer(idx){
-editingCustomerIdx=idx;
-const users=getUsers();const u=users[idx];
-document.getElementById('acEmail').value=u.email;
-document.getElementById('acWhatsapp').value=u.whatsapp||'';
-document.getElementById('acPassword').value=u.password||'';
-document.getElementById('acFullName').value=u.fullName||'';
-document.getElementById('acContact2').value=u.contactNumber2||'';
-document.getElementById('acCity').value=u.nearestCity||'';
-document.getElementById('acDistrict').value=u.district||'';
-document.getElementById('acAddress').value=u.deliveryAddress||'';
-document.getElementById('customerModalTitle').innerHTML='<i class="fas fa-user-edit"></i>Edit Customer';
-document.getElementById('customerModalBtn').innerHTML='<i class="fas fa-save"></i>Save Changes';
-document.getElementById('customerModalBtn').onclick=()=>saveCustomerEdit(idx);
-openModal('addCustomerModal');
+function editCustomer(idx) {
+    editingCustomerIdx = idx;
+    const users = getUsers(); const u = users[idx];
+    document.getElementById('acEmail').value = u.email;
+    document.getElementById('acWhatsapp').value = u.whatsapp || '';
+    document.getElementById('acPassword').value = u.password || '';
+    document.getElementById('acFullName').value = u.fullName || '';
+    document.getElementById('acContact2').value = u.contactNumber2 || '';
+    document.getElementById('acCity').value = u.nearestCity || '';
+    document.getElementById('acDistrict').value = u.district || '';
+    document.getElementById('acAddress').value = u.deliveryAddress || '';
+    document.getElementById('customerModalTitle').innerHTML = '<i class="fas fa-user-edit"></i>Edit Customer';
+    document.getElementById('customerModalBtn').innerHTML = '<i class="fas fa-save"></i>Save Changes';
+    document.getElementById('customerModalBtn').onclick = () => saveCustomerEdit(idx);
+    openModal('addCustomerModal');
 }
 
-function saveCustomerEdit(idx){
-const users=getUsers();const oldEmail=users[idx].email;
-const newEmail=document.getElementById('acEmail').value.trim().toLowerCase();
-if(!newEmail||!newEmail.endsWith('@gmail.com')){toast('Valid Gmail required!','error');return}
-users[idx].email=newEmail;
-users[idx].whatsapp=document.getElementById('acWhatsapp').value.trim();
-users[idx].password=document.getElementById('acPassword').value.trim();
-users[idx].fullName=document.getElementById('acFullName').value.trim();
-users[idx].contactNumber2=document.getElementById('acContact2').value.trim();
-users[idx].nearestCity=document.getElementById('acCity').value.trim();
-users[idx].district=document.getElementById('acDistrict').value;
-users[idx].deliveryAddress=document.getElementById('acAddress').value.trim();
-localStorage.setItem('pickzone_users',JSON.stringify(users));
-if(oldEmail!==newEmail){const orders=getOrders();orders.forEach(o=>{if(o.email===oldEmail)o.email=newEmail});localStorage.setItem('pickzone_orders',JSON.stringify(orders))}
-closeModal('addCustomerModal');toast('Customer updated successfully!');
-renderCustomers();renderDashboard();renderOrders();
+function saveCustomerEdit(idx) {
+    const users = getUsers(); const oldEmail = users[idx].email;
+    const newEmail = document.getElementById('acEmail').value.trim().toLowerCase();
+    if (!newEmail || !newEmail.endsWith('@gmail.com')) { toast('Valid Gmail required!', 'error'); return; }
+    users[idx].email = newEmail;
+    users[idx].whatsapp = document.getElementById('acWhatsapp').value.trim();
+    users[idx].password = document.getElementById('acPassword').value.trim();
+    users[idx].fullName = document.getElementById('acFullName').value.trim();
+    users[idx].contactNumber2 = document.getElementById('acContact2').value.trim();
+    users[idx].nearestCity = document.getElementById('acCity').value.trim();
+    users[idx].district = document.getElementById('acDistrict').value;
+    users[idx].deliveryAddress = document.getElementById('acAddress').value.trim();
+    localStorage.setItem('pickzone_users', JSON.stringify(users));
+    if (oldEmail !== newEmail) { const orders = getOrders(); orders.forEach(o => { if (o.email === oldEmail) o.email = newEmail }); localStorage.setItem('pickzone_orders', JSON.stringify(orders)); }
+    closeModal('addCustomerModal'); toast('Customer updated successfully!');
+    renderCustomers(); renderDashboard(); renderOrders();
 }
 
-function deleteCustomer(idx){
-if(!confirm('Delete this customer?'))return;
-const users=getUsers();users.splice(idx,1);
-localStorage.setItem('pickzone_users',JSON.stringify(users));
-toast('Customer deleted!');renderCustomers();renderDashboard();
+function deleteCustomer(idx) {
+    if (!confirm('Delete this customer?')) return;
+    const users = getUsers(); users.splice(idx, 1);
+    localStorage.setItem('pickzone_users', JSON.stringify(users));
+    toast('Customer deleted!'); renderCustomers(); renderDashboard();
 }
 
-function renderProducts(){
-const products=getProducts();
-document.getElementById('productsTable').innerHTML=products.length?products.map((p,i)=>`<tr>
+function renderProducts() {
+    const products = getProducts();
+    document.getElementById('productsTable').innerHTML = products.length ? products.map((p, i) => `<tr>
 <td style="font-weight:700;color:var(--primary)">${p.code}</td>
 <td style="font-weight:600">${p.title}</td>
-<td style="font-weight:700;color:var(--secondary)">LKR ${(p.price||0).toLocaleString()}</td>
-<td>${(p.categories||[]).map(c=>`<span class="badge badge-road" style="margin:2px">${c}</span>`).join('')}</td>
-<td><div class="desc-preview" title="${(p.description||'No description').replace(/"/g,'&quot;')}">${p.description||'No description'}</div></td>
+<td style="font-weight:700;color:var(--secondary)">LKR ${(p.price || 0).toLocaleString()}</td>
+<td>${(p.categories || []).map(c => `<span class="badge badge-road" style="margin:2px">${c}</span>`).join('')}</td>
+<td><div class="desc-preview" title="${(p.description || 'No description').replace(/"/g, '&quot;')}">${p.description || 'No description'}</div></td>
 <td><div style="display:flex;gap:4px">
 <button class="btn btn-primary btn-sm" onclick="viewProduct(${i})" title="View Details"><i class="fas fa-eye"></i></button>
 <button class="btn btn-warning btn-sm" onclick="editProduct(${i})" title="Edit"><i class="fas fa-edit"></i></button>
 <button class="btn btn-danger btn-sm" onclick="deleteProduct(${i})" title="Delete"><i class="fas fa-trash"></i></button>
 </div></td>
-</tr>`).join(''):'<tr><td colspan="6" class="empty"><i class="fas fa-box"></i><p>No products</p></td></tr>';
+</tr>`).join('') : '<tr><td colspan="6" class="empty"><i class="fas fa-box"></i><p>No products</p></td></tr>';
 }
 
-function viewProduct(idx){
-const products=getProducts();
-const p=products[idx];
-document.getElementById('productDetails').innerHTML=`
+function viewProduct(idx) {
+    const products = getProducts();
+    const p = products[idx];
+    document.getElementById('productDetails').innerHTML = `
 <div style="margin-bottom:16px">
 <div style="font-size:12px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Product Code</div>
 <div style="font-size:16px;font-weight:700;color:var(--primary)">${p.code}</div>
@@ -814,168 +879,162 @@ document.getElementById('productDetails').innerHTML=`
 </div>
 <div style="margin-bottom:16px">
 <div style="font-size:12px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Price</div>
-<div style="font-size:20px;font-weight:800;color:var(--secondary)">LKR ${(p.price||0).toLocaleString()}</div>
+<div style="font-size:20px;font-weight:800;color:var(--secondary)">LKR ${(p.price || 0).toLocaleString()}</div>
 </div>
 <div style="margin-bottom:16px">
 <div style="font-size:12px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Categories</div>
-<div>${(p.categories||[]).map(c=>`<span class="badge badge-road" style="margin:2px">${c}</span>`).join('')}</div>
+<div>${(p.categories || []).map(c => `<span class="badge badge-road" style="margin:2px">${c}</span>`).join('')}</div>
 </div>
 <div style="margin-bottom:16px">
 <div style="font-size:12px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Description</div>
-<div class="desc-full">${p.description||'No description available'}</div>
+<div class="desc-full">${p.description || 'No description available'}</div>
 </div>
 <div style="margin-bottom:16px">
 <div style="font-size:12px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Images</div>
 <div style="display:flex;gap:8px;flex-wrap:wrap">
-${(p.images||[]).map(img=>`<img src="${img}" style="width:80px;height:80px;object-fit:cover;border-radius:8px;border:1px solid var(--border)">`).join('')}
+${(p.images || []).map(img => `<img src="${img}" style="width:80px;height:80px;object-fit:cover;border-radius:8px;border:1px solid var(--border)">`).join('')}
 </div>
 </div>
 `;
-openModal('viewProductModal');
+    openModal('viewProductModal');
 }
 
-function openAddProductModal(){
-editingProductIdx=-1;
-['apCode','apPrice','apTitle','apDescription','apCategories','apImages'].forEach(id=>document.getElementById(id).value='');
-document.getElementById('productModalTitle').innerHTML='<i class="fas fa-plus-circle"></i>Add Product';
-document.getElementById('productModalBtn').innerHTML='<i class="fas fa-plus"></i>Add Product';
-document.getElementById('productModalBtn').onclick=()=>addProduct();
-openModal('addProductModal');
+function openAddProductModal() {
+    editingProductIdx = -1;
+    ['apCode', 'apPrice', 'apTitle', 'apDescription', 'apCategories', 'apImages'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('productModalTitle').innerHTML = '<i class="fas fa-plus-circle"></i>Add Product';
+    document.getElementById('productModalBtn').innerHTML = '<i class="fas fa-plus"></i>Add Product';
+    document.getElementById('productModalBtn').onclick = () => addProduct();
+    openModal('addProductModal');
 }
 
-function addProduct(){
-const code=document.getElementById('apCode').value.trim();
-const price=parseInt(document.getElementById('apPrice').value);
-const title=document.getElementById('apTitle').value.trim();
-const description=document.getElementById('apDescription').value.trim();
-const categories=document.getElementById('apCategories').value.split(',').map(s=>s.trim()).filter(Boolean);
-const images=document.getElementById('apImages').value.split(',').map(s=>s.trim()).filter(Boolean);
-if(!code||!title||!price){toast('Code, title, and price are required!','error');return}
-const products=getProducts();
-if(products.find(p=>p.code===code)){toast('Product code already exists!','error');return}
-products.push({code,title,price,description:description||'',categories,images:images.length?images:['https://picsum.photos/400/400?random='+Date.now()]});
-localStorage.setItem('pickzone_items',JSON.stringify(products));
-closeModal('addProductModal');toast('Product added!');renderProducts();renderDashboard();
+function addProduct() {
+    const code = document.getElementById('apCode').value.trim();
+    const price = parseInt(document.getElementById('apPrice').value);
+    const title = document.getElementById('apTitle').value.trim();
+    const description = document.getElementById('apDescription').value.trim();
+    const categories = document.getElementById('apCategories').value.split(',').map(s => s.trim()).filter(Boolean);
+    const images = document.getElementById('apImages').value.split(',').map(s => s.trim()).filter(Boolean);
+    if (!code || !title || !price) { toast('Code, title, and price are required!', 'error'); return; }
+    const products = getProducts();
+    if (products.find(p => p.code === code)) { toast('Product code already exists!', 'error'); return; }
+    products.push({ code, title, price, description: description || '', categories, images: images.length ? images : ['https://picsum.photos/400/400?random=' + Date.now()] });
+    localStorage.setItem('pickzone_items', JSON.stringify(products));
+    closeModal('addProductModal'); toast('Product added!'); renderProducts(); renderDashboard();
 }
 
-function editProduct(idx){
-editingProductIdx=idx;
-const products=getProducts();
-const p=products[idx];
-document.getElementById('apCode').value=p.code;
-document.getElementById('apPrice').value=p.price;
-document.getElementById('apTitle').value=p.title;
-document.getElementById('apDescription').value=p.description||'';
-document.getElementById('apCategories').value=(p.categories||[]).join(', ');
-document.getElementById('apImages').value=(p.images||[]).join(', ');
-document.getElementById('productModalTitle').innerHTML='<i class="fas fa-edit"></i>Edit Product';
-document.getElementById('productModalBtn').innerHTML='<i class="fas fa-save"></i>Save Changes';
-document.getElementById('productModalBtn').onclick=()=>saveProductEdit(idx);
-openModal('addProductModal');
+function editProduct(idx) {
+    editingProductIdx = idx;
+    const products = getProducts();
+    const p = products[idx];
+    document.getElementById('apCode').value = p.code;
+    document.getElementById('apPrice').value = p.price;
+    document.getElementById('apTitle').value = p.title;
+    document.getElementById('apDescription').value = p.description || '';
+    document.getElementById('apCategories').value = (p.categories || []).join(', ');
+    document.getElementById('apImages').value = (p.images || []).join(', ');
+    document.getElementById('productModalTitle').innerHTML = '<i class="fas fa-edit"></i>Edit Product';
+    document.getElementById('productModalBtn').innerHTML = '<i class="fas fa-save"></i>Save Changes';
+    document.getElementById('productModalBtn').onclick = () => saveProductEdit(idx);
+    openModal('addProductModal');
 }
 
-function saveProductEdit(idx){
-const products=getProducts();
-const oldCode=products[idx].code;
-const newCode=document.getElementById('apCode').value.trim();
-const price=parseInt(document.getElementById('apPrice').value);
-const title=document.getElementById('apTitle').value.trim();
-const description=document.getElementById('apDescription').value.trim();
-const categories=document.getElementById('apCategories').value.split(',').map(s=>s.trim()).filter(Boolean);
-const images=document.getElementById('apImages').value.split(',').map(s=>s.trim()).filter(Boolean);
+function saveProductEdit(idx) {
+    const products = getProducts();
+    const oldCode = products[idx].code;
+    const newCode = document.getElementById('apCode').value.trim();
+    const price = parseInt(document.getElementById('apPrice').value);
+    const title = document.getElementById('apTitle').value.trim();
+    const description = document.getElementById('apDescription').value.trim();
+    const categories = document.getElementById('apCategories').value.split(',').map(s => s.trim()).filter(Boolean);
+    const images = document.getElementById('apImages').value.split(',').map(s => s.trim()).filter(Boolean);
 
-if(!newCode||!title||!price){toast('Code, title, and price are required!','error');return}
+    if (!newCode || !title || !price) { toast('Code, title, and price are required!', 'error'); return; }
 
-products[idx].code=newCode;
-products[idx].price=price;
-products[idx].title=title;
-products[idx].description=description||'';
-products[idx].categories=categories;
-products[idx].images=images.length?images:['https://picsum.photos/400/400?random='+Date.now()];
+    products[idx].code = newCode;
+    products[idx].price = price;
+    products[idx].title = title;
+    products[idx].description = description || '';
+    products[idx].categories = categories;
+    products[idx].images = images.length ? images : ['https://picsum.photos/400/400?random=' + Date.now()];
 
-localStorage.setItem('pickzone_items',JSON.stringify(products));
+    localStorage.setItem('pickzone_items', JSON.stringify(products));
 
-if(oldCode!==newCode){
-const orders=getOrders();
-orders.forEach(o=>{
-if(o.items){
-o.items.forEach(item=>{if(item.code===oldCode)item.code=newCode});
-}
-});
-localStorage.setItem('pickzone_orders',JSON.stringify(orders));
-}
+    if (oldCode !== newCode) {
+        const orders = getOrders();
+        orders.forEach(o => { if (o.items) { o.items.forEach(item => { if (item.code === oldCode) item.code = newCode }); } });
+        localStorage.setItem('pickzone_orders', JSON.stringify(orders));
+    }
 
-closeModal('addProductModal');toast('Product updated successfully!');
-renderProducts();renderDashboard();
+    closeModal('addProductModal'); toast('Product updated successfully!');
+    renderProducts(); renderDashboard();
 }
 
-function deleteProduct(idx){
-if(!confirm('Delete this product?'))return;
-const products=getProducts();products.splice(idx,1);
-localStorage.setItem('pickzone_items',JSON.stringify(products));
-toast('Product deleted!');renderProducts();renderDashboard();
+function deleteProduct(idx) {
+    if (!confirm('Delete this product?')) return;
+    const products = getProducts(); products.splice(idx, 1);
+    localStorage.setItem('pickzone_items', JSON.stringify(products));
+    toast('Product deleted!'); renderProducts(); renderDashboard();
 }
 
-function renderNotifDropdowns(){
-const users=getUsers();const orders=getOrders();
-document.getElementById('notifCustomer').innerHTML='<option value="">-- Select Customer --</option>'+users.map(u=>`<option value="${u.email}">${u.email}${u.fullName?' ('+u.fullName+')':''}</option>`).join('');
-document.getElementById('notifOrder').innerHTML='<option value="">-- Select Order --</option>'+orders.map(o=>`<option value="${o.id}">${o.id} - ${o.customer?.name||o.email}</option>`).join('');
+function renderNotifDropdowns() {
+    const users = getUsers(); const orders = getOrders();
+    document.getElementById('notifCustomer').innerHTML = '<option value="">-- Select Customer --</option>' + users.map(u => `<option value="${u.email}">${u.email}${u.fullName ? ' (' + u.fullName + ')' : ''}</option>`).join('');
+    document.getElementById('notifOrder').innerHTML = '<option value="">-- Select Order --</option>' + orders.map(o => `<option value="${o.id}">${o.id} - ${o.customer?.name || o.email}</option>`).join('');
 }
 
-function sendNotification(){
-const email=document.getElementById('notifCustomer').value;
-const orderId=document.getElementById('notifOrder').value;
-const status=document.getElementById('notifStatus').value;
-const title=document.getElementById('notifTitle').value.trim();
-const message=document.getElementById('notifMessage').value.trim();
-if(!email){toast('Select a customer!','error');return}
-if(!title&&!message){toast('Add a title or message!','error');return}
-const notifs=getNotifs();
-notifs.push({email,orderId:orderId||'',status:status||'',title:title||'Notification',message:message||'',read:false,createdAt:new Date().toISOString()});
-localStorage.setItem('pickzone_notifications',JSON.stringify(notifs));
-if(status&&orderId){
-const orders=getOrders();const oi=orders.findIndex(o=>o.id===orderId);
-if(oi>=0){if(!orders[oi].statusHistory)orders[oi].statusHistory=[];
-orders[oi].statusHistory.push({from:orders[oi].status,to:status,customMsg:message||'',changedAt:new Date().toISOString(),changedBy:adminUser.email});
-orders[oi].status=status;localStorage.setItem('pickzone_orders',JSON.stringify(orders))}
-}
-document.getElementById('notifTitle').value='';document.getElementById('notifMessage').value='';
-toast('Notification sent!');renderNotifications();renderDashboard();renderOrders();
+function sendNotification() {
+    const email = document.getElementById('notifCustomer').value;
+    const orderId = document.getElementById('notifOrder').value;
+    const status = document.getElementById('notifStatus').value;
+    const title = document.getElementById('notifTitle').value.trim();
+    const message = document.getElementById('notifMessage').value.trim();
+    if (!email) { toast('Select a customer!', 'error'); return; }
+    if (!title && !message) { toast('Add a title or message!', 'error'); return; }
+    const notifs = getNotifs();
+    notifs.push({ email, orderId: orderId || '', status: status || '', title: title || 'Notification', message: message || '', read: false, createdAt: new Date().toISOString() });
+    localStorage.setItem('pickzone_notifications', JSON.stringify(notifs));
+    if (status && orderId) {
+        const orders = getOrders(); const oi = orders.findIndex(o => o.id === orderId);
+        if (oi >= 0) { if (!orders[oi].statusHistory) orders[oi].statusHistory = []; orders[oi].statusHistory.push({ from: orders[oi].status, to: status, customMsg: message || '', changedAt: new Date().toISOString(), changedBy: adminUser.email }); orders[oi].status = status; localStorage.setItem('pickzone_orders', JSON.stringify(orders)); }
+    }
+    document.getElementById('notifTitle').value = ''; document.getElementById('notifMessage').value = '';
+    toast('Notification sent!'); renderNotifications(); renderDashboard(); renderOrders();
 }
 
-function renderNotifications(){
-const notifs=getNotifs();const sorted=[...notifs].reverse();
-document.getElementById('notifTable').innerHTML=sorted.length?sorted.map((n,i)=>{
-const idx=notifs.length-1-i;
-const bl={pending:'Pending',on_the_road:'On Road',delivered:'Delivered',cancelled:'Cancelled','':'—'};
-return`<tr><td>${n.email}</td><td style="font-weight:600">${n.title||'Notification'}</td><td>${n.status?`<span class="badge badge-${n.status==='on_the_road'?'road':n.status}">${bl[n.status]||n.status}</span>`:'—'}</td><td>${new Date(n.createdAt).toLocaleString()}</td><td><button class="btn btn-danger btn-sm" onclick="deleteNotif(${idx})"><i class="fas fa-trash"></i></button></td></tr>`;
-}).join(''):'<tr><td colspan="5" class="empty"><i class="fas fa-bell-slash"></i><p>No notifications sent</p></td></tr>';
+function renderNotifications() {
+    const notifs = getNotifs(); const sorted = [...notifs].reverse();
+    document.getElementById('notifTable').innerHTML = sorted.length ? sorted.map((n, i) => {
+        const idx = notifs.length - 1 - i;
+        const bl = { pending: 'Pending', on_the_road: 'On Road', delivered: 'Delivered', cancelled: 'Cancelled', '': '—' };
+        return `<tr><td>${n.email}</td><td style="font-weight:600">${n.title || 'Notification'}</td><td>${n.status ? `<span class="badge badge-${n.status === 'on_the_road' ? 'road' : n.status}">${bl[n.status] || n.status}</span>` : '—'}</td><td>${new Date(n.createdAt).toLocaleString()}</td><td><button class="btn btn-danger btn-sm" onclick="deleteNotif(${idx})"><i class="fas fa-trash"></i></button></td></tr>`;
+    }).join('') : '<tr><td colspan="5" class="empty"><i class="fas fa-bell-slash"></i><p>No notifications sent</p></td></tr>';
 }
 
-function deleteNotif(idx){const notifs=getNotifs();notifs.splice(idx,1);localStorage.setItem('pickzone_notifications',JSON.stringify(notifs));toast('Notification deleted!');renderNotifications()}
+function deleteNotif(idx) { const notifs = getNotifs(); notifs.splice(idx, 1); localStorage.setItem('pickzone_notifications', JSON.stringify(notifs)); toast('Notification deleted!'); renderNotifications(); }
 
-function renderArena(){
-const messages=getMessages();const sorted=[...messages].reverse();
-document.getElementById('arenaMessages').innerHTML=sorted.length?sorted.map((m,i)=>`
+function renderArena() {
+    const messages = getMessages(); const sorted = [...messages].reverse();
+    document.getElementById('arenaMessages').innerHTML = sorted.length ? sorted.map((m, i) => `
 <div style="display:flex;gap:12px;padding:14px;border:1px solid var(--border);border-radius:12px;margin-bottom:10px;transition:all 0.3s" onmouseover="this.style.borderColor='var(--primary)'" onmouseout="this.style.borderColor='var(--border)'">
-<img src="${m.profilePic||'https://ui-avatars.com/api/?name='+encodeURIComponent(m.name||'U')+'&background=6366f1&color=fff&size=64'}" style="width:40px;height:40px;border-radius:50%;object-fit:cover;flex-shrink:0">
+<img src="${m.profilePic || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(m.name || 'U') + '&background=6366f1&color=fff&size=64'}" style="width:40px;height:40px;border-radius:50%;object-fit:cover;flex-shrink:0">
 <div style="flex:1">
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-<span style="font-weight:700;font-size:14px">${m.name||'User'}</span>
+<span style="font-weight:700;font-size:14px">${m.name || 'User'}</span>
 <span style="font-size:11px;color:var(--text-secondary)">${new Date(m.time).toLocaleString()}</span>
 </div>
-<div style="font-size:13px;color:var(--text);line-height:1.6">${m.text||''}</div>
-${m.attachment?(m.attachmentType?.startsWith('video')?`<video controls src="${m.attachment}" style="max-width:100%;border-radius:10px;margin-top:8px"></video>`:`<img src="${m.attachment}" style="max-width:100%;border-radius:10px;margin-top:8px">`):''}
+<div style="font-size:13px;color:var(--text);line-height:1.6">${m.text || ''}</div>
+${m.attachment ? (m.attachmentType?.startsWith('video') ? `<video controls src="${m.attachment}" style="max-width:100%;border-radius:10px;margin-top:8px"></video>` : `<img src="${m.attachment}" style="max-width:100%;border-radius:10px;margin-top:8px">`) : ''}
 </div>
-<button class="btn btn-danger btn-sm" onclick="deleteMessage(${messages.length-1-i})" style="flex-shrink:0;align-self:start"><i class="fas fa-trash"></i></button>
-</div>`).join(''):'<div class="empty"><i class="fas fa-comments"></i><p>No messages in the arena</p></div>';
+<button class="btn btn-danger btn-sm" onclick="deleteMessage(${messages.length - 1 - i})" style="flex-shrink:0;align-self:start"><i class="fas fa-trash"></i></button>
+</div>`).join('') : '<div class="empty"><i class="fas fa-comments"></i><p>No messages in the arena</p></div>';
 }
 
-function deleteMessage(idx){if(!confirm('Delete this message?'))return;const messages=getMessages();messages.splice(idx,1);localStorage.setItem('pickzone_messages',JSON.stringify(messages));toast('Message deleted!');renderArena()}
+function deleteMessage(idx) { if (!confirm('Delete this message?')) return; const messages = getMessages(); messages.splice(idx, 1); localStorage.setItem('pickzone_messages', JSON.stringify(messages)); toast('Message deleted!'); renderArena(); }
 
-setInterval(()=>{if(!adminUser)return;renderDashboard();if(document.getElementById('sec-orders').classList.contains('active'))renderOrders();if(document.getElementById('sec-customers').classList.contains('active'))renderCustomers();if(document.getElementById('sec-products').classList.contains('active'))renderProducts();if(document.getElementById('sec-notifications').classList.contains('active'))renderNotifications();if(document.getElementById('sec-arena').classList.contains('active'))renderArena()},5000);
+setInterval(() => { if (!adminUser) return; renderDashboard(); if (document.getElementById('sec-orders').classList.contains('active')) renderOrders(); if (document.getElementById('sec-customers').classList.contains('active')) renderCustomers(); if (document.getElementById('sec-products').classList.contains('active')) renderProducts(); if (document.getElementById('sec-notifications').classList.contains('active')) renderNotifications(); if (document.getElementById('sec-arena').classList.contains('active')) renderArena(); }, 5000);
 
-(function(){let t=localStorage.getItem('pickzone_theme')||'light';document.body.setAttribute('data-theme',t);document.getElementById('themeIcon').className=t==='dark'?'fas fa-sun':'fas fa-moon'})();
+(function() { let t = localStorage.getItem('pickzone_theme') || 'light'; document.body.setAttribute('data-theme', t); document.getElementById('themeIcon').className = t === 'dark' ? 'fas fa-sun' : 'fas fa-moon'; })();
 </script>
 </body>
 </html>
